@@ -1,4 +1,4 @@
-import { Testimonial } from '../data/mockData';
+import type{ Testimonial } from '../data/mockData';
 
 interface Props {
   testimonial: Testimonial;

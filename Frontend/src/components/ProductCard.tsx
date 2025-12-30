@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, Leaf } from 'lucide-react';
-import { Product } from '../data/mockData';
+import type{ Product } from '../data/mockData';
 
 interface Props {
   product: Product;

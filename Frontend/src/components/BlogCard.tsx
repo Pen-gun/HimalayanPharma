@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { CalendarDays } from 'lucide-react';
-import { BlogPost } from '../data/mockData';
-
+import type{ BlogPost } from '../data/mockData';
 interface Props {
   post: BlogPost;
 }
