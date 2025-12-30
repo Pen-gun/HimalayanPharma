@@ -26,7 +26,7 @@ const Navbar = () => {
       <div className="section-shell flex items-center justify-between py-4">
         <Link to="/" className="flex items-center gap-2 text-lg font-bold text-emerald-800">
           <span className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-600 text-white shadow-lg shadow-emerald-600/30">
-            <Mountain className="h-5 w-5" />
+            <img src='HimalayanPharma.jpeg' className="h-5 w-5" />
           </span>
           <div className="leading-tight">
             <div>Himalayan Pharma</div>
