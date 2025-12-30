@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { Leaf, Menu, Mountain, X } from 'lucide-react';
+import { Leaf, Menu, X } from 'lucide-react';
 
 const navLinks = [
   { to: '/', label: 'Home' },
@@ -25,12 +25,12 @@ const Navbar = () => {
     <header className="fixed inset-x-0 top-0 z-20 bg-white/90 shadow-sm backdrop-blur">
       <div className="section-shell flex items-center justify-between py-4">
         <Link to="/" className="flex items-center gap-2 text-lg font-bold text-emerald-800">
-          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-600 text-white shadow-lg shadow-emerald-600/30">
+          <span className="flex h-10 w-10 items-center justify-center rounded-[0_1rem_0_1rem] bg-emerald-600 text-white shadow-lg shadow-emerald-600/30">
             <img src='HimalayanPharma.jpeg' className="h-5 w-5" />
           </span>
           <div className="leading-tight">
-            <div>Himalayan Pharma</div>
-            <div className="text-xs font-medium text-emerald-700">Wellness Works</div>
+            <div>Himalayan</div>
+            <div className="text-xs font-medium text-emerald-700">Pharma Works</div>
           </div>
         </Link>
 
