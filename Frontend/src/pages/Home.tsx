@@ -6,12 +6,20 @@ import BlogCard from '../components/BlogCard';
 import TestimonialCard from '../components/TestimonialCard';
 import SectionHeader from '../components/SectionHeader';
 import StatsBar from '../components/StatsBar';
-import { blogPosts, products, stats, testimonials } from '../data/mockData';
+import { stats, testimonials } from '../data/mockData';
+import { useFeaturedProducts } from '../hooks/useProducts';
+import { useBlogPosts } from '../hooks/useBlog';
 
 const Home = () => {
+  const { data: featuredData, isLoading: productsLoading } = useFeaturedProducts();
+  const { data: blogData, isLoading: blogLoading } = useBlogPosts({ limit: 3 });
+
   useEffect(() => {
     document.title = 'Himalayan Pharma Works | Wellness Rooted in Nature';
   }, []);
+
+  const featuredProducts = featuredData?.data || [];
+  const blogPosts = blogData?.data || [];
 
   return (
     <div className="space-y-16">
@@ -30,11 +38,32 @@ const Home = () => {
           title="Flagship formulations for everyday balance"
           subtitle="Curated bestsellers from liver health to stress resilience, crafted with traceable botanicals and rigorous lab validation."
         />
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {products.slice(0, 6).map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {productsLoading ? (
+          <div className="text-center py-12">
+            <p className="text-slate-600">Loading products...</p>
+          </div>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {featuredProducts.slice(0, 6).map((product) => (
+              <ProductCard 
+                key={product._id} 
+                product={{
+                  id: product._id,
+                  name: product.name,
+                  category: typeof product.category === 'object' ? product.category.name : product.category,
+                  price: `$${product.price}`,
+                  image: product.image,
+                  shortDescription: product.shortDescription,
+                  description: product.description,
+                  benefits: product.benefits,
+                  ingredients: product.ingredients,
+                  usage: product.usage,
+                  tags: product.tags,
+                }}
+              />
+            ))}
+          </div>
+        )}
         <div className="flex justify-center">
           <Link to="/products" className="btn-secondary">
             View all products
@@ -63,11 +92,28 @@ const Home = () => {
           </Link>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
-          {['Traceable botanicals', 'Clinically studied', 'Vegan friendly', 'ISO & cGMP'].map((item) => (
-            <div key={item} className="glass-panel rounded-2xl p-4 text-center text-emerald-900">
-              <p className="text-sm font-semibold">{item}</p>
-            </div>
-          ))}
+        {blogLoading ? (
+          <div className="text-center py-12">
+            <p className="text-slate-600">Loading articles...</p>
+          </div>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {blogPosts.map((post) => (
+              <BlogCard 
+                key={post._id} 
+                post={{
+                  id: post._id,
+                  title: post.title,
+                  excerpt: post.excerpt,
+                  image: post.image,
+                  category: post.category,
+                  publishedAt: post.publishedAt,
+                  content: post.content,
+                }}
+              />
+            ))}
+          </div>
+        )}
         </div>
       </section>
 

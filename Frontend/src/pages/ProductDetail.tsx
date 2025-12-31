@@ -1,16 +1,26 @@
 import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { products } from '../data/mockData';
+import { useProduct } from '../hooks/useProducts';
 
 const ProductDetail = () => {
   const { id } = useParams();
-  const product = products.find((item) => item.id === id);
+  const { data: productData, isLoading } = useProduct(id || '');
+  
+  const product = productData?.data;
 
   useEffect(() => {
     document.title = product
       ? `${product.name} | Himalayan Pharma Works`
       : 'Product not found | Himalayan Pharma Works';
   }, [product]);
+
+  if (isLoading) {
+    return (
+      <div className="section-shell space-y-4">
+        <p className="text-slate-600">Loading product...</p>
+      </div>
+    );
+  }
 
   if (!product) {
     return (
@@ -23,6 +33,8 @@ const ProductDetail = () => {
     );
   }
 
+  const categoryName = typeof product.category === 'object' ? product.category.name : product.category;
+
   return (
     <div className="section-shell space-y-10">
       <div className="grid gap-8 lg:grid-cols-2 lg:items-start">
@@ -30,10 +42,10 @@ const ProductDetail = () => {
           <img src={product.image} alt={product.name} className="h-full w-full object-cover" loading="lazy" />
         </div>
         <div className="space-y-4">
-          <span className="pill bg-emerald-50 text-emerald-800">{product.category}</span>
+          <span className="pill bg-emerald-50 text-emerald-800">{categoryName}</span>
           <h1 className="text-3xl font-semibold text-emerald-900 sm:text-4xl">{product.name}</h1>
           <p className="text-lg text-slate-700">{product.description}</p>
-          {product.price && <div className="text-xl font-semibold text-emerald-800">{product.price}</div>}
+          {product.price && <div className="text-xl font-semibold text-emerald-800">${product.price}</div>}
           <div className="flex flex-wrap gap-2">
             {product.tags?.map((tag) => (
               <span key={tag} className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-800">

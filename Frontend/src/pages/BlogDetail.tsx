@@ -1,15 +1,25 @@
 import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import SectionHeader from '../components/SectionHeader';
-import { blogPosts } from '../data/mockData';
+import { useBlogPost } from '../hooks/useBlog';
 
 const BlogDetail = () => {
   const { id } = useParams();
-  const post = blogPosts.find((item) => item.id === id);
+  const { data: postData, isLoading } = useBlogPost(id || '');
+  
+  const post = postData?.data;
 
   useEffect(() => {
     document.title = post ? `${post.title} | Himalayan Pharma Works` : 'Blog | Himalayan Pharma Works';
   }, [post]);
+
+  if (isLoading) {
+    return (
+      <div className="section-shell space-y-4">
+        <p className="text-slate-600">Loading article...</p>
+      </div>
+    );
+  }
 
   if (!post) {
     return (
@@ -24,7 +34,7 @@ const BlogDetail = () => {
 
   return (
     <div className="section-shell space-y-8">
-      <SectionHeader eyebrow={post.category} title={post.title} subtitle={post.publishedAt} />
+      <SectionHeader eyebrow={post.category} title={post.title} subtitle={new Date(post.publishedAt).toLocaleDateString()} />
       <div className="overflow-hidden rounded-3xl shadow-lg">
         <img src={post.image} alt={post.title} className="h-full w-full object-cover" loading="lazy" />
       </div>

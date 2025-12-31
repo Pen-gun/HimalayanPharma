@@ -1,27 +1,30 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import SectionHeader from '../components/SectionHeader';
-import { productCategories, products } from '../data/mockData';
+import { useProducts } from '../hooks/useProducts';
+import { useCategories } from '../hooks/useCategories';
 
 const Products = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialCategory = searchParams.get('category') || 'All';
+  const initialCategory = searchParams.get('category') || '';
   const [activeCategory, setActiveCategory] = useState(initialCategory);
+  
+  const { data: categoriesData } = useCategories();
+  const { data: productsData, isLoading } = useProducts({
+    category: activeCategory || undefined,
+  });
 
   useEffect(() => {
     document.title = 'Products | Himalayan Pharma Works';
   }, []);
 
-  // Later: useQuery(['products'], fetchProducts)
-
-  const filtered = useMemo(() => {
-    if (activeCategory === 'All') return products;
-    return products.filter((product) => product.category === activeCategory);
-  }, [activeCategory]);
+  const categories = ['All', ...(categoriesData?.data.map(cat => cat.name) || [])];
+  const products = productsData?.data || [];
 
   const handleCategoryChange = (category: string) => {
-    setActiveCategory(category);
+    const newCategory = category === 'All' ? '' : category;
+    setActiveCategory(newCategory);
     if (category === 'All') {
       searchParams.delete('category');
       setSearchParams(searchParams, { replace: true });
@@ -40,11 +43,11 @@ const Products = () => {
       />
 
       <div className="flex flex-wrap justify-center gap-3">
-        {productCategories.map((category) => (
+        {categories.map((category) => (
           <button
             key={category}
             className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${
-              activeCategory === category
+              (activeCategory === '' && category === 'All') || activeCategory === category
                 ? 'border-emerald-700 bg-emerald-700 text-white shadow-md'
                 : 'border-emerald-100 bg-white text-emerald-800 hover:border-emerald-400'
             }`}
@@ -55,11 +58,32 @@ const Products = () => {
         ))}
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {filtered.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
+      {isLoading ? (
+        <div className="text-center py-12">
+          <p className="text-slate-600">Loading products...</p>
+        </div>
+      ) : (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {products.map((product) => (
+            <ProductCard 
+              key={product._id} 
+              product={{
+                id: product._id,
+                name: product.name,
+                category: typeof product.category === 'object' ? product.category.name : product.category,
+                price: `$${product.price}`,
+                image: product.image,
+                shortDescription: product.shortDescription,
+                description: product.description,
+                benefits: product.benefits,
+                ingredients: product.ingredients,
+                usage: product.usage,
+                tags: product.tags,
+              }}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
