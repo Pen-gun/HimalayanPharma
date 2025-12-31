@@ -64,24 +64,23 @@ const Products = () => {
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {products.map((product) => (
-            <ProductCard 
-              key={product._id} 
-              product={{
-                id: product._id,
-                name: product.name,
-                category: typeof product.category === 'object' ? product.category.name : product.category,
-                price: `$${product.price}`,
-                image: product.image,
-                shortDescription: product.shortDescription,
-                description: product.description,
-                benefits: product.benefits,
-                ingredients: product.ingredients,
-                usage: product.usage,
-                tags: product.tags,
-              }}
-            />
-          ))}
+          {products.map((product) => {
+            const category =
+              typeof product.category === 'string'
+                ? { _id: 'unknown', name: product.category }
+                : product.category;
+            const price = Number(product.price);
+            return (
+              <ProductCard
+                key={product._id}
+                product={{
+                  ...product,
+                  category,
+                  price,
+                }}
+              />
+            );
+          })}
         </div>
       )}
     </div>

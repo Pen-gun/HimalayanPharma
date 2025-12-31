@@ -27,17 +27,9 @@ const Blog = () => {
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {blogPosts.map((post) => (
-            <BlogCard 
-              key={post._id} 
-              post={{
-                id: post._id,
-                title: post.title,
-                excerpt: post.excerpt,
-                image: post.image,
-                category: post.category,
-                publishedAt: post.publishedAt,
-                content: post.content,
-              }}
+            <BlogCard
+              key={post._id}
+              post={post}
             />
           ))}
         </div>

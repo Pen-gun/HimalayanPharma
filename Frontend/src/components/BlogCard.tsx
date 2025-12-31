@@ -25,7 +25,7 @@ const BlogCard = ({ post }: Props) => {
         <h3 className="text-lg font-semibold text-emerald-900">{post.title}</h3>
         <p className="text-sm text-slate-600">{post.excerpt}</p>
         <Link
-          to={`/blog/${post.id}`}
+          to={`/blog/${post._id}`}
           className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 transition hover:gap-3"
         >
           Read article

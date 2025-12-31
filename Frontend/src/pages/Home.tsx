@@ -44,24 +44,22 @@ const Home = () => {
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {featuredProducts.slice(0, 6).map((product) => (
-              <ProductCard 
-                key={product._id} 
-                product={{
-                  id: product._id,
-                  name: product.name,
-                  category: typeof product.category === 'object' ? product.category.name : product.category,
-                  price: `$${product.price}`,
-                  image: product.image,
-                  shortDescription: product.shortDescription,
-                  description: product.description,
-                  benefits: product.benefits,
-                  ingredients: product.ingredients,
-                  usage: product.usage,
-                  tags: product.tags,
-                }}
-              />
-            ))}
+            {featuredProducts.slice(0, 6).map((product) => {
+              const category =
+                typeof product.category === 'string'
+                  ? { _id: 'unknown', name: product.category }
+                  : product.category;
+              return (
+                <ProductCard
+                  key={product._id}
+                  product={{
+                    ...product,
+                    category,
+                    price: Number(product.price),
+                  }}
+                />
+              );
+            })}
           </div>
         )}
         <div className="flex justify-center">
@@ -126,17 +124,9 @@ const Home = () => {
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {blogPosts.map((post) => (
-              <BlogCard 
-                key={post._id} 
-                post={{
-                  id: post._id,
-                  title: post.title,
-                  excerpt: post.excerpt,
-                  image: post.image,
-                  category: post.category,
-                  publishedAt: post.publishedAt,
-                  content: post.content,
-                }}
+              <BlogCard
+                key={post._id}
+                post={post}
               />
             ))}
           </div>

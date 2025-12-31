@@ -17,7 +17,7 @@ const ProductCard = ({ product }: Props) => {
       <div className="space-y-3 p-5">
         <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-emerald-700">
           <Leaf className="h-4 w-4" />
-          {product.category}
+          {typeof product.category === 'string' ? product.category : product.category.name}
         </div>
         <div className="flex items-start justify-between gap-2">
           <h3 className="text-lg font-semibold text-emerald-900">{product.name}</h3>
@@ -34,7 +34,7 @@ const ProductCard = ({ product }: Props) => {
           </div>
         )}
         <Link
-          to={`/products/${product.id}`}
+          to={`/products/${product._id}`}
           className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 transition hover:gap-3"
         >
           View details
