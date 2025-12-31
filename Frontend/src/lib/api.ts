@@ -1,7 +1,12 @@
 import axios from 'axios';
 
-// API Base URL
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
+// API Base URL - Use environment variable or fallback
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
+
+// Validate API URL in production
+if (import.meta.env.PROD && API_BASE_URL.includes('localhost')) {
+  console.warn('⚠️ Warning: Using localhost API URL in production build');
+}
 
 // Create axios instance
 export const apiClient = axios.create({
@@ -9,6 +14,7 @@ export const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 10000, // 10 second timeout
 });
 
 // Request interceptor - Add auth token if exists
