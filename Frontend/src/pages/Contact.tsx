@@ -1,13 +1,30 @@
 import { useEffect, useState } from 'react';
 import { contactLocations } from '../data/mockData';
 import SectionHeader from '../components/SectionHeader';
-
+import { useContact } from '../hooks/useContact.ts';
 const Contact = () => {
+  const { mutate: sendMessage, isPending } = useContact();
   useEffect(() => {
     document.title = 'Contact | Himalayan Pharma Works';
   }, []);
   const handelSubmit = () => {
-    alert(`Thank you, ${form.fullName}! We have received your message and will get back to you at ${form.email} soon.`);
+    if(!form.fullName || !form.email || !form.message) {
+      alert('Please fill all fields');
+      return;
+    }
+    sendMessage(form, {
+      onSuccess: () => {
+        alert('Message sent successfully');
+        setForm({
+          fullName: '',
+          email: '',
+          message: ''
+        });
+      },
+      onError: () => {
+        alert('Failed to send message. Please try again later.');
+      }
+    });
   }
   const [form, setForm] = useState({
     fullName: '',
@@ -28,7 +45,12 @@ const Contact = () => {
         <div className="rounded-3xl bg-white p-8 shadow-sm">
           <h3 className="text-xl font-semibold text-emerald-900">Send us a note</h3>
           <p className="mt-2 text-sm text-slate-700">We will contact you shortly.</p>
-          <form className="mt-4 space-y-4">
+          <form className="mt-4 space-y-4"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handelSubmit();
+          }}
+          >
             <input
               className="w-full rounded-xl border border-emerald-100 px-4 py-3 text-sm text-slate-800 focus:border-emerald-500 focus:outline-none"
               placeholder="Full name"
@@ -36,6 +58,7 @@ const Contact = () => {
               onChange={(e) => setForm({...form, fullName: e.target.value})}
               name="fullName"
               autoFocus
+              value={form.fullName}
             />
             <input
               className="w-full rounded-xl border border-emerald-100 px-4 py-3 text-sm text-slate-800 focus:border-emerald-500 focus:outline-none"
@@ -44,6 +67,7 @@ const Contact = () => {
               aria-label="Email"
               onChange={(e) => setForm({...form, email: e.target.value})}
               name="email"
+              value={form.email}
             />
             <textarea
               className="w-full rounded-xl border border-emerald-100 px-4 py-3 text-sm text-slate-800 focus:border-emerald-500 focus:outline-none"
@@ -52,9 +76,10 @@ const Contact = () => {
               aria-label="Message"
               onChange={(e) => setForm({...form, message: e.target.value})}
               name="message"
+              value={form.message}
             />
-            <button type="button" className="btn-primary w-full" onClick={() => handelSubmit()}>
-              Submit
+            <button type="submit" className="btn-primary w-full" disabled={isPending}>
+              {isPending ? 'Sending...' : 'Send Message'}
             </button>
           </form>
         </div>

@@ -44,6 +44,12 @@ apiClient.interceptors.response.use(
 );
 
 // Types matching backend responses
+export interface Contact{
+    fullName: string;
+    email: string;
+    message: string;
+}
+
 export interface Product {
   _id: string;
   name: string;
@@ -153,6 +159,13 @@ export const api = {
     
     getById: async (id: string) => {
       const { data } = await apiClient.get<ApiResponse<BlogPost>>(`/blog/${id}`);
+      return data;
+    },
+  },
+    // Contact
+    contact: {
+    sendMessage: async (messageData: { fullName: string; email: string; message: string }) => {
+      const { data } = await apiClient.post<ApiResponse<null>>('/contact', messageData);
       return data;
     },
   },
