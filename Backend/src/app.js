@@ -23,15 +23,8 @@ app.use(helmet({
 app.use(mongoSanitize());
 
 // CORS Configuration
-
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || origin === process.env.FRONTEND_URL) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: true, // Allow all origins
   credentials: true,
 }));
 
