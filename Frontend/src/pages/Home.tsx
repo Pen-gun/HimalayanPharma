@@ -92,28 +92,11 @@ const Home = () => {
           </Link>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
-        {blogLoading ? (
-          <div className="text-center py-12">
-            <p className="text-slate-600">Loading articles...</p>
-          </div>
-        ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {blogPosts.map((post) => (
-              <BlogCard 
-                key={post._id} 
-                post={{
-                  id: post._id,
-                  title: post.title,
-                  excerpt: post.excerpt,
-                  image: post.image,
-                  category: post.category,
-                  publishedAt: post.publishedAt,
-                  content: post.content,
-                }}
-              />
-            ))}
-          </div>
-        )}
+          {['Traceable botanicals', 'Clinically studied', 'Vegan friendly', 'ISO & cGMP'].map((item) => (
+            <div key={item} className="glass-panel rounded-2xl p-4 text-center text-emerald-900">
+              <p className="text-sm font-semibold">{item}</p>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -136,11 +119,28 @@ const Home = () => {
           title="Science, sustainability, and wellness insights"
           subtitle="Field notes from our labs and partner farms, plus how to use our products with confidence."
         />
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {blogPosts.map((post) => (
-            <BlogCard key={post.id} post={post} />
-          ))}
-        </div>
+        {blogLoading ? (
+          <div className="text-center py-12">
+            <p className="text-slate-600">Loading articles...</p>
+          </div>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {blogPosts.map((post) => (
+              <BlogCard 
+                key={post._id} 
+                post={{
+                  id: post._id,
+                  title: post.title,
+                  excerpt: post.excerpt,
+                  image: post.image,
+                  category: post.category,
+                  publishedAt: post.publishedAt,
+                  content: post.content,
+                }}
+              />
+            ))}
+          </div>
+        )}
         <div className="flex justify-center">
           <Link to="/blog" className="btn-secondary">
             View all articles
