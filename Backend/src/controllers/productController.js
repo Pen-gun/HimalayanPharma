@@ -30,14 +30,15 @@ export const getAllProducts = async (req, res, next) => {
     }
 
     const pageNum = parseInt(page, 10) || 1;
-    const limitNum = parseInt(limit, 10) || 10;
+    const limitNum = Math.min(parseInt(limit, 10) || 10, 100); // Max 100 items per page
     const skip = (pageNum - 1) * limitNum;
 
     const products = await Product.find(query)
       .populate('category')
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(limitNum);
+      .limit(limitNum)
+      .lean();
 
     const total = await Product.countDocuments(query);
 
@@ -50,6 +51,7 @@ export const getAllProducts = async (req, res, next) => {
       data: products,
     });
   } catch (error) {
+    console.error('Error in getAllProducts:', error);
     next(error);
   }
 };
@@ -79,7 +81,8 @@ export const getFeaturedProducts = async (req, res, next) => {
   try {
     const products = await Product.find({ featured: true })
       .populate('category')
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
 
     res.status(200).json({
       success: true,

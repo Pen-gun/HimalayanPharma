@@ -25,13 +25,14 @@ export const getAllBlogs = async (req, res, next) => {
     }
 
     const pageNum = parseInt(page, 10) || 1;
-    const limitNum = parseInt(limit, 10) || 10;
+    const limitNum = Math.min(parseInt(limit, 10) || 10, 100); // Max 100 items per page
     const skip = (pageNum - 1) * limitNum;
 
     const blogs = await Blog.find(query)
       .sort({ publishedAt: -1 })
       .skip(skip)
-      .limit(limitNum);
+      .limit(limitNum)
+      .lean();
 
     const total = await Blog.countDocuments(query);
 
@@ -44,6 +45,7 @@ export const getAllBlogs = async (req, res, next) => {
       data: blogs,
     });
   } catch (error) {
+    console.error('Error in getAllBlogs:', error);
     next(error);
   }
 };

@@ -1,7 +1,10 @@
 import express from 'express';
 import cors from 'cors';
-import morgan from 'morgan';
-import errorHandler from './middleware/errorHandler.js';
+import helmet from 'helmet';
+import mongoSanitize from 'express-mongo-sanitize';
+import compression from 'compression';
+import rateLimit from 'express-rate-limit';
+import { errorHandler } from './middleware/errorHandler.js';
 import authRoutes from './routes/authRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 import productRoutes from './routes/productRoutes.js';
@@ -9,20 +12,60 @@ import blogRoutes from './routes/blogRoutes.js';
 
 const app = express();
 
-// Middleware
+// Security: Helmet - Set security headers
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  contentSecurityPolicy: false, // Disable CSP for API
+}));
+
+// Security: Data sanitization against NoSQL injection
+app.use(mongoSanitize());
+
+// CORS Configuration
+const allowedOrigins = process.env.NODE_ENV === 'production'
+  ? [process.env.FRONTEND_URL || 'https://yourdomain.com']
+  : ['http://localhost:5173', 'http://localhost:3000', 'http://127.0.0.1:5173'];
+
 app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'http://localhost:3000',
-    'http://127.0.0.1:5173',
-    'http://127.0.0.1:3000',
-  ],
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
 }));
-app.use(morgan('dev'));
+
+// Body parsing with size limits
 app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ limit: '10mb', extended: true }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(express.static('public'));
+
+// Compression middleware
+app.use(compression());
+
+// Rate limiting - Global
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Rate limiting - Auth routes (stricter)
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5, // 5 login attempts per 15 minutes
+  message: 'Too many authentication attempts, please try again later.',
+  skipSuccessfulRequests: true,
+});
+
+// Apply rate limiting
+app.use('/api/', globalLimiter);
+app.use('/api/v1/auth/login', authLimiter);
+app.use('/api/v1/auth/register', authLimiter);
 
 // Routes
 app.use('/api/v1/auth', authRoutes);
@@ -36,14 +79,15 @@ app.get('/api/v1/health', (req, res) => {
     success: true,
     message: 'Server is running',
     timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
   });
 });
 
-// 404 handler - Express 5.x compatible
+// 404 handler
 app.use((req, res) => {
   res.status(404).json({
     success: false,
-    message: 'Route not found',
+    message: `Route not found: ${req.method} ${req.path}`,
   });
 });
 
