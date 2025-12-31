@@ -1,17 +1,26 @@
-import connectToDB from './db/connectionToDB.helper.js';
 import dotenv from 'dotenv';
 import app from './app.js';
+import connectToDB from './config/db.js';
 
-dotenv.config({path: './.env.local'});
+dotenv.config({ path: './.env.local' });
 
-connectToDB().then(()=>{
-    app.listen(process.env.PORT, ()=>{
-        console.log(`Server is running on port ${process.env.PORT}`);
+const startServer = async () => {
+  try {
+    // Connect to MongoDB
+    await connectToDB();
+
+    const PORT = process.env.PORT || 5000;
+
+    // Start server
+    app.listen(PORT, () => {
+      console.log(`\n🚀 Server is running on port ${PORT}`);
+      console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
+      console.log(`🌐 API Base URL: http://localhost:${PORT}/api/v1\n`);
     });
-    app.on('error', (err)=>{
-        console.error("Error starting the server", err);
-    });
-}).catch((err)=>{
-    console.error("Failed to connect to the database", err);
+  } catch (error) {
+    console.error('❌ Failed to start server:', error.message);
     process.exit(1);
-});
+  }
+};
+
+startServer();
