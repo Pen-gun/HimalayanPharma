@@ -9,6 +9,7 @@ import authRoutes from './routes/authRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import blogRoutes from './routes/blogRoutes.js';
+import contactRoutes from './routes/contactRoutes.js';
 
 const app = express();
 
@@ -67,11 +68,13 @@ app.use('/api/', globalLimiter);
 app.use('/api/v1/auth/login', authLimiter);
 app.use('/api/v1/auth/register', authLimiter);
 
+
 // Routes
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/categories', categoryRoutes);
 app.use('/api/v1/products', productRoutes);
 app.use('/api/v1/blog', blogRoutes);
+app.use('/api/v1/contact', contactRoutes);
 
 // Health check endpoint
 app.get('/api/v1/health', (req, res) => {

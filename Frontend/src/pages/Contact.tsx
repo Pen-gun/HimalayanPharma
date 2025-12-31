@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { contactLocations } from '../data/mockData';
 import SectionHeader from '../components/SectionHeader';
 
@@ -6,6 +6,14 @@ const Contact = () => {
   useEffect(() => {
     document.title = 'Contact | Himalayan Pharma Works';
   }, []);
+  const handelSubmit = () => {
+    alert(`Thank you, ${form.fullName}! We have received your message and will get back to you at ${form.email} soon.`);
+  }
+  const [form, setForm] = useState({
+    fullName: '',
+    email: '',
+    message: ''
+  });
 
   return (
     <div className="section-shell space-y-10">
@@ -19,27 +27,34 @@ const Contact = () => {
       <div className="grid gap-8 lg:grid-cols-2">
         <div className="rounded-3xl bg-white p-8 shadow-sm">
           <h3 className="text-xl font-semibold text-emerald-900">Send us a note</h3>
-          <p className="mt-2 text-sm text-slate-700">No backend yet—this form is static for now.</p>
+          <p className="mt-2 text-sm text-slate-700">We will contact you shortly.</p>
           <form className="mt-4 space-y-4">
             <input
               className="w-full rounded-xl border border-emerald-100 px-4 py-3 text-sm text-slate-800 focus:border-emerald-500 focus:outline-none"
               placeholder="Full name"
               aria-label="Full name"
+              onChange={(e) => setForm({...form, fullName: e.target.value})}
+              name="fullName"
+              autoFocus
             />
             <input
               className="w-full rounded-xl border border-emerald-100 px-4 py-3 text-sm text-slate-800 focus:border-emerald-500 focus:outline-none"
               placeholder="Email"
               type="email"
               aria-label="Email"
+              onChange={(e) => setForm({...form, email: e.target.value})}
+              name="email"
             />
             <textarea
               className="w-full rounded-xl border border-emerald-100 px-4 py-3 text-sm text-slate-800 focus:border-emerald-500 focus:outline-none"
               rows={4}
               placeholder="How can we help?"
               aria-label="Message"
+              onChange={(e) => setForm({...form, message: e.target.value})}
+              name="message"
             />
-            <button type="button" className="btn-primary w-full">
-              Submit (static)
+            <button type="button" className="btn-primary w-full" onClick={() => handelSubmit()}>
+              Submit
             </button>
           </form>
         </div>
