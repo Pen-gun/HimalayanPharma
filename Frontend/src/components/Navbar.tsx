@@ -28,7 +28,7 @@ const Navbar = () => {
           <span className="flex h-10 w-10 items-center justify-center rounded-[0_1rem_0_1rem] bg-emerald-600 text-white shadow-lg shadow-emerald-600/30">
             <img src='HimalayanPharma.jpeg' className="h-5 w-5" />
           </span>
-          <div className="leading-tight">
+          <div className="leading-tight lg:hidden xl:block">
             <div>Himalayan</div>
             <div className="text-xs font-medium text-emerald-700">Pharma Works</div>
           </div>
