@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Facebook, Instagram, Linkedin, Mountain, Twitter } from 'lucide-react';
+import { Facebook, Instagram, Linkedin, Twitter } from 'lucide-react';
 
 const footerLinks = {
   company: [
@@ -35,13 +35,14 @@ const Footer = () => {
       <div className="section-shell grid gap-10 py-12 lg:grid-cols-4">
         <div className="space-y-4">
           <div className="flex items-center gap-2 text-lg font-bold text-emerald-800">
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-600 text-white shadow-lg shadow-emerald-600/30">
-              <Mountain className="h-5 w-5" />
+            <span className="flex h-10 w-10 items-center justify-center rounded-[0_1rem_0_1rem] bg-emerald-600 text-white shadow-lg shadow-emerald-600/30">
+              <img src='HimalayanPharma.jpeg' className="h-5 w-5" />
             </span>
             <div className="leading-tight">
-              <div>Himalayan Pharma Works</div>
-              <div className="text-xs font-medium text-emerald-700">Happiness Through Wellness</div>
-            </div>
+            <div>Himalayan</div>
+            <div className="text-xs font-medium text-emerald-700">Pharma Works</div>
+          </div>
+        
           </div>
           <p className="text-sm text-slate-600">
             Ayurveda-inspired, science-backed formulations for holistic wellbeing—crafted with respect for the Himalayas and the communities we partner with.
