@@ -4,19 +4,17 @@ import Category from '../models/Category.js';
 import Product from '../models/Product.js';
 import Blog from '../models/Blog.js';
 import User from '../models/User.js';
+import {DB_NAME} from '../constant.js';
 
 dotenv.config({ path: './.env.local' });
 
 const connectToDB = async () => {
   try {
-    const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/himalayanpharma';
-    await mongoose.connect(mongoURI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    console.log('✓ MongoDB connected');
+    const mongoURI = `${process.env.MONGODB_URL}/${DB_NAME}`;
+    await mongoose.connect(mongoURI);
+    console.log('MongoDB connected');
   } catch (error) {
-    console.error('✗ MongoDB connection failed:', error.message);
+    console.error('MongoDB connection failed:', error.message);
     process.exit(1);
   }
 };
@@ -254,7 +252,7 @@ const seedData = async () => {
     // Create admin user
     const adminUser = await User.create({
       name: 'Admin User',
-      email: 'admin@himalayanpharma.works',
+      email: 'admin@gmail.com',
       password: 'admin123',
       role: 'admin',
     });
