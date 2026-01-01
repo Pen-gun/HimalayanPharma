@@ -98,7 +98,7 @@ const Home = () => {
             Learn more
           </Link>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 md:block">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
           {ABOUT_ITEMS.map((item) => (
             <div key={item} className="glass-panel rounded-2xl p-4 text-center text-emerald-900">
               <p className="text-sm font-semibold">{item}</p>
