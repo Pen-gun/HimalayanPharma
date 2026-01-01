@@ -11,6 +11,8 @@ export const useBlogPosts = (params?: {
   return useQuery({
     queryKey: ['blog', params],
     queryFn: () => api.blog.getAll(params),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    select: (data) => data, // Ensure stable reference
   });
 };
 

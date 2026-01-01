@@ -1,10 +1,11 @@
+import { memo } from 'react';
 import type{ Testimonial } from '../data/mockData';
 
 interface Props {
   testimonial: Testimonial;
 }
 
-const TestimonialCard = ({ testimonial }: Props) => (
+const TestimonialCard = memo(({ testimonial }: Props) => (
   <div className="glass-panel flex h-full flex-col gap-3 rounded-2xl p-5">
     <div className="flex items-center gap-3">
       <img
@@ -18,8 +19,10 @@ const TestimonialCard = ({ testimonial }: Props) => (
         <p className="text-xs text-emerald-700">{testimonial.title}</p>
       </div>
     </div>
-    <p className="text-sm text-slate-700">“{testimonial.quote}”</p>
+    <p className="text-sm text-slate-700">"{testimonial.quote}"</p>
   </div>
-);
+));
+
+TestimonialCard.displayName = 'TestimonialCard';
 
 export default TestimonialCard;

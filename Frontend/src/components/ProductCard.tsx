@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Leaf } from 'lucide-react';
 import type { Product } from '../lib/api';
@@ -6,14 +7,18 @@ interface Props {
   product: Product;
 }
 
-const ProductCard = ({ product }: Props) => {
+const ProductCard = memo(({ product }: Props) => {
   return (
     <div className="group h-full overflow-hidden rounded-2xl border border-emerald-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
-      <div
-        className="h-48 w-full bg-cover bg-center transition duration-500 group-hover:scale-105"
-        style={{ backgroundImage: `url(${product.image})` }}
-        aria-label={product.name}
-      />
+      <div className="h-48 w-full overflow-hidden bg-emerald-50">
+        <img
+          src={product.image}
+          alt={product.name}
+          loading="lazy"
+          decoding="async"
+          className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+        />
+      </div>
       <div className="space-y-3 p-5">
         <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-emerald-700">
           <Leaf className="h-4 w-4" />
@@ -43,6 +48,8 @@ const ProductCard = ({ product }: Props) => {
       </div>
     </div>
   );
-};
+});
+
+ProductCard.displayName = 'ProductCard';
 
 export default ProductCard;

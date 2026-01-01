@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import Hero from '../components/Hero';
 import ProductCard from '../components/ProductCard';
@@ -10,6 +10,8 @@ import { stats, testimonials } from '../data/mockData';
 import { useFeaturedProducts } from '../hooks/useProducts';
 import { useBlogPosts } from '../hooks/useBlog';
 
+const ABOUT_ITEMS = ['Traceable botanicals', 'Clinically studied', 'Vegan friendly', 'ISO & cGMP'];
+
 const Home = () => {
   const { data: featuredData, isLoading: productsLoading } = useFeaturedProducts();
   const { data: blogData, isLoading: blogLoading } = useBlogPosts({ limit: 3 });
@@ -18,8 +20,30 @@ const Home = () => {
     document.title = 'Himalayan Pharma Works | Wellness Rooted in Nature';
   }, []);
 
-  const featuredProducts = featuredData?.data || [];
-  const blogPosts = blogData?.data || [];
+  const featuredProducts = useMemo(() => {
+    return featuredData?.data || [];
+  }, [featuredData]);
+
+  const blogPosts = useMemo(() => {
+    return blogData?.data || [];
+  }, [blogData]);
+
+  const renderProductCard = useCallback((product: any) => {
+    const category =
+      typeof product.category === 'string'
+        ? { _id: 'unknown', name: product.category }
+        : product.category;
+    return (
+      <ProductCard
+        key={product._id}
+        product={{
+          ...product,
+          category,
+          price: product.price,
+        }}
+      />
+    );
+  }, []);
 
   return (
     <div className="space-y-16">
@@ -44,22 +68,7 @@ const Home = () => {
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {featuredProducts.slice(0, 6).map((product) => {
-              const category =
-                typeof product.category === 'string'
-                  ? { _id: 'unknown', name: product.category }
-                  : product.category;
-              return (
-                <ProductCard
-                  key={product._id}
-                  product={{
-                    ...product,
-                    category,
-                    price: Number(product.price),
-                  }}
-                />
-              );
-            })}
+            {featuredProducts.slice(0, 6).map(renderProductCard)}
           </div>
         )}
         <div className="flex justify-center">
@@ -89,8 +98,8 @@ const Home = () => {
             Learn more
           </Link>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2">
-          {['Traceable botanicals', 'Clinically studied', 'Vegan friendly', 'ISO & cGMP'].map((item) => (
+        <div className="grid gap-4 sm:grid-cols-2 md:block">
+          {ABOUT_ITEMS.map((item) => (
             <div key={item} className="glass-panel rounded-2xl p-4 text-center text-emerald-900">
               <p className="text-sm font-semibold">{item}</p>
             </div>

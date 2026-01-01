@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 interface Stat {
   label: string;
   value: string;
@@ -7,7 +9,7 @@ interface Props {
   stats: Stat[];
 }
 
-const StatsBar = ({ stats }: Props) => (
+const StatsBar = memo(({ stats }: Props) => (
   <div className="grid gap-4 rounded-2xl border border-emerald-100 bg-white/80 p-6 shadow-sm sm:grid-cols-2 lg:grid-cols-4">
     {stats.map((stat) => (
       <div key={stat.label} className="text-center sm:text-left">
@@ -16,6 +18,8 @@ const StatsBar = ({ stats }: Props) => (
       </div>
     ))}
   </div>
-);
+));
+
+StatsBar.displayName = 'StatsBar';
 
 export default StatsBar;

@@ -34,7 +34,6 @@ const ProductDetail = () => {
   }
 
   const categoryName = typeof product.category === 'object' ? product.category.name : product.category;
-  console.log(product);
 
   return (
     <div className="section-shell space-y-10">
@@ -46,7 +45,7 @@ const ProductDetail = () => {
           <span className="pill bg-emerald-50 text-emerald-800">{categoryName}</span>
           <h1 className="text-3xl font-semibold text-emerald-900 sm:text-4xl">{product.name}</h1>
           <p className="text-lg text-slate-700">{product.description}</p>
-          {product.price && <div className="text-xl font-semibold text-emerald-800">${product.price}</div>}
+          {product.price && <div className="text-xl font-semibold text-emerald-800">Rs {product.price}</div>}
           <div className="flex flex-wrap gap-2">
             {product.tags?.map((tag) => (
               <span key={tag} className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-800">

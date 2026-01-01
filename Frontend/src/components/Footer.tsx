@@ -36,11 +36,11 @@ const Footer = () => {
         <div className="space-y-4">
           <div className="flex items-center gap-2 text-lg font-bold text-emerald-800">
             <span className="flex h-10 w-10 items-center justify-center rounded-[0_1rem_0_1rem] bg-emerald-600 text-white shadow-lg shadow-emerald-600/30">
-              <img src='HimalayanPharma.jpeg' className="h-5 w-5" />
+              <img src='/HimalayanPharma.jpeg' className="overflow-hidden h-8 w-8 rounded-[0_1rem_0_1rem]" />
             </span>
             <div className="leading-tight">
-            <div>Himalayan</div>
-            <div className="text-xs font-medium text-emerald-700">Pharma Works</div>
+            <div className='text-emerald-700'>Himalayan</div>
+            <div className="text-xs font-medium text-yellow-500">Pharma Works</div>
           </div>
         
           </div>

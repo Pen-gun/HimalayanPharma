@@ -19,6 +19,8 @@ export const useFeaturedProducts = () => {
   return useQuery({
     queryKey: ['products', 'featured'],
     queryFn: () => api.products.getFeatured(),
+    staleTime: 5 * 60 * 1000, // 5 minutes - don't refetch featured products often
+    select: (data) => data, // Ensure stable reference
   });
 };
 

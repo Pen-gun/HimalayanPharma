@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { Leaf, Play } from 'lucide-react';
 
@@ -12,7 +13,7 @@ interface HeroProps {
   backgroundImage?: string;
 }
 
-const Hero = ({
+const Hero = memo(({
   heading,
   subheading,
   tagline = 'Wellness rooted in nature. Proven in science.',
@@ -67,6 +68,8 @@ const Hero = ({
       </div>
     </section>
   );
-};
+});
+
+Hero.displayName = 'Hero';
 
 export default Hero;
