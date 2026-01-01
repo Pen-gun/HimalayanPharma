@@ -51,3 +51,23 @@ a {
 .pill {
   @apply inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-emerald-800;
 }
+
+/* Optimize iframe touch handling to reduce passive event listener warnings */
+iframe {
+  touch-action: pan-y pinch-zoom;
+  will-change: auto;
+}
+
+/* Improve overall touch performance */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Optimize animations and transitions */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

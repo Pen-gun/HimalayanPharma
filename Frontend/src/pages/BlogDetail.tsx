@@ -34,8 +34,8 @@ const BlogDetail = () => {
 
   return (
     <div className="section-shell space-y-8">
-      <SectionHeader eyebrow={post.category} title={post.title} subtitle={new Date(post.publishedAt).toLocaleDateString()} />
-      <div className="overflow-hidden rounded-3xl shadow-lg">
+      <SectionHeader eyebrow={post.author} title={post.title} subtitle={new Date(post.publishedAt).toLocaleDateString()} />
+      <div className="overflow-hidden rounded-3xl shadow-lg h-96 w-full bg-emerald-50">
         <img src={post.image} alt={post.title} className="h-full w-full object-cover" loading="lazy" />
       </div>
       <article className="space-y-4 text-slate-700">

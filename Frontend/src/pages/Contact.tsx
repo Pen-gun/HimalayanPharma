@@ -1,13 +1,53 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useRef, memo, useMemo } from 'react';
 import { contactLocations } from '../data/mockData';
 import SectionHeader from '../components/SectionHeader';
 import { useContact } from '../hooks/useContact.ts';
+
+const ContactLocation = memo(({ location }: { location: typeof contactLocations[0] }) => (
+  <div className="space-y-1">
+    <div className="text-sm font-semibold text-emerald-800">{location.office}</div>
+    <p className="text-sm text-slate-700">{location.address}</p>
+    <p className="text-sm text-slate-700">{location.phone}</p>
+    <p className="text-sm text-slate-700">{location.email}</p>
+  </div>
+));
+
+ContactLocation.displayName = 'ContactLocation';
+
 const Contact = () => {
   const { mutate: sendMessage, isPending } = useContact();
+  const [mapLoaded, setMapLoaded] = useState(false);
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+  
   useEffect(() => {
     document.title = 'Contact | Himalayan Pharma Works';
   }, []);
-  const handelSubmit = () => {
+  
+  // Lazy load map when it comes into view
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setMapLoaded(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '100px' }
+    );
+    
+    if (mapContainerRef.current) {
+      observer.observe(mapContainerRef.current);
+    }
+    
+    return () => observer.disconnect();
+  }, []);
+  const [form, setForm] = useState({
+    fullName: '',
+    email: '',
+    message: ''
+  });
+  
+  const handelSubmit = useCallback(() => {
     if(!form.fullName || !form.email || !form.message) {
       alert('Please fill all fields');
       return;
@@ -25,12 +65,7 @@ const Contact = () => {
         alert('Failed to send message. Please try again later.');
       }
     });
-  }
-  const [form, setForm] = useState({
-    fullName: '',
-    email: '',
-    message: ''
-  });
+  }, [form, sendMessage]);
 
   return (
     <div className="section-shell space-y-10">
@@ -87,21 +122,33 @@ const Contact = () => {
         <div className="space-y-6">
           <div className="grid gap-4 rounded-3xl bg-white p-6 shadow-sm">
             {contactLocations.map((loc) => (
-              <div key={loc.office} className="space-y-1">
-                <div className="text-sm font-semibold text-emerald-800">{loc.office}</div>
-                <p className="text-sm text-slate-700">{loc.address}</p>
-                <p className="text-sm text-slate-700">{loc.phone}</p>
-                <p className="text-sm text-slate-700">{loc.email}</p>
-              </div>
+              <ContactLocation key={loc.office} location={loc} />
             ))}
           </div>
           <div className="overflow-hidden rounded-3xl border border-emerald-100 bg-gradient-to-r from-emerald-700 to-teal-700 p-6 text-white shadow-sm">
             <h4 className="text-lg font-semibold">Find us</h4>
             <p className="mt-2 text-sm text-emerald-50">We serve 90 markets with regional warehouses for faster delivery.</p>
-            <div className="mt-4 h-48 rounded-2xl bg-emerald-900/20" aria-label="Map placeholder" >
-              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d17671.931461845477!2d85.3593855068111!3d27.68678176700341!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb1a266b342bc5%3A0x73bbfa829a89af1b!2sTribhuvan%20International%20Airport!5e0!3m2!1sen!2snp!4v1767281826912!5m2!1sen!2snp" 
-                  loading="lazy" className="h-full w-full border-0" referrerPolicy="no-referrer-when-downgrade">
-              </iframe>
+            <div 
+              ref={mapContainerRef}
+              className="mt-4 h-48 rounded-2xl bg-emerald-900/20 overflow-hidden" 
+              aria-label="Map placeholder"
+              style={{ touchAction: 'pan-y pinch-zoom' }}
+            >
+              {mapLoaded ? (
+                <iframe 
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d17671.931461845477!2d85.3593855068111!3d27.68678176700341!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb1a266b342bc5%3A0x73bbfa829a89af1b!2sTribhuvan%20International%20Airport!5e0!3m2!1sen!2snp!4v1767281826912!5m2!1sen!2snp" 
+                  loading="lazy" 
+                  className="h-full w-full border-0" 
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Office Location Map"
+                  allow=""
+                  style={{ touchAction: 'pan-y pinch-zoom' }}
+                />
+              ) : (
+                <div className="h-full w-full flex items-center justify-center text-emerald-100 text-sm">
+                  Loading map...
+                </div>
+              )}
             </div>
           </div>
         </div>
