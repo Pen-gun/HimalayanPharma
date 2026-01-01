@@ -16,9 +16,6 @@ const startServer = async () => {
     // Start server
     const server = app.listen(PORT, '0.0.0.0', () => {
       console.log(`\n Server is running on port ${PORT}`);
-      console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-      console.log(`Security: Helmet, Rate Limiting, Compression enabled`);
-      console.log(`Database: Connected to MongoDB`);
     });
 
     // Handle server errors
