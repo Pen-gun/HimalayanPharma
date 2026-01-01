@@ -23,10 +23,10 @@ const footerLinks = {
 };
 
 const social = [
-  { icon: Facebook, label: 'Facebook', to: '#' },
-  { icon: Twitter, label: 'Twitter', to: '#' },
-  { icon: Instagram, label: 'Instagram', to: '#' },
-  { icon: Linkedin, label: 'LinkedIn', to: '#' },
+  { icon: Facebook, label: 'Facebook', to: 'https://facebook.com' },
+  { icon: Twitter, label: 'Twitter', to: 'https://twitter.com' },
+  { icon: Instagram, label: 'Instagram', to: 'https://instagram.com' },
+  { icon: Linkedin, label: 'LinkedIn', to: 'https://linkedin.com' },
 ];
 
 const Footer = () => {

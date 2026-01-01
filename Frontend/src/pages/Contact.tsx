@@ -97,8 +97,12 @@ const Contact = () => {
           </div>
           <div className="overflow-hidden rounded-3xl border border-emerald-100 bg-gradient-to-r from-emerald-700 to-teal-700 p-6 text-white shadow-sm">
             <h4 className="text-lg font-semibold">Find us</h4>
-            <p className="mt-2 text-sm text-emerald-50">Interactive map coming soon. We serve 90 markets with regional warehouses for faster delivery.</p>
-            <div className="mt-4 h-48 rounded-2xl bg-emerald-900/20" aria-label="Map placeholder" />
+            <p className="mt-2 text-sm text-emerald-50">We serve 90 markets with regional warehouses for faster delivery.</p>
+            <div className="mt-4 h-48 rounded-2xl bg-emerald-900/20" aria-label="Map placeholder" >
+              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d17671.931461845477!2d85.3593855068111!3d27.68678176700341!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb1a266b342bc5%3A0x73bbfa829a89af1b!2sTribhuvan%20International%20Airport!5e0!3m2!1sen!2snp!4v1767281826912!5m2!1sen!2snp" 
+                  loading="lazy" className="h-full w-full border-0" referrerPolicy="no-referrer-when-downgrade">
+              </iframe>
+            </div>
           </div>
         </div>
       </div>
