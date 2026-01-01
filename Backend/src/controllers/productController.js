@@ -1,4 +1,5 @@
 import Product from '../models/Product.js';
+import Category from '../models/Category.js';
 import { validationResult } from 'express-validator';
 
 export const getAllProducts = async (req, res, next) => {
@@ -14,9 +15,9 @@ export const getAllProducts = async (req, res, next) => {
 
     // Filter by category name (not ID)
     if (category && category !== 'All') {
-      const categoryDoc = await Product.findOne({ 'category.name': category });
+      const categoryDoc = await Category.findOne({ name: category });
       if (categoryDoc) {
-        query.category = categoryDoc.category;
+        query.category = categoryDoc._id;
       }
     }
 
