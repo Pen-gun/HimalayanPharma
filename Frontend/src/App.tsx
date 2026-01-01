@@ -10,6 +10,9 @@ import Home from './pages/Home';
 import ProductDetail from './pages/ProductDetail';
 import Products from './pages/Products';
 import Science from './pages/Science';
+import Privacy from './pages/Privacy';
+import Terms from './pages/Terms';
+import Disclaimer from './pages/Disclaimer';
 
 const App = () => {
   return (
@@ -25,6 +28,9 @@ const App = () => {
         <Route path="blog/:id" element={<BlogDetail />} />
         <Route path="careers" element={<Careers />} />
         <Route path="contact" element={<Contact />} />
+        <Route path="privacy" element={<Privacy />} />
+        <Route path="terms" element={<Terms />} />
+        <Route path="disclaimer" element={<Disclaimer />} />
         <Route path="*" element={<Home />} />
       </Route>
     </Routes>

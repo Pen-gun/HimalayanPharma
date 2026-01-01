@@ -16,9 +16,9 @@ const footerLinks = {
   ],
   support: [
     { label: 'Contact', to: '/contact' },
-    { label: 'Privacy', to: '#' },
-    { label: 'Terms', to: '#' },
-    { label: 'Disclaimers', to: '#' },
+    { label: 'Privacy', to: '/privacy' },
+    { label: 'Terms', to: '/terms' },
+    { label: 'Disclaimer', to: '/disclaimer' },
   ],
 };
 

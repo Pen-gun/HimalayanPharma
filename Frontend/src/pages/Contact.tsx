@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef, memo, useMemo } from 'react';
+import { useEffect, useState, useCallback, useRef, memo} from 'react';
 import { contactLocations } from '../data/mockData';
 import SectionHeader from '../components/SectionHeader';
 import { useContact } from '../hooks/useContact.ts';
