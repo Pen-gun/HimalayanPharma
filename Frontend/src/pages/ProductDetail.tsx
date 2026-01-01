@@ -34,6 +34,7 @@ const ProductDetail = () => {
   }
 
   const categoryName = typeof product.category === 'object' ? product.category.name : product.category;
+  console.log(product);
 
   return (
     <div className="section-shell space-y-10">
