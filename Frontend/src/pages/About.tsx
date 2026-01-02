@@ -1,12 +1,16 @@
 import { useEffect } from 'react';
 import SectionHeader from '../components/SectionHeader';
 import StatsBar from '../components/StatsBar';
-import { stats } from '../data/mockData';
+import { useContent } from '../hooks/useContent';
 
 const About = () => {
+  const { data: contentData } = useContent();
+
   useEffect(() => {
     document.title = 'About | Himalayan Pharma Works';
   }, []);
+
+  const stats = contentData?.data.stats || [];
 
   const timeline = [
     { year: '1990', detail: 'Founded near the lower Himalayas with a focus on herbal research.' },
@@ -48,8 +52,8 @@ const About = () => {
         <div className="space-y-6">
           <h4 className="text-lg font-semibold text-emerald-800">Timeline</h4>
           <div className="space-y-4">
-            {timeline.map((item) => (
-              <div key={item.year} className="flex gap-4 rounded-2xl border border-emerald-100 bg-white p-4 shadow-sm">
+            {timeline.map((item, idx) => (
+              <div key={`${item.year}-${idx}`} className="flex gap-4 rounded-2xl border border-emerald-100 bg-white p-4 shadow-sm">
                 <div className="text-lg font-semibold text-emerald-800">{item.year}</div>
                 <p className="text-sm text-slate-700">{item.detail}</p>
               </div>

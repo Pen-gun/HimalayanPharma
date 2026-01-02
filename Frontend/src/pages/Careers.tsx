@@ -1,11 +1,15 @@
 import { useEffect } from 'react';
 import SectionHeader from '../components/SectionHeader';
-import { jobs } from '../data/mockData';
+import { useContent } from '../hooks/useContent';
 
 const Careers = () => {
+  const { data: contentData, isLoading } = useContent();
+
   useEffect(() => {
     document.title = 'Careers | Himalayan Pharma Works';
   }, []);
+
+  const jobs = contentData?.data.jobs || [];
 
   return (
     <div className="section-shell space-y-10">
@@ -17,8 +21,9 @@ const Careers = () => {
       />
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {jobs.map((job) => (
-          <div key={job.id} className="rounded-2xl border border-emerald-100 bg-white p-5 shadow-sm">
+        {isLoading && jobs.length === 0 && <p className="text-slate-600">Loading roles...</p>}
+        {jobs.map((job, idx) => (
+          <div key={job.title + idx} className="rounded-2xl border border-emerald-100 bg-white p-5 shadow-sm">
             <div className="text-sm font-semibold uppercase tracking-wide text-emerald-700">{job.type}</div>
             <h3 className="mt-2 text-lg font-semibold text-emerald-900">{job.title}</h3>
             <p className="text-sm text-emerald-700">{job.location}</p>

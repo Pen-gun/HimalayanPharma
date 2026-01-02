@@ -23,6 +23,7 @@ const Disclaimer = lazy(() => import('./pages/Disclaimer'));
 const Cart = lazy(() => import('./pages/Cart'));
 const AdminLayout = lazy(() => import('./layouts/AdminLayout'));
 const AdminPanel = lazy(() => import('./pages/admin/AdminPanel'));
+const ContentEditor = lazy(() => import('./pages/admin/ContentEditor'));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -120,6 +121,14 @@ const App = () => {
           element={
             <Suspense fallback={<PageLoader />}>
               <AdminPanel />
+            </Suspense>
+          }
+        />
+        <Route
+          path="content"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <ContentEditor />
             </Suspense>
           }
         />

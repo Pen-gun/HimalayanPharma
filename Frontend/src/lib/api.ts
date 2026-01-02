@@ -50,6 +50,51 @@ export interface Contact{
     message: string;
 }
 
+export interface Stat {
+  label: string;
+  value: string;
+}
+
+export interface Testimonial {
+  id?: string;
+  _id?: string;
+  name: string;
+  title: string;
+  quote: string;
+  avatar: string;
+}
+
+export interface Highlight {
+  title: string;
+  description: string;
+}
+
+export interface JobListing {
+  title: string;
+  location: string;
+  type: string;
+  summary: string;
+}
+
+export interface ContactLocation {
+  office: string;
+  address: string;
+  phone: string;
+  email: string;
+}
+
+export interface SiteContent {
+  _id: string;
+  testimonials: Testimonial[];
+  stats: Stat[];
+  scienceHighlights: Highlight[];
+  commitments: Highlight[];
+  jobs: JobListing[];
+  contactLocations: ContactLocation[];
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface Product {
   _id: string;
   name: string;
@@ -262,6 +307,19 @@ export const api = {
 
     clear: async () => {
       const { data } = await apiClient.delete('/cart/clear');
+      return data;
+    },
+  },
+
+  // Site content
+  content: {
+    get: async () => {
+      const { data } = await apiClient.get<ApiResponse<SiteContent>>('/content');
+      return data;
+    },
+
+    update: async (payload: SiteContent) => {
+      const { data } = await apiClient.put<ApiResponse<SiteContent>>('/content', payload);
       return data;
     },
   },

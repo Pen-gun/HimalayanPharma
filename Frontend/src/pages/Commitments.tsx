@@ -1,11 +1,15 @@
 import { useEffect } from 'react';
 import SectionHeader from '../components/SectionHeader';
-import { commitments } from '../data/mockData';
+import { useContent } from '../hooks/useContent';
 
 const Commitments = () => {
+  const { data: contentData, isLoading } = useContent();
+
   useEffect(() => {
     document.title = 'Commitments | Himalayan Pharma Works';
   }, []);
+
+  const items = contentData?.data.commitments || [];
 
   return (
     <div className="section-shell space-y-10">
@@ -17,7 +21,8 @@ const Commitments = () => {
       />
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {commitments.map((item) => (
+        {isLoading && items.length === 0 && <p className="text-slate-600">Loading commitments...</p>}
+        {items.map((item) => (
           <div key={item.title} className="rounded-2xl border border-emerald-100 bg-white p-5 shadow-sm">
             <h3 className="text-lg font-semibold text-emerald-900">{item.title}</h3>
             <p className="mt-2 text-sm text-slate-700">{item.description}</p>

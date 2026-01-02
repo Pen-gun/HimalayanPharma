@@ -6,15 +6,16 @@ import BlogCard from '../components/BlogCard';
 import TestimonialCard from '../components/TestimonialCard';
 import SectionHeader from '../components/SectionHeader';
 import StatsBar from '../components/StatsBar';
-import { stats, testimonials } from '../data/mockData';
 import { useFeaturedProducts } from '../hooks/useProducts';
 import { useBlogPosts } from '../hooks/useBlog';
+import { useContent } from '../hooks/useContent';
 
 const ABOUT_ITEMS = ['Traceable botanicals', 'Clinically studied', 'Vegan friendly', 'ISO & cGMP'];
 
 const Home = () => {
   const { data: featuredData, isLoading: productsLoading } = useFeaturedProducts();
   const { data: blogData, isLoading: blogLoading } = useBlogPosts({ limit: 3 });
+  const { data: contentData, isLoading: contentLoading } = useContent();
 
   useEffect(() => {
     document.title = 'Himalayan Pharma Works | Wellness Rooted in Nature';
@@ -27,6 +28,10 @@ const Home = () => {
   const blogPosts = useMemo(() => {
     return blogData?.data || [];
   }, [blogData]);
+
+  const content = contentData?.data;
+  const contentStats = content?.stats || [];
+  const contentTestimonials = content?.testimonials || [];
 
   const renderProductCard = useCallback((product: any) => {
     const category =
@@ -79,7 +84,7 @@ const Home = () => {
       </section>
 
       <section className="section-shell space-y-6">
-        <StatsBar stats={stats} />
+        <StatsBar stats={contentStats} />
       </section>
 
       <section className="section-shell grid gap-8 rounded-3xl bg-white/90 p-8 shadow-sm lg:grid-cols-2">
@@ -114,8 +119,11 @@ const Home = () => {
           subtitle="Trusted by clinicians, athletes, parents, and pet lovers who want clean, effective herbal support."
         />
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {testimonials.map((t) => (
-            <TestimonialCard key={t.id} testimonial={t} />
+          {(contentLoading && contentTestimonials.length === 0) && (
+            <p className="text-slate-600">Loading stories...</p>
+          )}
+          {contentTestimonials.map((t) => (
+            <TestimonialCard key={t.id || t._id || t.name} testimonial={t} />
           ))}
         </div>
       </section>

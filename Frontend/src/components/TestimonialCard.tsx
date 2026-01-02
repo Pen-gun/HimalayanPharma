@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import type{ Testimonial } from '../data/mockData';
+import type { Testimonial } from '../lib/api';
 
 interface Props {
   testimonial: Testimonial;

@@ -1,9 +1,9 @@
 import { useEffect, useState, useCallback, useRef, memo} from 'react';
-import { contactLocations } from '../data/mockData';
+import { useContent } from '../hooks/useContent';
 import SectionHeader from '../components/SectionHeader';
 import { useContact } from '../hooks/useContact.ts';
 
-const ContactLocation = memo(({ location }: { location: typeof contactLocations[0] }) => (
+const ContactLocation = memo(({ location }: { location: any }) => (
   <div className="space-y-1">
     <div className="text-sm font-semibold text-emerald-800">{location.office}</div>
     <p className="text-sm text-slate-700">{location.address}</p>
@@ -16,8 +16,10 @@ ContactLocation.displayName = 'ContactLocation';
 
 const Contact = () => {
   const { mutate: sendMessage, isPending } = useContact();
+  const { data: contentData } = useContent();
   const [mapLoaded, setMapLoaded] = useState(false);
   const mapContainerRef = useRef<HTMLDivElement>(null);
+  const contactLocations = contentData?.data.contactLocations || [];
   
   useEffect(() => {
     document.title = 'Contact | Himalayan Pharma Works';
