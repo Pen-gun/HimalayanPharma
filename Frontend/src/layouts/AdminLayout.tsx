@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { LogOut, ShieldCheck, Package, FileText, Tags, LayoutDashboard, Settings } from 'lucide-react';
+import { LogOut, ShieldCheck, Package, FileText, Tags, LayoutDashboard } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const AdminLayout = () => {

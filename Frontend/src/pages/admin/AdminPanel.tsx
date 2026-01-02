@@ -1,39 +1,15 @@
-import { useEffect, useMemo, useState, type FormEvent } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { api, type Product, type Category, type BlogPost } from '../../lib/api';
+/**
+ * Professional-grade Admin Panel - Production Ready
+ * Modular architecture with separated concerns
+ */
+import { useEffect, useState, type FormEvent } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { api, type Product, type Category } from '../../lib/api';
+import { useProductMutations } from '../../hooks/useAdminMutations';
+import { ProductList } from '../../components/admin/ProductList';
+import { notifyToast } from '../../utils/admin';
 
-const listFromText = (value: string) =>
-  value
-    .split(/[,;\n]/)
-    .map((item) => item.trim())
-    .filter(Boolean);
-
-type ProductInput = {
-  name: string;
-  category: string;
-  price?: number;
-  image: string;
-  shortDescription: string;
-  description: string;
-  benefits: string[];
-  ingredients: string[];
-  usage: string;
-  tags: string[];
-  featured: boolean;
-  scientificInfo?: string;
-};
-
-type BlogInput = {
-  title: string;
-  excerpt: string;
-  content: string;
-  author?: string;
-  image?: string;
-  category?: string;
-  tags: string[];
-  publishedAt?: string;
-};
-
+// Form state types
 type ProductFormState = {
   _id?: string;
   name: string;
@@ -50,25 +26,8 @@ type ProductFormState = {
   scientificInfo: string;
 };
 
-type BlogFormState = {
-  _id?: string;
-  title: string;
-  excerpt: string;
-  content: string;
-  author: string;
-  image: string;
-  category: string;
-  tags: string;
-  publishedAt: string;
-};
-
-type CategoryFormState = {
-  _id?: string;
-  name: string;
-  description: string;
-};
-
-const initialProductForm: ProductFormState = {
+// Initial state constant
+const INITIAL_PRODUCT: ProductFormState = {
   name: '',
   category: '',
   price: '',
@@ -83,33 +42,201 @@ const initialProductForm: ProductFormState = {
   scientificInfo: '',
 };
 
-const initialBlogForm: BlogFormState = {
-  title: '',
-  excerpt: '',
-  content: '',
-  author: '',
-  image: '',
-  category: '',
-  tags: '',
-  publishedAt: '',
+// Helper: Parse comma-separated values
+const listFromText = (value: string) =>
+  value
+    .split(/[,;\n]/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+/**
+ * Stateless Product Form Component
+ */
+const ProductForm = ({
+  form,
+  categories,
+  onChange,
+  onSubmit,
+  isSubmitting,
+  isEditing,
+}: {
+  form: ProductFormState;
+  categories: Category[];
+  onChange: (updates: Partial<ProductFormState>) => void;
+  onSubmit: (e: FormEvent) => void;
+  isSubmitting: boolean;
+  isEditing: boolean;
+}) => {
+  return (
+    <form onSubmit={onSubmit} className="space-y-4 rounded-lg border border-slate-200 bg-slate-50 p-5">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="space-y-1">
+          <label className="block text-xs font-semibold text-slate-700">Product Name *</label>
+          <input
+            className="w-full rounded border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-400 focus:border-transparent outline-none"
+            value={form.name}
+            onChange={(e) => onChange({ name: e.target.value })}
+            required
+            placeholder="Enter product name"
+          />
+        </div>
+
+        <div className="space-y-1">
+          <label className="block text-xs font-semibold text-slate-700">Category *</label>
+          <select
+            className="w-full rounded border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-400 focus:border-transparent outline-none"
+            value={form.category}
+            onChange={(e) => onChange({ category: e.target.value })}
+            required
+          >
+            <option value="">Choose category</option>
+            {categories.map((cat) => (
+              <option key={cat._id} value={cat._id}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="space-y-1">
+          <label className="block text-xs font-semibold text-slate-700">Price (₹)</label>
+          <input
+            type="number"
+            className="w-full rounded border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-400 focus:border-transparent outline-none"
+            value={form.price}
+            onChange={(e) => onChange({ price: e.target.value })}
+            min="0"
+            step="0.01"
+            placeholder="0"
+          />
+        </div>
+
+        <div className="sm:col-span-2 lg:col-span-3 space-y-1">
+          <label className="block text-xs font-semibold text-slate-700">Image URL</label>
+          <input
+            className="w-full rounded border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-400 focus:border-transparent outline-none"
+            value={form.image}
+            onChange={(e) => onChange({ image: e.target.value })}
+            placeholder="https://..."
+          />
+        </div>
+
+        <div className="sm:col-span-2 lg:col-span-3 space-y-1">
+          <label className="block text-xs font-semibold text-slate-700">Short Description</label>
+          <input
+            className="w-full rounded border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-400 focus:border-transparent outline-none"
+            value={form.shortDescription}
+            onChange={(e) => onChange({ shortDescription: e.target.value })}
+            placeholder="Brief product overview"
+          />
+        </div>
+
+        <div className="sm:col-span-2 lg:col-span-3 space-y-1">
+          <label className="block text-xs font-semibold text-slate-700">Full Description</label>
+          <textarea
+            className="w-full min-h-[100px] rounded border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-400 focus:border-transparent outline-none resize-vertical"
+            value={form.description}
+            onChange={(e) => onChange({ description: e.target.value })}
+            placeholder="Detailed product description..."
+          />
+        </div>
+
+        <div className="sm:col-span-1 space-y-1">
+          <label className="block text-xs font-semibold text-slate-700">Benefits (comma separated)</label>
+          <textarea
+            className="w-full min-h-[80px] rounded border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-400 focus:border-transparent outline-none resize-vertical"
+            value={form.benefits}
+            onChange={(e) => onChange({ benefits: e.target.value })}
+            placeholder="Benefit 1, Benefit 2, Benefit 3"
+          />
+        </div>
+
+        <div className="sm:col-span-1 space-y-1">
+          <label className="block text-xs font-semibold text-slate-700">Ingredients (comma separated)</label>
+          <textarea
+            className="w-full min-h-[80px] rounded border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-400 focus:border-transparent outline-none resize-vertical"
+            value={form.ingredients}
+            onChange={(e) => onChange({ ingredients: e.target.value })}
+            placeholder="Ingredient 1, Ingredient 2, Ingredient 3"
+          />
+        </div>
+
+        <div className="sm:col-span-1 space-y-1">
+          <label className="block text-xs font-semibold text-slate-700">Tags (comma separated)</label>
+          <textarea
+            className="w-full min-h-[80px] rounded border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-400 focus:border-transparent outline-none resize-vertical"
+            value={form.tags}
+            onChange={(e) => onChange({ tags: e.target.value })}
+            placeholder="Tag 1, Tag 2, Tag 3"
+          />
+        </div>
+
+        <div className="sm:col-span-2 lg:col-span-3 space-y-1">
+          <label className="block text-xs font-semibold text-slate-700">Usage Instructions</label>
+          <textarea
+            className="w-full min-h-[80px] rounded border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-400 focus:border-transparent outline-none resize-vertical"
+            value={form.usage}
+            onChange={(e) => onChange({ usage: e.target.value })}
+            placeholder="How to use this product..."
+          />
+        </div>
+
+        <div className="sm:col-span-2 lg:col-span-3 space-y-1">
+          <label className="block text-xs font-semibold text-slate-700">Scientific Information (Optional)</label>
+          <textarea
+            className="w-full min-h-[80px] rounded border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-400 focus:border-transparent outline-none resize-vertical"
+            value={form.scientificInfo}
+            onChange={(e) => onChange({ scientificInfo: e.target.value })}
+            placeholder="Research, studies, scientific details..."
+          />
+        </div>
+
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            id="featured"
+            className="h-4 w-4 rounded border-slate-300"
+            checked={form.featured}
+            onChange={(e) => onChange({ featured: e.target.checked })}
+          />
+          <label htmlFor="featured" className="text-xs font-semibold text-slate-700 cursor-pointer">
+            Mark as featured
+          </label>
+        </div>
+      </div>
+
+      <div className="flex gap-3 border-t border-slate-200 pt-4">
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="flex-1 rounded-lg bg-emerald-600 px-4 py-2.5 font-semibold text-white hover:bg-emerald-700 active:scale-95 disabled:opacity-50 transition"
+        >
+          {isSubmitting ? '...' : isEditing ? '💾 Update Product' : '✚ Create Product'}
+        </button>
+        <button
+          type="button"
+          onClick={() => onChange(INITIAL_PRODUCT)}
+          className="rounded-lg bg-slate-300 px-4 py-2.5 font-semibold text-slate-700 hover:bg-slate-400 transition"
+        >
+          Clear
+        </button>
+      </div>
+    </form>
+  );
 };
 
-const initialCategoryForm: CategoryFormState = {
-  name: '',
-  description: '',
-};
-
+/**
+ * Main AdminPanel Component
+ */
 const AdminPanel = () => {
-  const queryClient = useQueryClient();
-  const [productForm, setProductForm] = useState<ProductFormState>(initialProductForm);
-  const [blogForm, setBlogForm] = useState<BlogFormState>(initialBlogForm);
-  const [categoryForm, setCategoryForm] = useState<CategoryFormState>(initialCategoryForm);
+  const [activeTab, setActiveTab] = useState<'overview' | 'products'>('overview');
+  const [productForm, setProductForm] = useState<ProductFormState>(INITIAL_PRODUCT);
 
-  useEffect(() => {
-    document.title = 'Admin | Himalayan Pharma Works';
-  }, []);
+  // Mutations
+  const { createMutation: createProduct, updateMutation: updateProduct, deleteMutation: deleteProduct } = useProductMutations();
 
-  const { data: categoriesRes, isFetching: categoriesLoading } = useQuery({
+  // Queries
+  const { data: categoriesRes } = useQuery({
     queryKey: ['admin-categories'],
     queryFn: () => api.categories.getAll(),
   });
@@ -119,69 +246,23 @@ const AdminPanel = () => {
     queryFn: () => api.products.getAll({ limit: 200 }),
   });
 
-  const { data: blogRes, isFetching: blogLoading } = useQuery({
-    queryKey: ['admin-blog'],
-    queryFn: () => api.blog.getAll({ limit: 200 }),
-  });
+  useEffect(() => {
+    document.title = 'Admin Dashboard | Himalayan Pharma Works';
+  }, []);
 
-  const categories = useMemo(() => categoriesRes?.data || [], [categoriesRes]);
-  const products = useMemo(() => productsRes?.data || [], [productsRes]);
-  const posts = useMemo(() => blogRes?.data || [], [blogRes]);
+  const categories = categoriesRes?.data || [];
+  const products = productsRes?.data || [];
+  const categoryMap = new Map(categories.map((c) => [c._id, c.name]));
 
-  const resetProductForm = () => setProductForm(initialProductForm);
-  const resetBlogForm = () => setBlogForm(initialBlogForm);
-  const resetCategoryForm = () => setCategoryForm(initialCategoryForm);
-
-  const productMutation = useMutation({
-    mutationFn: (payload: { id?: string; data: ProductInput }) =>
-      payload.id ? api.products.update(payload.id, payload.data) : api.products.create(payload.data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-products'] });
-      resetProductForm();
-    },
-  });
-
-  const deleteProductMutation = useMutation({
-    mutationFn: (id: string) => api.products.delete(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin-products'] }),
-  });
-
-  const blogMutation = useMutation({
-    mutationFn: (payload: { id?: string; data: BlogInput }) =>
-      payload.id ? api.blog.update(payload.id, payload.data) : api.blog.create(payload.data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-blog'] });
-      resetBlogForm();
-    },
-  });
-
-  const deleteBlogMutation = useMutation({
-    mutationFn: (id: string) => api.blog.delete(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin-blog'] }),
-  });
-
-  const categoryMutation = useMutation({
-    mutationFn: (payload: { id?: string; data: { name: string; description?: string } }) =>
-      payload.id ? api.categories.update(payload.id, payload.data) : api.categories.create(payload.data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-categories'] });
-      resetCategoryForm();
-    },
-  });
-
-  const deleteCategoryMutation = useMutation({
-    mutationFn: (id: string) => api.categories.delete(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin-categories'] }),
-  });
-
-  const handleProductSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  // Product handlers
+  const handleProductSubmit = (e: FormEvent) => {
+    e.preventDefault();
     if (!productForm.name || !productForm.category) {
-      alert('Name and category are required');
+      notifyToast('warning', 'Product name and category are required');
       return;
     }
 
-    const payload: ProductInput = {
+    const payload = {
       name: productForm.name.trim(),
       category: productForm.category,
       price: productForm.price ? Number(productForm.price) : undefined,
@@ -196,38 +277,12 @@ const AdminPanel = () => {
       scientificInfo: productForm.scientificInfo?.trim() || undefined,
     };
 
-    productMutation.mutate({ id: productForm._id, data: payload });
-  };
-
-  const handleBlogSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!blogForm.title || !blogForm.excerpt || !blogForm.content) {
-      alert('Title, excerpt, and content are required');
-      return;
+    if (productForm._id) {
+      updateProduct.mutate({ id: productForm._id, data: payload });
+    } else {
+      createProduct.mutate(payload);
     }
-
-    const payload: BlogInput = {
-      title: blogForm.title.trim(),
-      excerpt: blogForm.excerpt.trim(),
-      content: blogForm.content.trim(),
-      author: blogForm.author.trim() || undefined,
-      image: blogForm.image.trim() || undefined,
-      category: blogForm.category.trim() || undefined,
-      tags: listFromText(blogForm.tags),
-      publishedAt: blogForm.publishedAt || undefined,
-    };
-
-    blogMutation.mutate({ id: blogForm._id, data: payload });
-  };
-
-  const handleCategorySubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!categoryForm.name) {
-      alert('Category name is required');
-      return;
-    }
-
-    categoryMutation.mutate({ id: categoryForm._id, data: { name: categoryForm.name.trim(), description: categoryForm.description.trim() || undefined } });
+    setProductForm(INITIAL_PRODUCT);
   };
 
   const startEditProduct = (product: Product) => {
@@ -246,414 +301,108 @@ const AdminPanel = () => {
       featured: !!product.featured,
       scientificInfo: product.scientificInfo || '',
     });
+    setActiveTab('products');
   };
 
-  const startEditBlog = (post: BlogPost) => {
-    setBlogForm({
-      _id: post._id,
-      title: post.title,
-      excerpt: post.excerpt,
-      content: post.content,
-      author: post.author || '',
-      image: post.image || '',
-      category: post.category || '',
-      tags: (post.tags || []).join(', '),
-      publishedAt: post.publishedAt ? post.publishedAt.slice(0, 10) : '',
-    });
-  };
-
-  const startEditCategory = (category: Category) => {
-    setCategoryForm({
-      _id: category._id,
-      name: category.name,
-      description: category.description || '',
-    });
+  const handleDeleteProduct = (id: string) => {
+    if (window.confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
+      deleteProduct.mutate(id);
+    }
   };
 
   return (
-    <div className="space-y-10">
-      <section id="overview" className="grid gap-4 rounded-3xl border border-emerald-100 bg-white/80 p-6 shadow-sm sm:grid-cols-3">
-        <div className="rounded-2xl bg-emerald-50 p-4">
-          <p className="text-xs font-semibold uppercase text-emerald-700">Products</p>
-          <p className="text-3xl font-semibold text-emerald-900">{products.length}</p>
-          <p className="text-xs text-emerald-700">Active items</p>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="rounded-lg border border-slate-200 bg-white p-6">
+        <div className="space-y-2">
+          <h1 className="text-3xl font-bold text-slate-900">Admin Dashboard</h1>
+          <p className="text-slate-600">Manage products, content, and business operations</p>
         </div>
-        <div className="rounded-2xl bg-amber-50 p-4">
-          <p className="text-xs font-semibold uppercase text-amber-700">Blog posts</p>
-          <p className="text-3xl font-semibold text-amber-900">{posts.length}</p>
-          <p className="text-xs text-amber-700">Published articles</p>
-        </div>
-        <div className="rounded-2xl bg-sky-50 p-4">
-          <p className="text-xs font-semibold uppercase text-sky-700">Categories</p>
-          <p className="text-3xl font-semibold text-sky-900">{categories.length}</p>
-          <p className="text-xs text-sky-700">Taxonomy entries</p>
-        </div>
-      </section>
 
-      <section id="products" className="space-y-4 rounded-3xl border border-emerald-100 bg-white/80 p-6 shadow-sm">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="text-xs font-semibold uppercase text-emerald-700">Products</p>
-            <h2 className="text-xl font-semibold text-emerald-900">Create or edit products</h2>
+        {/* Stats Grid */}
+        <div className="mt-6 grid gap-4 sm:grid-cols-2">
+          <div className="rounded-lg bg-gradient-to-br from-emerald-50 to-emerald-100 p-4 border border-emerald-200">
+            <p className="text-xs font-semibold text-emerald-700 uppercase">Products</p>
+            <p className="text-2xl font-bold text-emerald-900">{products.length}</p>
+            <p className="text-xs text-emerald-700">Active listings</p>
           </div>
-          <div className="text-xs text-slate-500">{productsLoading ? 'Loading...' : `${products.length} items`}</div>
+          <div className="rounded-lg bg-gradient-to-br from-purple-50 to-purple-100 p-4 border border-purple-200">
+            <p className="text-xs font-semibold text-purple-700 uppercase">Categories</p>
+            <p className="text-2xl font-bold text-purple-900">{categories.length}</p>
+            <p className="text-xs text-purple-700">Taxonomies</p>
+          </div>
         </div>
-        <form className="grid gap-4 rounded-2xl border border-slate-200 bg-slate-50/70 p-4" onSubmit={handleProductSubmit}>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <label className="grid gap-1 text-sm font-semibold text-slate-700">
-              Name
-              <input
-                className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
-                value={productForm.name}
-                onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
-                required
-              />
-            </label>
-            <label className="grid gap-1 text-sm font-semibold text-slate-700">
-              Category
-              <select
-                className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
-                value={productForm.category}
-                onChange={(e) => setProductForm({ ...productForm, category: e.target.value })}
-                required
-                disabled={categoriesLoading}
+      </div>
+
+      {/* Tab Navigation */}
+      <div className="flex gap-2 border-b border-slate-200">
+        {['overview', 'products'].map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab as typeof activeTab)}
+            className={`px-4 py-2.5 font-semibold capitalize transition border-b-2 ${
+              activeTab === tab
+                ? 'border-emerald-600 text-emerald-600'
+                : 'border-transparent text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
+
+      {/* Tab Content */}
+      <div>
+        {activeTab === 'overview' && (
+          <div className="rounded-lg border border-slate-200 bg-white p-6">
+            <h2 className="text-lg font-semibold text-slate-900 mb-4">Quick Access</h2>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <button
+                onClick={() => setActiveTab('products')}
+                className="rounded-lg bg-emerald-50 p-4 text-left hover:bg-emerald-100 transition border border-emerald-200"
               >
-                <option value="">Select category</option>
-                {categories.map((cat) => (
-                  <option key={cat._id} value={cat._id}>
-                    {cat.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="grid gap-1 text-sm font-semibold text-slate-700">
-              Price (Rs)
-              <input
-                type="number"
-                className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
-                value={productForm.price}
-                onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
-                min="0"
-                step="0.01"
-              />
-            </label>
-            <label className="grid gap-1 text-sm font-semibold text-slate-700">
-              Image URL
-              <input
-                className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
-                value={productForm.image}
-                onChange={(e) => setProductForm({ ...productForm, image: e.target.value })}
-              />
-            </label>
-            <label className="grid gap-1 text-sm font-semibold text-slate-700 sm:col-span-2 lg:col-span-3">
-              Short description
-              <input
-                className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
-                value={productForm.shortDescription}
-                onChange={(e) => setProductForm({ ...productForm, shortDescription: e.target.value })}
-              />
-            </label>
-            <label className="grid gap-1 text-sm font-semibold text-slate-700 sm:col-span-2 lg:col-span-3">
-              Full description
-              <textarea
-                className="min-h-[96px] rounded-lg border border-slate-200 px-3 py-2 text-sm"
-                value={productForm.description}
-                onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
-              />
-            </label>
-            <label className="grid gap-1 text-sm font-semibold text-slate-700">
-              Benefits (comma or line separated)
-              <textarea
-                className="min-h-[72px] rounded-lg border border-slate-200 px-3 py-2 text-sm"
-                value={productForm.benefits}
-                onChange={(e) => setProductForm({ ...productForm, benefits: e.target.value })}
-              />
-            </label>
-            <label className="grid gap-1 text-sm font-semibold text-slate-700">
-              Ingredients (comma or line separated)
-              <textarea
-                className="min-h-[72px] rounded-lg border border-slate-200 px-3 py-2 text-sm"
-                value={productForm.ingredients}
-                onChange={(e) => setProductForm({ ...productForm, ingredients: e.target.value })}
-              />
-            </label>
-            <label className="grid gap-1 text-sm font-semibold text-slate-700">
-              Tags (comma separated)
-              <input
-                className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
-                value={productForm.tags}
-                onChange={(e) => setProductForm({ ...productForm, tags: e.target.value })}
-              />
-            </label>
-            <label className="grid gap-1 text-sm font-semibold text-slate-700 sm:col-span-2">
-              Usage
-              <textarea
-                className="min-h-[72px] rounded-lg border border-slate-200 px-3 py-2 text-sm"
-                value={productForm.usage}
-                onChange={(e) => setProductForm({ ...productForm, usage: e.target.value })}
-              />
-            </label>
-            <label className="grid gap-1 text-sm font-semibold text-slate-700 sm:col-span-2">
-              Scientific info / notes
-              <textarea
-                className="min-h-[72px] rounded-lg border border-slate-200 px-3 py-2 text-sm"
-                value={productForm.scientificInfo}
-                onChange={(e) => setProductForm({ ...productForm, scientificInfo: e.target.value })}
-              />
-            </label>
-            <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-              <input
-                type="checkbox"
-                className="h-4 w-4"
-                checked={productForm.featured}
-                onChange={(e) => setProductForm({ ...productForm, featured: e.target.checked })}
-              />
-              Featured
-            </label>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <button
-              type="submit"
-              className="btn-primary"
-              disabled={productMutation.isPending}
-            >
-              {productForm._id ? 'Update product' : 'Create product'}
-            </button>
-            <button type="button" className="btn-secondary" onClick={resetProductForm}>
-              Clear form
-            </button>
-          </div>
-        </form>
-
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {products.map((product) => (
-            <div key={product._id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="text-xs uppercase tracking-wide text-slate-500">{typeof product.category === 'string' ? product.category : product.category?.name}</p>
-                  <h3 className="text-lg font-semibold text-emerald-900">{product.name}</h3>
-                  <p className="text-sm text-slate-600 line-clamp-2">{product.shortDescription}</p>
-                </div>
-                <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-800">{product.price ? `Rs ${product.price}` : 'N/A'}</span>
-              </div>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {product.tags?.slice(0, 3).map((tag) => (
-                  <span key={tag} className="rounded-full bg-slate-100 px-2 py-1 text-[11px] font-semibold text-slate-700">{tag}</span>
-                ))}
-                {product.featured && <span className="rounded-full bg-amber-100 px-2 py-1 text-[11px] font-semibold text-amber-800">Featured</span>}
-              </div>
-              <div className="mt-4 flex gap-2">
-                <button className="btn-secondary flex-1" onClick={() => startEditProduct(product)}>
-                  Edit
-                </button>
-                <button
-                  className="rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-red-700"
-                  onClick={() => {
-                    if (window.confirm('Delete this product?')) {
-                      deleteProductMutation.mutate(product._id);
-                    }
-                  }}
-                  type="button"
-                >
-                  Delete
-                </button>
-              </div>
+                <p className="font-semibold text-emerald-900">📦 Manage Products</p>
+                <p className="text-sm text-emerald-700">{products.length} total products</p>
+              </button>
+              <a
+                href="/admin/content"
+                className="rounded-lg bg-orange-50 p-4 text-left hover:bg-orange-100 transition border border-orange-200"
+              >
+                <p className="font-semibold text-orange-900">✏️ Content Editor</p>
+                <p className="text-sm text-orange-700">Testimonials, jobs, locations</p>
+              </a>
             </div>
-          ))}
-        </div>
-      </section>
+          </div>
+        )}
 
-      <section id="blog" className="space-y-4 rounded-3xl border border-emerald-100 bg-white/80 p-6 shadow-sm">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="text-xs font-semibold uppercase text-emerald-700">Blog</p>
-            <h2 className="text-xl font-semibold text-emerald-900">Publish articles</h2>
-          </div>
-          <div className="text-xs text-slate-500">{blogLoading ? 'Loading...' : `${posts.length} posts`}</div>
-        </div>
-        <form className="grid gap-4 rounded-2xl border border-slate-200 bg-slate-50/70 p-4" onSubmit={handleBlogSubmit}>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <label className="grid gap-1 text-sm font-semibold text-slate-700">
-              Title
-              <input
-                className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
-                value={blogForm.title}
-                onChange={(e) => setBlogForm({ ...blogForm, title: e.target.value })}
-                required
+        {activeTab === 'products' && (
+          <div className="space-y-6">
+            <div className="rounded-lg bg-white border border-slate-200 p-6">
+              <h2 className="text-lg font-semibold text-slate-900 mb-4">Create or Edit Product</h2>
+              <ProductForm
+                form={productForm}
+                categories={categories}
+                onChange={(updates) => setProductForm({ ...productForm, ...updates })}
+                onSubmit={handleProductSubmit}
+                isSubmitting={createProduct.isPending || updateProduct.isPending}
+                isEditing={!!productForm._id}
               />
-            </label>
-            <label className="grid gap-1 text-sm font-semibold text-slate-700">
-              Author
-              <input
-                className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
-                value={blogForm.author}
-                onChange={(e) => setBlogForm({ ...blogForm, author: e.target.value })}
-              />
-            </label>
-            <label className="grid gap-1 text-sm font-semibold text-slate-700">
-              Category
-              <input
-                className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
-                value={blogForm.category}
-                onChange={(e) => setBlogForm({ ...blogForm, category: e.target.value })}
-              />
-            </label>
-            <label className="grid gap-1 text-sm font-semibold text-slate-700">
-              Published date
-              <input
-                type="date"
-                className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
-                value={blogForm.publishedAt}
-                onChange={(e) => setBlogForm({ ...blogForm, publishedAt: e.target.value })}
-              />
-            </label>
-            <label className="grid gap-1 text-sm font-semibold text-slate-700 sm:col-span-2">
-              Excerpt
-              <input
-                className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
-                value={blogForm.excerpt}
-                onChange={(e) => setBlogForm({ ...blogForm, excerpt: e.target.value })}
-                required
-              />
-            </label>
-            <label className="grid gap-1 text-sm font-semibold text-slate-700 sm:col-span-2">
-              Content
-              <textarea
-                className="min-h-[120px] rounded-lg border border-slate-200 px-3 py-2 text-sm"
-                value={blogForm.content}
-                onChange={(e) => setBlogForm({ ...blogForm, content: e.target.value })}
-                required
-              />
-            </label>
-            <label className="grid gap-1 text-sm font-semibold text-slate-700">
-              Hero image URL
-              <input
-                className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
-                value={blogForm.image}
-                onChange={(e) => setBlogForm({ ...blogForm, image: e.target.value })}
-              />
-            </label>
-            <label className="grid gap-1 text-sm font-semibold text-slate-700">
-              Tags (comma separated)
-              <input
-                className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
-                value={blogForm.tags}
-                onChange={(e) => setBlogForm({ ...blogForm, tags: e.target.value })}
-              />
-            </label>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <button type="submit" className="btn-primary" disabled={blogMutation.isPending}>
-              {blogForm._id ? 'Update post' : 'Publish post'}
-            </button>
-            <button type="button" className="btn-secondary" onClick={resetBlogForm}>
-              Clear form
-            </button>
-          </div>
-        </form>
-
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {posts.map((post) => (
-            <div key={post._id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="text-xs uppercase tracking-wide text-slate-500">{post.category}</p>
-                  <h3 className="text-lg font-semibold text-emerald-900 line-clamp-1">{post.title}</h3>
-                  <p className="text-sm text-slate-600 line-clamp-2">{post.excerpt}</p>
-                </div>
-                <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-semibold text-slate-700">
-                  {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : 'Draft'}
-                </span>
-              </div>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {post.tags?.slice(0, 3).map((tag) => (
-                  <span key={tag} className="rounded-full bg-emerald-50 px-2 py-1 text-[11px] font-semibold text-emerald-800">{tag}</span>
-                ))}
-              </div>
-              <div className="mt-4 flex gap-2">
-                <button className="btn-secondary flex-1" onClick={() => startEditBlog(post)}>
-                  Edit
-                </button>
-                <button
-                  className="rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-red-700"
-                  onClick={() => {
-                    if (window.confirm('Delete this post?')) {
-                      deleteBlogMutation.mutate(post._id);
-                    }
-                  }}
-                  type="button"
-                >
-                  Delete
-                </button>
-              </div>
             </div>
-          ))}
-        </div>
-      </section>
 
-      <section id="categories" className="space-y-4 rounded-3xl border border-emerald-100 bg-white/80 p-6 shadow-sm">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="text-xs font-semibold uppercase text-emerald-700">Categories</p>
-            <h2 className="text-xl font-semibold text-emerald-900">Manage taxonomy</h2>
-          </div>
-          <div className="text-xs text-slate-500">{categoriesLoading ? 'Loading...' : `${categories.length} categories`}</div>
-        </div>
-        <form className="grid gap-4 rounded-2xl border border-slate-200 bg-slate-50/70 p-4" onSubmit={handleCategorySubmit}>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <label className="grid gap-1 text-sm font-semibold text-slate-700">
-              Name
-              <input
-                className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
-                value={categoryForm.name}
-                onChange={(e) => setCategoryForm({ ...categoryForm, name: e.target.value })}
-                required
+            <div className="rounded-lg bg-white border border-slate-200 p-6">
+              <h2 className="text-lg font-semibold text-slate-900 mb-4">Product Inventory</h2>
+              <ProductList
+                products={products}
+                categories={categoryMap}
+                isLoading={productsLoading}
+                onEdit={startEditProduct}
+                onDelete={handleDeleteProduct}
+                isDeleting={deleteProduct.isPending}
               />
-            </label>
-            <label className="grid gap-1 text-sm font-semibold text-slate-700">
-              Description
-              <input
-                className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
-                value={categoryForm.description}
-                onChange={(e) => setCategoryForm({ ...categoryForm, description: e.target.value })}
-              />
-            </label>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <button type="submit" className="btn-primary" disabled={categoryMutation.isPending}>
-              {categoryForm._id ? 'Update category' : 'Create category'}
-            </button>
-            <button type="button" className="btn-secondary" onClick={resetCategoryForm}>
-              Clear form
-            </button>
-          </div>
-        </form>
-
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {categories.map((category) => (
-            <div key={category._id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-              <h3 className="text-lg font-semibold text-emerald-900">{category.name}</h3>
-              <p className="text-sm text-slate-600 line-clamp-2">{category.description || 'No description'}</p>
-              <div className="mt-4 flex gap-2">
-                <button className="btn-secondary flex-1" onClick={() => startEditCategory(category)}>
-                  Edit
-                </button>
-                <button
-                  className="rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-red-700"
-                  onClick={() => {
-                    if (window.confirm('Delete this category?')) {
-                      deleteCategoryMutation.mutate(category._id);
-                    }
-                  }}
-                  type="button"
-                >
-                  Delete
-                </button>
-              </div>
             </div>
-          ))}
-        </div>
-      </section>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
 import AdminRoute from './components/AdminRoute';
+import { ToastContainer } from './components/admin/ToastContainer';
 
 // Lazy load all pages except Home (load Home immediately for faster initial render)
 import Home from './pages/Home';
@@ -34,7 +35,9 @@ const PageLoader = () => (
 
 const App = () => {
   return (
-    <Routes>
+    <>
+      <ToastContainer />
+      <Routes>
       <Route element={<MainLayout />}>
         <Route index element={<Home />} />
         <Route path="about" element={
@@ -138,6 +141,7 @@ const App = () => {
       <Route path="login" element={<Login />} />
       <Route path="register" element={<Register />} />
     </Routes>
+    </>
   );
 };
 
