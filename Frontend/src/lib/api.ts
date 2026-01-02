@@ -174,13 +174,16 @@ export const api = {
   auth: {
     register: async (userData: { name: string; email: string; password: string }) => {
       const { data } = await apiClient.post('/auth/register', userData);
+      if (data.data?.token) {
+        localStorage.setItem('token', data.data.token);
+      }
       return data;
     },
     
     login: async (credentials: { email: string; password: string }) => {
       const { data } = await apiClient.post('/auth/login', credentials);
-      if (data.token) {
-        localStorage.setItem('token', data.token);
+      if (data.data?.token) {
+        localStorage.setItem('token', data.data.token);
       }
       return data;
     },
@@ -194,4 +197,28 @@ export const api = {
       localStorage.removeItem('token');
     },
   },
+
+  // Cart
+  cart: {
+    get: async () => {
+      const { data } = await apiClient.get('/cart');
+      return data;
+    },
+
+    add: async (productId: string, quantity: number) => {
+      const { data } = await apiClient.post('/cart/add', { productId, quantity });
+      return data;
+    },
+
+    remove: async (productId: string) => {
+      const { data } = await apiClient.post('/cart/remove', { productId });
+      return data;
+    },
+
+    clear: async () => {
+      const { data } = await apiClient.delete('/cart/clear');
+      return data;
+    },
+  },
 };
+

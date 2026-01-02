@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { Leaf, Menu, X } from 'lucide-react';
+import { Leaf, Menu, X, ShoppingCart, LogOut, User } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import { useCart } from '../contexts/CartContext';
 
 const navLinks = [
   { to: '/', label: 'Home' },
@@ -15,6 +17,8 @@ const navLinks = [
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const { isAuthenticated, user, logout } = useAuth();
+  const { itemCount } = useCart();
 
   const linkClasses = ({ isActive }: { isActive: boolean }) =>
     `text-sm font-semibold tracking-tight transition hover:text-emerald-700 ${
@@ -43,11 +47,39 @@ const Navbar = () => {
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
-          <button className="btn-secondary">Find a Store</button>
-          <button className="btn-primary">
-            <Leaf className="mr-2 h-4 w-4" />
-            Shop Wellness
-          </button>
+          <Link to="/cart" className="relative">
+            <button className="flex h-10 w-10 items-center justify-center rounded-full border border-emerald-100 text-emerald-800 hover:border-emerald-400">
+              <ShoppingCart className="h-5 w-5" />
+              {itemCount > 0 && (
+                <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-emerald-600 text-xs text-white">
+                  {itemCount}
+                </span>
+              )}
+            </button>
+          </Link>
+
+          {isAuthenticated ? (
+            <>
+              <div className="flex items-center gap-2 rounded-full border border-emerald-100 px-3 py-2">
+                <User className="h-4 w-4 text-emerald-700" />
+                <span className="text-sm font-medium text-emerald-900">{user?.name}</span>
+              </div>
+              <button onClick={logout} className="btn-secondary flex items-center gap-2">
+                <LogOut className="h-4 w-4" />
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" className="btn-secondary">
+                Login
+              </Link>
+              <Link to="/register" className="btn-primary">
+                <Leaf className="mr-2 h-4 w-4" />
+                Sign Up
+              </Link>
+            </>
+          )}
         </div>
 
         <button
@@ -77,11 +109,31 @@ const Navbar = () => {
               </NavLink>
             ))}
             <div className="mt-2 grid gap-2">
-              <button className="btn-secondary w-full">Find a Store</button>
-              <button className="btn-primary w-full">
-                <Leaf className="mr-2 h-4 w-4" />
-                Shop Wellness
-              </button>
+              <Link to="/cart" className="btn-secondary w-full flex items-center justify-center gap-2">
+                <ShoppingCart className="h-4 w-4" />
+                Cart {itemCount > 0 && `(${itemCount})`}
+              </Link>
+              {isAuthenticated ? (
+                <>
+                  <div className="rounded-lg border border-emerald-100 px-4 py-2 text-center">
+                    <span className="text-sm font-medium text-emerald-900">{user?.name}</span>
+                  </div>
+                  <button onClick={logout} className="btn-secondary w-full flex items-center justify-center gap-2">
+                    <LogOut className="h-4 w-4" />
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link to="/login" className="btn-secondary w-full">
+                    Login
+                  </Link>
+                  <Link to="/register" className="btn-primary w-full">
+                    <Leaf className="mr-2 h-4 w-4" />
+                    Sign Up
+                  </Link>
+                </>
+              )}
             </div>
           </nav>
         </div>

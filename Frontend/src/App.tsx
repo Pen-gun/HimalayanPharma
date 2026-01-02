@@ -4,6 +4,8 @@ import MainLayout from './layouts/MainLayout';
 
 // Lazy load all pages except Home (load Home immediately for faster initial render)
 import Home from './pages/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
 const About = lazy(() => import('./pages/About'));
 const Blog = lazy(() => import('./pages/Blog'));
@@ -17,6 +19,7 @@ const Science = lazy(() => import('./pages/Science'));
 const Privacy = lazy(() => import('./pages/Privacy'));
 const Terms = lazy(() => import('./pages/Terms'));
 const Disclaimer = lazy(() => import('./pages/Disclaimer'));
+const Cart = lazy(() => import('./pages/Cart'));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -90,8 +93,17 @@ const App = () => {
             <Disclaimer />
           </Suspense>
         } />
+        <Route path="cart" element={
+          <Suspense fallback={<PageLoader />}>
+            <Cart />
+          </Suspense>
+        } />
         <Route path="*" element={<Home />} />
       </Route>
+      
+      {/* Auth routes outside MainLayout */}
+      <Route path="login" element={<Login />} />
+      <Route path="register" element={<Register />} />
     </Routes>
   );
 };

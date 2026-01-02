@@ -1,4 +1,4 @@
-import Cart from "../models/Cart";
+import Cart from "../models/Cart.js";
 import { validationResult } from "express-validator";
 
 export const getCart = async (req, res, next) => {

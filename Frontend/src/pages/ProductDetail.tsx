@@ -1,10 +1,18 @@
-import { useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useProduct } from '../hooks/useProducts';
+import { useCart } from '../contexts/CartContext';
+import { useAuth } from '../contexts/AuthContext';
+import { ShoppingCart } from 'lucide-react';
 
 const ProductDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { data: productData, isLoading } = useProduct(id || '');
+  const { addToCart } = useCart();
+  const { isAuthenticated } = useAuth();
+  const [quantity, setQuantity] = useState(1);
+  const [adding, setAdding] = useState(false);
   
   const product = productData?.data;
 
@@ -35,6 +43,23 @@ const ProductDetail = () => {
 
   const categoryName = typeof product.category === 'object' ? product.category.name : product.category;
 
+  const handleAddToCart = async () => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+    
+    setAdding(true);
+    try {
+      await addToCart(product._id, quantity);
+      alert('Added to cart!');
+    } catch (error) {
+      alert('Failed to add to cart' + (error instanceof Error ? `: ${error.message}` : ''));
+    } finally {
+      setAdding(false);
+    }
+  };
+
   return (
     <div className="section-shell space-y-10">
       <div className="grid gap-8 lg:grid-cols-2 lg:items-start">
@@ -58,9 +83,24 @@ const ProductDetail = () => {
               <h3 className="text-lg font-semibold text-emerald-900">Benefits</h3>
               <ul className="mt-2 space-y-2 text-sm text-slate-700">
                 {product.benefits.map((benefit) => (
-                  <li key={benefit}>• {benefit}</li>
+                  <li key={benefit}>{benefit}</li>
                 ))}
               </ul>
+            </div>
+            <div className="flex items-center gap-2 rounded-lg border border-slate-300">
+              <button
+                onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                className="px-4 py-2 hover:bg-slate-100"
+              >
+                -
+              </button>
+              <span className="w-12 text-center font-semibold">{quantity}</span>
+              <button
+                onClick={() => setQuantity(quantity + 1)}
+                className="px-4 py-2 hover:bg-slate-100"
+              >
+                +
+              </button>
             </div>
             <div>
               <h3 className="text-lg font-semibold text-emerald-900">Ingredients</h3>
@@ -75,7 +115,10 @@ const ProductDetail = () => {
             </p>
           </div>
           <div className="flex gap-3">
-            <button className="btn-primary">Add to cart</button>
+            <button className="btn-primary" onClick={handleAddToCart} disabled={adding}>
+              <ShoppingCart className="mr-2 h-5 w-5" />
+              {adding ? 'Adding...' : 'Add to cart'}
+              </button>
             <Link to="/contact" className="btn-secondary">
               Talk to an expert
             </Link>
