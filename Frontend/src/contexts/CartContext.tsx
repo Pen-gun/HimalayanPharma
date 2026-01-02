@@ -45,7 +45,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       const response = await api.cart.get();
       setCart(response.data);
     } catch (error) {
-      console.error('Failed to fetch cart:', error);
+      // Error handled by global API interceptor
     } finally {
       setIsLoading(false);
     }

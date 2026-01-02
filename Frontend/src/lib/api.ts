@@ -5,7 +5,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/
 
 // Validate API URL in production
 if (import.meta.env.PROD && API_BASE_URL.includes('localhost')) {
-  console.warn('⚠️ Warning: Using localhost API URL in production build');
+  // Using localhost API URL in production build
 }
 
 // Create axios instance

@@ -15,23 +15,27 @@ const startServer = async () => {
 
     // Start server
     const server = app.listen(PORT, '0.0.0.0', () => {
-      console.log(`\n Server is running on port ${PORT}`);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`\n Server is running on port ${PORT}`);
+      }
     });
 
     // Handle server errors
     server.on('error', (error) => {
-      console.error('Server error:', error.message);
-      if (error.code === 'EADDRINUSE') {
-        console.error(`Port ${PORT} is already in use`);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Server error:', error.message);
+        if (error.code === 'EADDRINUSE') {
+          console.error(`Port ${PORT} is already in use`);
+        }
       }
       process.exit(1);
     });
 
     // Handle unhandled promise rejections
     process.on('unhandledRejection', (err, promise) => {
-      console.error('Unhandled Promise Rejection at:', promise);
-      console.error('Reason:', err);
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Unhandled Promise Rejection at:', promise);
+        console.error('Reason:', err);
         console.error(err.stack);
       }
       server.close(() => process.exit(1));
@@ -48,17 +52,25 @@ const startServer = async () => {
 
     // Graceful shutdown
     process.on('SIGTERM', () => {
-      console.log('SIGTERM received, shutting down gracefully...');
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('SIGTERM received, shutting down gracefully...');
+      }
       server.close(() => {
-        console.log('Server closed');
+        if (process.env.NODE_ENV !== 'production') {
+          console.log('Server closed');
+        }
         process.exit(0);
       });
     });
 
     process.on('SIGINT', () => {
-      console.log('\nSIGINT received, shutting down gracefully...');
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('\nSIGINT received, shutting down gracefully...');
+      }
       server.close(() => {
-        console.log('Server closed');
+        if (process.env.NODE_ENV !== 'production') {
+          console.log('Server closed');
+        }
         process.exit(0);
       });
     });
