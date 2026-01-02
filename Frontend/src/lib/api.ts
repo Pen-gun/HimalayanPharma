@@ -130,6 +130,21 @@ export const api = {
       const { data } = await apiClient.get<ApiResponse<Product>>(`/products/${id}`);
       return data;
     },
+
+    create: async (payload: Partial<Product> & { name: string; category: string }) => {
+      const { data } = await apiClient.post<ApiResponse<Product>>('/products', payload);
+      return data;
+    },
+
+    update: async (id: string, payload: Partial<Product> & { name: string; category: string }) => {
+      const { data } = await apiClient.put<ApiResponse<Product>>(`/products/${id}`, payload);
+      return data;
+    },
+
+    delete: async (id: string) => {
+      const { data } = await apiClient.delete<ApiResponse<Product>>(`/products/${id}`);
+      return data;
+    },
   },
 
   // Categories
@@ -141,6 +156,21 @@ export const api = {
     
     getById: async (id: string) => {
       const { data } = await apiClient.get<ApiResponse<Category>>(`/categories/${id}`);
+      return data;
+    },
+
+    create: async (payload: { name: string; description?: string }) => {
+      const { data } = await apiClient.post<ApiResponse<Category>>('/categories', payload);
+      return data;
+    },
+
+    update: async (id: string, payload: { name: string; description?: string }) => {
+      const { data } = await apiClient.put<ApiResponse<Category>>(`/categories/${id}`, payload);
+      return data;
+    },
+
+    delete: async (id: string) => {
+      const { data } = await apiClient.delete<ApiResponse<Category>>(`/categories/${id}`);
       return data;
     },
   },
@@ -159,6 +189,21 @@ export const api = {
     
     getById: async (id: string) => {
       const { data } = await apiClient.get<ApiResponse<BlogPost>>(`/blog/${id}`);
+      return data;
+    },
+
+    create: async (payload: Partial<BlogPost> & { title: string; excerpt: string; content: string }) => {
+      const { data } = await apiClient.post<ApiResponse<BlogPost>>('/blog', payload);
+      return data;
+    },
+
+    update: async (id: string, payload: Partial<BlogPost> & { title: string; excerpt: string; content: string }) => {
+      const { data } = await apiClient.put<ApiResponse<BlogPost>>(`/blog/${id}`, payload);
+      return data;
+    },
+
+    delete: async (id: string) => {
+      const { data } = await apiClient.delete<ApiResponse<BlogPost>>(`/blog/${id}`);
       return data;
     },
   },

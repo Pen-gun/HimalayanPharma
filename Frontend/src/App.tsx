@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
+import AdminRoute from './components/AdminRoute';
 
 // Lazy load all pages except Home (load Home immediately for faster initial render)
 import Home from './pages/Home';
@@ -20,6 +21,8 @@ const Privacy = lazy(() => import('./pages/Privacy'));
 const Terms = lazy(() => import('./pages/Terms'));
 const Disclaimer = lazy(() => import('./pages/Disclaimer'));
 const Cart = lazy(() => import('./pages/Cart'));
+const AdminLayout = lazy(() => import('./layouts/AdminLayout'));
+const AdminPanel = lazy(() => import('./pages/admin/AdminPanel'));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -99,6 +102,27 @@ const App = () => {
           </Suspense>
         } />
         <Route path="*" element={<Home />} />
+      </Route>
+
+      {/* Admin routes */}
+      <Route
+        path="admin"
+        element={
+          <AdminRoute>
+            <Suspense fallback={<PageLoader />}>
+              <AdminLayout />
+            </Suspense>
+          </AdminRoute>
+        }
+      >
+        <Route
+          index
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <AdminPanel />
+            </Suspense>
+          }
+        />
       </Route>
       
       {/* Auth routes outside MainLayout */}

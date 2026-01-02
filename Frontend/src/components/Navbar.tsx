@@ -19,6 +19,9 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
   const { isAuthenticated, user, logout } = useAuth();
   const { itemCount } = useCart();
+  console.log('User role in Navbar:', user?.role);
+
+  const adminLinks = user?.role === 'admin' ? [{ to: '/admin', label: 'Admin' }] : [];
 
   const linkClasses = ({ isActive }: { isActive: boolean }) =>
     `text-sm font-semibold tracking-tight transition hover:text-emerald-700 ${
@@ -39,7 +42,7 @@ const Navbar = () => {
         </Link>
 
         <nav className="hidden items-center gap-6 lg:flex">
-          {navLinks.map((link) => (
+          {[...navLinks, ...adminLinks].map((link) => (
             <NavLink key={link.to} to={link.to} className={linkClasses} onClick={() => setOpen(false)}>
               {link.label}
             </NavLink>
@@ -94,7 +97,7 @@ const Navbar = () => {
       {open && (
         <div className="lg:hidden">
           <nav className="section-shell grid gap-3 pb-6">
-            {navLinks.map((link) => (
+            {[...navLinks, ...adminLinks].map((link) => (
               <NavLink
                 key={link.to}
                 to={link.to}
