@@ -7,8 +7,8 @@ import { useCategories } from '../hooks/useCategories';
 
 const Products = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialCategory = searchParams.get('category') || '';
-  const [activeCategory, setActiveCategory] = useState(initialCategory);
+  const selectedCategory = searchParams.get('category') || '';
+  const [activeCategory, setActiveCategory] = useState(selectedCategory);
   
   const { data: categoriesData } = useCategories();
   const { data: productsData, isLoading } = useProducts({
@@ -16,12 +16,15 @@ const Products = () => {
   });
 
   useEffect(() => {
+    setActiveCategory(selectedCategory);
+  }, [selectedCategory]);
+
+  useEffect(() => {
     document.title = 'Products | Himalayan Pharma Works';
   }, []);
 
   const categories = ['All', ...(categoriesData?.data.map(cat => cat.name) || [])];
-  const products = productsData?.data || [];
-
+  const products = productsData?.data || []
   const handleCategoryChange = (category: string) => {
     const newCategory = category === 'All' ? '' : category;
     setActiveCategory(newCategory);

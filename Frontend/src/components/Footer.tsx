@@ -11,8 +11,8 @@ const footerLinks = {
   products: [
     { label: 'All Products', to: '/products' },
     { label: 'Pharmaceuticals', to: '/products?category=Pharmaceuticals' },
-    { label: 'Personal Care', to: '/products?category=Personal%20Care' },
-    { label: 'Baby Care', to: '/products?category=Baby%20Care' },
+    { label: 'Personal Care', to: '/products?category=Personal+Care' },
+    { label: 'Baby Care', to: '/products?category=Baby+Care' },
   ],
   support: [
     { label: 'Contact', to: '/contact' },
