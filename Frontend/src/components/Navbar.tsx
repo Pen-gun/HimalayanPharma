@@ -11,7 +11,7 @@ const navLinks = [
   { to: '/science', label: 'Science' },
   { to: '/commitments', label: 'Commitments' },
   { to: '/blog', label: 'Blog' },
-  { to: '/careers', label: 'Careers' },
+  // { to: '/careers', label: 'Careers' },
   { to: '/contact', label: 'Contact' },
 ];
 

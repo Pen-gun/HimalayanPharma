@@ -60,7 +60,7 @@ const Careers = () => {
             aria-label="Experience"
           />
           <button type="button" className="btn-primary md:col-span-2">
-            Submit (static)
+            Submit
           </button>
         </form>
       </div>
