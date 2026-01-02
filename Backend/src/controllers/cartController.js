@@ -9,13 +9,14 @@ export const getCart = async (req, res, next) => {
         message: 'User not authenticated',
       });
     }
-    const cart = await Cart.findOne({ userId: req.user.id }).populate('items.productId');
+    let cart = await Cart.findOne({ userId: req.user.id }).populate('items.productId');
+
+    // Create an empty cart if one does not exist to avoid noisy 404s on first visit
     if (!cart) {
-      return res.status(404).json({
-        success: false,
-        message: 'Cart not found',
-      });
+      cart = await Cart.create({ userId: req.user.id, items: [] });
+      await cart.populate('items.productId');
     }
+
     res.status(200).json({
       success: true,
       data: cart,

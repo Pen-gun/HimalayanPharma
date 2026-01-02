@@ -19,7 +19,6 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
   const { isAuthenticated, user, logout } = useAuth();
   const { itemCount } = useCart();
-  console.log('User role in Navbar:', user?.role);
 
   const adminLinks = user?.role === 'admin' ? [{ to: '/admin', label: 'Admin' }] : [];
 
