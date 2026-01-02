@@ -364,13 +364,6 @@ const AdminPanel = () => {
                 <p className="font-semibold text-emerald-900">📦 Manage Products</p>
                 <p className="text-sm text-emerald-700">{products.length} total products</p>
               </button>
-              <a
-                href="/admin/content"
-                className="rounded-lg bg-orange-50 p-4 text-left hover:bg-orange-100 transition border border-orange-200"
-              >
-                <p className="font-semibold text-orange-900">✏️ Content Editor</p>
-                <p className="text-sm text-orange-700">Testimonials, jobs, locations</p>
-              </a>
             </div>
           </div>
         )}
