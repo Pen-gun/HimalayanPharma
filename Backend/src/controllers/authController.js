@@ -17,6 +17,13 @@ export const register = async (req, res, next) => {
 
     const { name, email, password, role } = req.body;
 
+    if(!name || !email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Name, email, and password are required',
+      });
+    }
+
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -30,7 +37,7 @@ export const register = async (req, res, next) => {
       name,
       email,
       password,
-      role: role || 'admin',
+      role: role || 'customer',
     });
 
     const token = generateToken(user._id, user.role);
@@ -102,6 +109,12 @@ export const login = async (req, res, next) => {
 
 export const getMe = async (req, res, next) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Not authenticated',
+      });
+    }
     const user = await User.findById(req.user.id);
     if (!user) {
       return res.status(404).json({
@@ -120,6 +133,23 @@ export const getMe = async (req, res, next) => {
           role: user.role,
         },
       },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const logout = async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Not authenticated',
+      });
+    }
+    res.status(200).json({
+      success: true,
+      message: 'Logout successful',
     });
   } catch (error) {
     next(error);
