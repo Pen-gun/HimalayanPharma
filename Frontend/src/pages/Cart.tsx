@@ -96,16 +96,16 @@ const Cart = () => {
                       <Plus className="h-4 w-4" />
                     </button>
                   </div>
-                  <button
-                    onClick={() => removeFromCart(item.productId._id)}
-                    className="ml-auto text-red-600 hover:text-red-700"
-                  >
-                    <X className="h-5 w-5" />
-                  </button>
                 </div>
               </div>
-              <div className="text-right font-semibold text-emerald-900">
+              <div className="relative flex flex-col items-end font-semibold text-emerald-900">
                 ₹{(item.productId.price * item.quantity).toFixed(2)}
+                  <button
+                    onClick={() => removeFromCart(item.productId._id)}
+                    className="absolute bottom-5 right-5 text-red-600 hover:text-red-700"
+                  >
+                    <X className="h-5 w-5" />
+                </button>
               </div>
             </div>
           ))}
