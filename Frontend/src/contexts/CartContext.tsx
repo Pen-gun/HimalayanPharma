@@ -56,18 +56,18 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, [isAuthenticated]);
 
   const addToCart = async (productId: string, quantity: number) => {
-    await api.cart.add(productId, quantity);
-    await refreshCart();
+    const response = await api.cart.add(productId, quantity);
+    setCart(response.data);
   };
 
   const removeFromCart = async (productId: string) => {
-    await api.cart.remove(productId);
-    await refreshCart();
+    const response = await api.cart.remove(productId);
+    setCart(response.data);
   };
 
   const clearCart = async () => {
-    await api.cart.clear();
-    await refreshCart();
+    const response = await api.cart.clear();
+    setCart(response.data);
   };
 
   const itemCount = cart?.items.reduce((sum, item) => sum + item.quantity, 0) || 0;

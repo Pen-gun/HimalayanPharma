@@ -46,14 +46,24 @@ export const addToCart = async (req, res, next) => {
     const itemIndex = cart.items.findIndex(item => item.productId.toString() === productId);
     if (itemIndex > -1) {
       cart.items[itemIndex].quantity += quantity;
+      // Remove item if quantity becomes 0 or less
+      if (cart.items[itemIndex].quantity <= 0) {
+        cart.items.splice(itemIndex, 1);
+      }
     } else {
-      cart.items.push({ productId, quantity });
+      // Only add new items if quantity is positive
+      if (quantity > 0) {
+        cart.items.push({ productId, quantity });
+      }
     }
     await cart.save();
+    
+    // Populate product details before returning
+    await cart.populate('items.productId');
 
     res.status(200).json({
       success: true,
-      message: 'Item added to cart',
+      message: 'Cart updated',
       data: cart,
     });
   } catch (error) {
@@ -83,6 +93,10 @@ export const removeFromCart = async (req, res, next) => {
     }
     cart.items = cart.items.filter(item => item.productId.toString() !== productId);
     await cart.save();
+    
+    // Populate product details before returning
+    await cart.populate('items.productId');
+    
     res.status(200).json({
       success: true,
       message: 'Item removed from cart',

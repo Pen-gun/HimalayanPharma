@@ -21,7 +21,7 @@ router.post(
   '/add',
   [
     body('productId').notEmpty().withMessage('Product ID is required'),
-    body('quantity').isInt({ min: 1 }).withMessage('Quantity must be at least 1'),
+    body('quantity').isInt().withMessage('Quantity must be an integer'),
   ],
   addToCart
 );
