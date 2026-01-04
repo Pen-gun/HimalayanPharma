@@ -28,25 +28,10 @@ app.use(mongoSanitize());
 // Cookie parser - MUST be before routes to parse cookies
 app.use(cookieParser());
 
-// CORS Configuration - Allow specific origins with credentials
-const allowedOrigins = [
-  process.env.FRONTEND_URL,
-];
-
+// CORS Configuration
 app.use(cors({
-  origin: (origin, callback) => {
-    // Allow requests with no origin (mobile apps, Postman, etc.)
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true, // CRITICAL: Allow cookies to be sent
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  origin: true, // Allow all origins
+  credentials: true, // Allow cookies
 }));
 
 // Body parsing with size limits
