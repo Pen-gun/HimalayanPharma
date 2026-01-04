@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import mongoSanitize from 'express-mongo-sanitize';
 import compression from 'compression';
 import rateLimit from 'express-rate-limit';
+import cookieParser from 'cookie-parser';
 import { errorHandler } from './middleware/errorHandler.js';
 import authRoutes from './routes/authRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
@@ -23,6 +24,9 @@ app.use(helmet({
 
 // Security: Data sanitization against NoSQL injection
 app.use(mongoSanitize());
+
+// Cookie parser - MUST be before routes to parse cookies
+app.use(cookieParser());
 
 // CORS Configuration
 app.use(cors({
