@@ -4,7 +4,6 @@ import helmet from 'helmet';
 import mongoSanitize from 'express-mongo-sanitize';
 import compression from 'compression';
 import rateLimit from 'express-rate-limit';
-import cookieParser from 'cookie-parser';
 import { errorHandler } from './middleware/errorHandler.js';
 import authRoutes from './routes/authRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
@@ -25,30 +24,10 @@ app.use(helmet({
 // Security: Data sanitization against NoSQL injection
 app.use(mongoSanitize());
 
-// Cookie parser - Must be before routes
-app.use(cookieParser());
-
-// CORS Configuration - Updated for credentials and cookies
-const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:3000',
-  process.env.FRONTEND_URL,
-].filter(Boolean);
-
+// CORS Configuration
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (mobile apps, curl, etc)
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true, // Required for cookies
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  origin: true, // Allow all origins
+  credentials: true,
 }));
 
 // Body parsing with size limits

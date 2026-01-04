@@ -1,7 +1,7 @@
-import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
+import axios, { AxiosError,type InternalAxiosRequestConfig } from 'axios';
 
 // API Base URL - Use environment variable or fallback
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 // ============================================
 // Token Management (in-memory for security)
