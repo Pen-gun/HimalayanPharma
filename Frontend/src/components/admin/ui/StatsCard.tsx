@@ -82,9 +82,18 @@ export const StatsCard = ({
 }: StatsCardProps) => {
   const styles = colorStyles[color];
 
+  const handleClick = onClick ? (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onClick();
+  } : undefined;
+
   return (
     <div
-      onClick={onClick}
+      onClick={handleClick}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={onClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); } } : undefined}
       className={`rounded-xl ${styles.bg} border ${styles.border} p-5 transition-all ${
         onClick ? 'cursor-pointer hover:shadow-md hover:scale-[1.02] active:scale-[0.98]' : ''
       }`}
@@ -136,7 +145,12 @@ export const QuickActionCard = ({ title, description, icon, onClick, color = 'em
 
   return (
     <button
-      onClick={onClick}
+      type="button"
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onClick();
+      }}
       className={`w-full rounded-xl ${styles.bg} border ${styles.border} p-5 text-left transition-all hover:shadow-md hover:scale-[1.02] active:scale-[0.98]`}
     >
       <div className="flex items-center gap-4">

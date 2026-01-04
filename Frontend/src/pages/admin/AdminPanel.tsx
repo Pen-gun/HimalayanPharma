@@ -9,8 +9,9 @@
  * - Site Content editing
  * - Responsive design with professional UI
  */
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useSearchParams } from 'react-router-dom';
 import { api } from '../../lib/api';
 import { Link } from 'react-router-dom';
 
@@ -247,7 +248,30 @@ const ContentEditorRedirect = () => {
 
 // Main Admin Panel Component
 const AdminPanel = () => {
-  const [activeTab, setActiveTab] = useState<AdminTab>('dashboard');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialTab = (searchParams.get('tab') as AdminTab) || 'dashboard';
+  const [activeTab, setActiveTab] = useState<AdminTab>(initialTab);
+
+  // Handle navigation from sidebar quick jump
+  const handleNavigateEvent = useCallback((e: CustomEvent<{ tab: string }>) => {
+    const tab = e.detail.tab as AdminTab;
+    if (['dashboard', 'products', 'categories', 'blog', 'content'].includes(tab)) {
+      setActiveTab(tab);
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('admin:navigate', handleNavigateEvent as EventListener);
+    return () => {
+      window.removeEventListener('admin:navigate', handleNavigateEvent as EventListener);
+    };
+  }, [handleNavigateEvent]);
+
+  // Sync URL params when tab changes
+  const handleTabChange = (tab: AdminTab) => {
+    setActiveTab(tab);
+    setSearchParams({ tab });
+  };
 
   // Fetch all data for stats
   const { data: productsRes, isLoading: productsLoading } = useQuery({
@@ -295,7 +319,8 @@ const AdminPanel = () => {
             {TABS.map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                type="button"
+                onClick={() => handleTabChange(tab.id)}
                 className={`flex items-center gap-2 whitespace-nowrap rounded-lg px-4 py-2.5 text-sm font-medium transition-all ${
                   activeTab === tab.id
                     ? 'bg-emerald-50 text-emerald-700'
@@ -322,7 +347,7 @@ const AdminPanel = () => {
 
       {/* Content Area */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {activeTab === 'dashboard' && <Dashboard onNavigate={setActiveTab} stats={stats} />}
+        {activeTab === 'dashboard' && <Dashboard onNavigate={handleTabChange} stats={stats} />}
         {activeTab === 'products' && <ProductManager />}
         {activeTab === 'categories' && <CategoryManager />}
         {activeTab === 'blog' && <BlogManager />}

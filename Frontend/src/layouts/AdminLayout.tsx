@@ -1,16 +1,17 @@
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, Link, useLocation, useSearchParams } from 'react-router-dom';
 import { LogOut, ShieldCheck, Package, FileText, Tags, LayoutDashboard } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const AdminLayout = () => {
   const { user, logout } = useAuth();
   const location = useLocation();
+  const [, setSearchParams] = useSearchParams();
 
   const quickLinks = [
-    { href: '#overview', label: 'Overview', icon: <LayoutDashboard className="h-4 w-4" /> },
-    { href: '#products', label: 'Products', icon: <Package className="h-4 w-4" /> },
-    { href: '#blog', label: 'Blog', icon: <FileText className="h-4 w-4" /> },
-    { href: '#categories', label: 'Categories', icon: <Tags className="h-4 w-4" /> },
+    { tab: 'dashboard', label: 'Overview', icon: <LayoutDashboard className="h-4 w-4" /> },
+    { tab: 'products', label: 'Products', icon: <Package className="h-4 w-4" /> },
+    { tab: 'blog', label: 'Blog', icon: <FileText className="h-4 w-4" /> },
+    { tab: 'categories', label: 'Categories', icon: <Tags className="h-4 w-4" /> },
   ];
 
   const navItems = [
@@ -19,6 +20,13 @@ const AdminLayout = () => {
   ];
 
   const isContentPage = location.pathname === '/admin/content';
+
+  const handleQuickJump = (tab: string) => {
+    // Dispatch custom event that AdminPanel listens for
+    window.dispatchEvent(new CustomEvent('admin:navigate', { detail: { tab } }));
+    // Also update URL params for bookmarkability
+    setSearchParams({ tab });
+  };
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -73,14 +81,15 @@ const AdminLayout = () => {
               <div className="mb-3 text-xs font-semibold uppercase text-slate-500">Quick jump</div>
               <nav className="grid gap-2 text-sm">
                 {quickLinks.map((item) => (
-                  <a
-                    key={item.href}
-                    href={item.href}
-                    className="flex items-center gap-3 rounded-lg px-3 py-2 font-semibold text-slate-800 transition hover:bg-emerald-50 hover:text-emerald-800"
+                  <button
+                    key={item.tab}
+                    type="button"
+                    onClick={() => handleQuickJump(item.tab)}
+                    className="flex items-center gap-3 rounded-lg px-3 py-2 font-semibold text-slate-800 transition hover:bg-emerald-50 hover:text-emerald-800 text-left"
                   >
                     {item.icon}
                     {item.label}
-                  </a>
+                  </button>
                 ))}
               </nav>
             </>
