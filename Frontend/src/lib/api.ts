@@ -1,47 +1,162 @@
-import axios from 'axios';
+import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 
 // API Base URL - Use environment variable or fallback
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
 
-// Validate API URL in production
-if (import.meta.env.PROD && API_BASE_URL.includes('localhost')) {
-  // Using localhost API URL in production build
-}
+// ============================================
+// Token Management (in-memory for security)
+// ============================================
+let accessToken: string | null = null;
+let tokenExpiresAt: number | null = null;
 
-// Create axios instance
+export const setAccessToken = (token: string | null, expiresIn?: number) => {
+  accessToken = token;
+  if (token && expiresIn) {
+    // Set expiry time with 30 second buffer before actual expiry
+    tokenExpiresAt = Date.now() + (expiresIn * 1000) - 30000;
+  } else {
+    tokenExpiresAt = null;
+  }
+};
+
+export const getAccessToken = () => accessToken;
+export const clearAccessToken = () => {
+  accessToken = null;
+  tokenExpiresAt = null;
+};
+
+export const isTokenExpiringSoon = () => {
+  if (!tokenExpiresAt) return true;
+  return Date.now() >= tokenExpiresAt;
+};
+
+// ============================================
+// Refresh Token Queue Management
+// ============================================
+let isRefreshing = false;
+let refreshSubscribers: ((token: string) => void)[] = [];
+
+const onTokenRefreshed = (newToken: string) => {
+  refreshSubscribers.forEach(callback => callback(newToken));
+  refreshSubscribers = [];
+};
+
+const addRefreshSubscriber = (callback: (token: string) => void) => {
+  refreshSubscribers.push(callback);
+};
+
+// ============================================
+// Axios Instance Configuration
+// ============================================
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 10000, // 10 second timeout
+  timeout: 15000, // 15 second timeout
+  withCredentials: true, // CRITICAL: Send cookies with requests (for refresh token)
 });
 
-// Request interceptor - Add auth token if exists
+// ============================================
+// Request Interceptor
+// ============================================
 apiClient.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+  async (config: InternalAxiosRequestConfig) => {
+    // Skip auth for public endpoints
+    const publicEndpoints = ['/auth/login', '/auth/register', '/auth/refresh'];
+    const isPublicEndpoint = publicEndpoints.some(endpoint => 
+      config.url?.includes(endpoint)
+    );
+    
+    if (!isPublicEndpoint && accessToken) {
+      // Check if token is expiring soon and proactively refresh
+      if (isTokenExpiringSoon() && !config.url?.includes('/auth/refresh')) {
+        try {
+          await refreshAccessToken();
+        } catch (error) {
+          // Refresh failed, continue with existing token
+          // The response interceptor will handle 401
+        }
+      }
+      
+      config.headers.Authorization = `Bearer ${accessToken}`;
     }
+    
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-// Response interceptor - Handle errors globally
+// ============================================
+// Response Interceptor with Token Refresh
+// ============================================
 apiClient.interceptors.response.use(
   (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      // Token expired or invalid
-      localStorage.removeItem('token');
-      // Optionally redirect to login
-      // window.location.href = '/login';
+  async (error: AxiosError) => {
+    const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+    
+    // Handle 401 errors (token expired)
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      // Check if this is a refresh request failing
+      if (originalRequest.url?.includes('/auth/refresh')) {
+        // Refresh token is invalid - clear everything and redirect
+        clearAccessToken();
+        window.dispatchEvent(new CustomEvent('auth:logout'));
+        return Promise.reject(error);
+      }
+      
+      originalRequest._retry = true;
+      
+      // If already refreshing, queue this request
+      if (isRefreshing) {
+        return new Promise((resolve) => {
+          addRefreshSubscriber((newToken: string) => {
+            originalRequest.headers.Authorization = `Bearer ${newToken}`;
+            resolve(apiClient(originalRequest));
+          });
+        });
+      }
+      
+      // Start refreshing
+      isRefreshing = true;
+      
+      try {
+        const newToken = await refreshAccessToken();
+        onTokenRefreshed(newToken);
+        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        return apiClient(originalRequest);
+      } catch (refreshError) {
+        clearAccessToken();
+        window.dispatchEvent(new CustomEvent('auth:logout'));
+        return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
+      }
     }
+    
     return Promise.reject(error);
   }
 );
+
+// ============================================
+// Token Refresh Function
+// ============================================
+const refreshAccessToken = async (): Promise<string> => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/auth/refresh`,
+      {},
+      { withCredentials: true } // Send refresh token cookie
+    );
+    
+    const { accessToken: newToken, expiresIn } = response.data.data;
+    setAccessToken(newToken, expiresIn);
+    return newToken;
+  } catch (error) {
+    clearAccessToken();
+    throw error;
+  }
+};
 
 // Types matching backend responses
 export interface Contact{
@@ -264,16 +379,16 @@ export const api = {
   auth: {
     register: async (userData: { name: string; email: string; password: string }) => {
       const { data } = await apiClient.post('/auth/register', userData);
-      if (data.data?.token) {
-        localStorage.setItem('token', data.data.token);
+      if (data.data?.accessToken) {
+        setAccessToken(data.data.accessToken, data.data.expiresIn);
       }
       return data;
     },
     
     login: async (credentials: { email: string; password: string }) => {
       const { data } = await apiClient.post('/auth/login', credentials);
-      if (data.data?.token) {
-        localStorage.setItem('token', data.data.token);
+      if (data.data?.accessToken) {
+        setAccessToken(data.data.accessToken, data.data.expiresIn);
       }
       return data;
     },
@@ -283,8 +398,32 @@ export const api = {
       return data;
     },
     
-    logout: () => {
-      localStorage.removeItem('token');
+    refresh: async () => {
+      const { data } = await apiClient.post('/auth/refresh');
+      if (data.data?.accessToken) {
+        setAccessToken(data.data.accessToken, data.data.expiresIn);
+      }
+      return data;
+    },
+    
+    logout: async () => {
+      try {
+        await apiClient.post('/auth/logout');
+      } catch (error) {
+        // Ignore errors on logout
+      } finally {
+        clearAccessToken();
+      }
+    },
+    
+    logoutAll: async () => {
+      try {
+        await apiClient.post('/auth/logout-all');
+      } catch (error) {
+        // Ignore errors on logout
+      } finally {
+        clearAccessToken();
+      }
     },
   },
 

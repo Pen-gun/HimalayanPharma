@@ -1,5 +1,5 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import { api } from '../lib/api';
+import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
+import { api, setAccessToken, getAccessToken, clearAccessToken } from '../lib/api';
 
 interface User {
   id: string;
@@ -14,7 +14,8 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
+  logoutAll: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -23,20 +24,44 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Handle logout event from api.ts when refresh token fails
+  const handleForceLogout = useCallback(() => {
+    setUser(null);
+    clearAccessToken();
+  }, []);
+
   useEffect(() => {
-    const loadUser = async () => {
-      const token = localStorage.getItem('token');
-      if (token) {
-        try {
-          const response = await api.auth.getMe();
-          setUser(response.data);
-        } catch (error) {
-          localStorage.removeItem('token');
-        }
-      }
-      setIsLoading(false);
+    // Listen for forced logout events (when refresh token expires)
+    window.addEventListener('auth:logout', handleForceLogout);
+    return () => {
+      window.removeEventListener('auth:logout', handleForceLogout);
     };
-    loadUser();
+  }, [handleForceLogout]);
+
+  useEffect(() => {
+    const initializeAuth = async () => {
+      try {
+        // Try to refresh the token first (uses httpOnly cookie)
+        const refreshResponse = await api.auth.refresh();
+        if (refreshResponse.data?.accessToken) {
+          setAccessToken(refreshResponse.data.accessToken, refreshResponse.data.expiresIn);
+        }
+        
+        // If refresh succeeded, get user data
+        if (getAccessToken()) {
+          const userResponse = await api.auth.getMe();
+          setUser(userResponse.data.user);
+        }
+      } catch {
+        // No valid session - user needs to login
+        clearAccessToken();
+        setUser(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initializeAuth();
   }, []);
 
   const login = async (email: string, password: string) => {
@@ -49,8 +74,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(response.data.user);
   };
 
-  const logout = () => {
-    api.auth.logout();
+  const logout = async () => {
+    await api.auth.logout();
+    setUser(null);
+  };
+
+  const logoutAll = async () => {
+    await api.auth.logoutAll();
     setUser(null);
   };
 
@@ -63,6 +93,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         login,
         register,
         logout,
+        logoutAll,
       }}
     >
       {children}

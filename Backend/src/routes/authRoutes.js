@@ -4,6 +4,9 @@ import {
   register,
   login,
   getMe,
+  logout,
+  logoutAll,
+  refreshToken,
 } from '../controllers/authController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
@@ -32,7 +35,16 @@ router.post(
   login
 );
 
-// GET /api/v1/auth/me
+// POST /api/v1/auth/refresh - Get new access token using refresh token cookie
+router.post('/refresh', refreshToken);
+
+// GET /api/v1/auth/me - Get current user (protected)
 router.get('/me', protect, getMe);
+
+// POST /api/v1/auth/logout - Logout current session
+router.post('/logout', protect, logout);
+
+// POST /api/v1/auth/logout-all - Logout from all devices
+router.post('/logout-all', protect, logoutAll);
 
 export default router;

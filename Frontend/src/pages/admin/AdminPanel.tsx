@@ -1,400 +1,332 @@
 /**
- * Professional-grade Admin Panel - Production Ready
- * Modular architecture with separated concerns
+ * Professional Admin Panel - Production Grade
+ * Complete dashboard with modular architecture
+ * 
+ * Features:
+ * - Dashboard with real-time statistics
+ * - Tab-based navigation for all management sections
+ * - Product, Category, and Blog management
+ * - Site Content editing
+ * - Responsive design with professional UI
  */
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { api, type Product, type Category } from '../../lib/api';
-import { useProductMutations } from '../../hooks/useAdminMutations';
-import { ProductList } from '../../components/admin/ProductList';
-import { notifyToast } from '../../utils/admin';
+import { api } from '../../lib/api';
+import { Link } from 'react-router-dom';
 
-// Form state types
-type ProductFormState = {
-  _id?: string;
-  name: string;
-  category: string;
-  price: string;
-  image: string;
-  shortDescription: string;
-  description: string;
-  benefits: string;
-  ingredients: string;
-  usage: string;
-  tags: string;
-  featured: boolean;
-  scientificInfo: string;
-};
+// Manager Components
+import { ProductManager } from '../../components/admin/ProductManager';
+import { CategoryManager } from '../../components/admin/CategoryManager';
+import { BlogManager } from '../../components/admin/BlogManager';
 
-// Initial state constant
-const INITIAL_PRODUCT: ProductFormState = {
-  name: '',
-  category: '',
-  price: '',
-  image: '',
-  shortDescription: '',
-  description: '',
-  benefits: '',
-  ingredients: '',
-  usage: '',
-  tags: '',
-  featured: false,
-  scientificInfo: '',
-};
+// UI Components
+import { StatsCard, QuickActionCard } from '../../components/admin/ui/StatsCard';
+import { LoadingSpinner } from '../../components/admin/ui/LoadingSpinner';
 
-// Helper: Parse comma-separated values
-const listFromText = (value: string) =>
-  value
-    .split(/[,;\n]/)
-    .map((item) => item.trim())
-    .filter(Boolean);
+// Tab types
+type AdminTab = 'dashboard' | 'products' | 'categories' | 'blog' | 'content';
 
-/**
- * Stateless Product Form Component
- */
-const ProductForm = ({
-  form,
-  categories,
-  onChange,
-  onSubmit,
-  isSubmitting,
-  isEditing,
+// Icons
+const DashboardIcon = () => (
+  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+  </svg>
+);
+
+const ProductIcon = () => (
+  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+  </svg>
+);
+
+const CategoryIcon = () => (
+  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+  </svg>
+);
+
+const BlogIcon = () => (
+  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+  </svg>
+);
+
+const ContentIcon = () => (
+  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+  </svg>
+);
+
+// Navigation tabs configuration
+const TABS: { id: AdminTab; label: string; icon: React.ReactNode }[] = [
+  { id: 'dashboard', label: 'Dashboard', icon: <DashboardIcon /> },
+  { id: 'products', label: 'Products', icon: <ProductIcon /> },
+  { id: 'categories', label: 'Categories', icon: <CategoryIcon /> },
+  { id: 'blog', label: 'Blog', icon: <BlogIcon /> },
+  { id: 'content', label: 'Site Content', icon: <ContentIcon /> },
+];
+
+// Dashboard Component
+const Dashboard = ({
+  onNavigate,
+  stats,
 }: {
-  form: ProductFormState;
-  categories: Category[];
-  onChange: (updates: Partial<ProductFormState>) => void;
-  onSubmit: (e: FormEvent) => void;
-  isSubmitting: boolean;
-  isEditing: boolean;
+  onNavigate: (tab: AdminTab) => void;
+  stats: {
+    products: number;
+    categories: number;
+    blogs: number;
+    featured: number;
+  };
 }) => {
   return (
-    <form onSubmit={onSubmit} className="space-y-4 rounded-lg border border-slate-200 bg-slate-50 p-5">
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <div className="space-y-1">
-          <label className="block text-xs font-semibold text-slate-700">Product Name *</label>
-          <input
-            className="w-full rounded border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-400 focus:border-transparent outline-none"
-            value={form.name}
-            onChange={(e) => onChange({ name: e.target.value })}
-            required
-            placeholder="Enter product name"
-          />
-        </div>
+    <div className="space-y-8">
+      {/* Welcome Section */}
+      <div className="rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-700 p-8 text-white shadow-lg">
+        <h1 className="text-3xl font-bold">Welcome to Admin Dashboard</h1>
+        <p className="mt-2 text-emerald-100 max-w-2xl">
+          Manage your products, categories, blog posts, and site content from one central location.
+          All changes are saved automatically and reflected on your website instantly.
+        </p>
+      </div>
 
-        <div className="space-y-1">
-          <label className="block text-xs font-semibold text-slate-700">Category *</label>
-          <select
-            className="w-full rounded border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-400 focus:border-transparent outline-none"
-            value={form.category}
-            onChange={(e) => onChange({ category: e.target.value })}
-            required
-          >
-            <option value="">Choose category</option>
-            {categories.map((cat) => (
-              <option key={cat._id} value={cat._id}>
-                {cat.name}
-              </option>
-            ))}
-          </select>
-        </div>
+      {/* Stats Grid */}
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <StatsCard
+          title="Total Products"
+          value={stats.products}
+          subtitle="Active listings"
+          color="emerald"
+          onClick={() => onNavigate('products')}
+          icon={<ProductIcon />}
+        />
+        <StatsCard
+          title="Categories"
+          value={stats.categories}
+          subtitle="Product groups"
+          color="purple"
+          onClick={() => onNavigate('categories')}
+          icon={<CategoryIcon />}
+        />
+        <StatsCard
+          title="Blog Posts"
+          value={stats.blogs}
+          subtitle="Published articles"
+          color="blue"
+          onClick={() => onNavigate('blog')}
+          icon={<BlogIcon />}
+        />
+        <StatsCard
+          title="Featured"
+          value={stats.featured}
+          subtitle="Highlighted products"
+          color="amber"
+          onClick={() => onNavigate('products')}
+          icon={
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+            </svg>
+          }
+        />
+      </div>
 
-        <div className="space-y-1">
-          <label className="block text-xs font-semibold text-slate-700">Price (₹)</label>
-          <input
-            type="number"
-            className="w-full rounded border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-400 focus:border-transparent outline-none"
-            value={form.price}
-            onChange={(e) => onChange({ price: e.target.value })}
-            min="0"
-            step="0.01"
-            placeholder="0"
+      {/* Quick Actions */}
+      <div>
+        <h2 className="text-xl font-bold text-slate-900 mb-4">Quick Actions</h2>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <QuickActionCard
+            title="Add New Product"
+            description="Create a new product listing"
+            icon={<ProductIcon />}
+            onClick={() => onNavigate('products')}
+            color="emerald"
           />
-        </div>
-
-        <div className="sm:col-span-2 lg:col-span-3 space-y-1">
-          <label className="block text-xs font-semibold text-slate-700">Image URL</label>
-          <input
-            className="w-full rounded border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-400 focus:border-transparent outline-none"
-            value={form.image}
-            onChange={(e) => onChange({ image: e.target.value })}
-            placeholder="https://..."
+          <QuickActionCard
+            title="Write Blog Post"
+            description="Share news and insights"
+            icon={<BlogIcon />}
+            onClick={() => onNavigate('blog')}
+            color="blue"
           />
-        </div>
-
-        <div className="sm:col-span-2 lg:col-span-3 space-y-1">
-          <label className="block text-xs font-semibold text-slate-700">Short Description</label>
-          <input
-            className="w-full rounded border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-400 focus:border-transparent outline-none"
-            value={form.shortDescription}
-            onChange={(e) => onChange({ shortDescription: e.target.value })}
-            placeholder="Brief product overview"
+          <QuickActionCard
+            title="Edit Site Content"
+            description="Update homepage & pages"
+            icon={<ContentIcon />}
+            onClick={() => onNavigate('content')}
+            color="purple"
           />
-        </div>
-
-        <div className="sm:col-span-2 lg:col-span-3 space-y-1">
-          <label className="block text-xs font-semibold text-slate-700">Full Description</label>
-          <textarea
-            className="w-full min-h-[100px] rounded border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-400 focus:border-transparent outline-none resize-vertical"
-            value={form.description}
-            onChange={(e) => onChange({ description: e.target.value })}
-            placeholder="Detailed product description..."
-          />
-        </div>
-
-        <div className="sm:col-span-1 space-y-1">
-          <label className="block text-xs font-semibold text-slate-700">Benefits (comma separated)</label>
-          <textarea
-            className="w-full min-h-[80px] rounded border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-400 focus:border-transparent outline-none resize-vertical"
-            value={form.benefits}
-            onChange={(e) => onChange({ benefits: e.target.value })}
-            placeholder="Benefit 1, Benefit 2, Benefit 3"
-          />
-        </div>
-
-        <div className="sm:col-span-1 space-y-1">
-          <label className="block text-xs font-semibold text-slate-700">Ingredients (comma separated)</label>
-          <textarea
-            className="w-full min-h-[80px] rounded border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-400 focus:border-transparent outline-none resize-vertical"
-            value={form.ingredients}
-            onChange={(e) => onChange({ ingredients: e.target.value })}
-            placeholder="Ingredient 1, Ingredient 2, Ingredient 3"
-          />
-        </div>
-
-        <div className="sm:col-span-1 space-y-1">
-          <label className="block text-xs font-semibold text-slate-700">Tags (comma separated)</label>
-          <textarea
-            className="w-full min-h-[80px] rounded border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-400 focus:border-transparent outline-none resize-vertical"
-            value={form.tags}
-            onChange={(e) => onChange({ tags: e.target.value })}
-            placeholder="Tag 1, Tag 2, Tag 3"
-          />
-        </div>
-
-        <div className="sm:col-span-2 lg:col-span-3 space-y-1">
-          <label className="block text-xs font-semibold text-slate-700">Usage Instructions</label>
-          <textarea
-            className="w-full min-h-[80px] rounded border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-400 focus:border-transparent outline-none resize-vertical"
-            value={form.usage}
-            onChange={(e) => onChange({ usage: e.target.value })}
-            placeholder="How to use this product..."
-          />
-        </div>
-
-        <div className="sm:col-span-2 lg:col-span-3 space-y-1">
-          <label className="block text-xs font-semibold text-slate-700">Scientific Information (Optional)</label>
-          <textarea
-            className="w-full min-h-[80px] rounded border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-400 focus:border-transparent outline-none resize-vertical"
-            value={form.scientificInfo}
-            onChange={(e) => onChange({ scientificInfo: e.target.value })}
-            placeholder="Research, studies, scientific details..."
-          />
-        </div>
-
-        <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            id="featured"
-            className="h-4 w-4 rounded border-slate-300"
-            checked={form.featured}
-            onChange={(e) => onChange({ featured: e.target.checked })}
-          />
-          <label htmlFor="featured" className="text-xs font-semibold text-slate-700 cursor-pointer">
-            Mark as featured
-          </label>
         </div>
       </div>
 
-      <div className="flex gap-3 border-t border-slate-200 pt-4">
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="flex-1 rounded-lg bg-emerald-600 px-4 py-2.5 font-semibold text-white hover:bg-emerald-700 active:scale-95 disabled:opacity-50 transition"
-        >
-          {isSubmitting ? '...' : isEditing ? '💾 Update Product' : '✚ Create Product'}
-        </button>
-        <button
-          type="button"
-          onClick={() => onChange(INITIAL_PRODUCT)}
-          className="rounded-lg bg-slate-300 px-4 py-2.5 font-semibold text-slate-700 hover:bg-slate-400 transition"
-        >
-          Clear
-        </button>
+      {/* Recent Activity Preview */}
+      <div className="rounded-xl border border-slate-200 bg-white p-6">
+        <h2 className="text-lg font-bold text-slate-900 mb-4">Management Overview</h2>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-emerald-100 rounded-lg text-emerald-600">
+                <ProductIcon />
+              </div>
+              <div>
+                <p className="font-medium text-slate-900">Products Management</p>
+                <p className="text-sm text-slate-500">{stats.products} products in inventory</p>
+              </div>
+            </div>
+            <button
+              onClick={() => onNavigate('products')}
+              className="text-sm font-medium text-emerald-600 hover:text-emerald-700"
+            >
+              Manage →
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-purple-100 rounded-lg text-purple-600">
+                <CategoryIcon />
+              </div>
+              <div>
+                <p className="font-medium text-slate-900">Categories Management</p>
+                <p className="text-sm text-slate-500">{stats.categories} categories configured</p>
+              </div>
+            </div>
+            <button
+              onClick={() => onNavigate('categories')}
+              className="text-sm font-medium text-purple-600 hover:text-purple-700"
+            >
+              Manage →
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
+                <BlogIcon />
+              </div>
+              <div>
+                <p className="font-medium text-slate-900">Blog Management</p>
+                <p className="text-sm text-slate-500">{stats.blogs} posts published</p>
+              </div>
+            </div>
+            <button
+              onClick={() => onNavigate('blog')}
+              className="text-sm font-medium text-blue-600 hover:text-blue-700"
+            >
+              Manage →
+            </button>
+          </div>
+        </div>
       </div>
-    </form>
+    </div>
   );
 };
 
-/**
- * Main AdminPanel Component
- */
+// Content Editor Redirect Component
+const ContentEditorRedirect = () => {
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white p-8 text-center">
+      <div className="mx-auto w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4">
+        <ContentIcon />
+      </div>
+      <h2 className="text-xl font-bold text-slate-900 mb-2">Site Content Editor</h2>
+      <p className="text-slate-600 mb-6 max-w-md mx-auto">
+        Edit your site's dynamic content including testimonials, statistics, highlights, job listings, and contact information.
+      </p>
+      <Link
+        to="/admin/content"
+        className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-6 py-3 font-semibold text-white hover:bg-emerald-700 transition-colors"
+      >
+        Open Content Editor
+        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </Link>
+    </div>
+  );
+};
+
+// Main Admin Panel Component
 const AdminPanel = () => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'products'>('overview');
-  const [productForm, setProductForm] = useState<ProductFormState>(INITIAL_PRODUCT);
+  const [activeTab, setActiveTab] = useState<AdminTab>('dashboard');
 
-  // Mutations
-  const { createMutation: createProduct, updateMutation: updateProduct, deleteMutation: deleteProduct } = useProductMutations();
+  // Fetch all data for stats
+  const { data: productsRes, isLoading: productsLoading } = useQuery({
+    queryKey: ['admin-products'],
+    queryFn: () => api.products.getAll({ limit: 500 }),
+  });
 
-  // Queries
-  const { data: categoriesRes } = useQuery({
+  const { data: categoriesRes, isLoading: categoriesLoading } = useQuery({
     queryKey: ['admin-categories'],
     queryFn: () => api.categories.getAll(),
   });
 
-  const { data: productsRes, isFetching: productsLoading } = useQuery({
-    queryKey: ['admin-products'],
-    queryFn: () => api.products.getAll({ limit: 200 }),
+  const { data: blogRes, isLoading: blogLoading } = useQuery({
+    queryKey: ['admin-blog'],
+    queryFn: () => api.blog.getAll({ limit: 500 }),
   });
 
   useEffect(() => {
     document.title = 'Admin Dashboard | Himalayan Pharma Works';
   }, []);
 
-  const categories = categoriesRes?.data || [];
-  const products = productsRes?.data || [];
-  const categoryMap = new Map(categories.map((c) => [c._id, c.name]));
+  const isLoading = productsLoading || categoriesLoading || blogLoading;
 
-  // Product handlers
-  const handleProductSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    if (!productForm.name || !productForm.category) {
-      notifyToast('warning', 'Product name and category are required');
-      return;
-    }
-
-    const payload = {
-      name: productForm.name.trim(),
-      category: productForm.category,
-      price: productForm.price ? Number(productForm.price) : undefined,
-      image: productForm.image.trim(),
-      shortDescription: productForm.shortDescription.trim(),
-      description: productForm.description.trim(),
-      benefits: listFromText(productForm.benefits),
-      ingredients: listFromText(productForm.ingredients),
-      usage: productForm.usage.trim(),
-      tags: listFromText(productForm.tags),
-      featured: productForm.featured,
-      scientificInfo: productForm.scientificInfo?.trim() || undefined,
-    };
-
-    if (productForm._id) {
-      updateProduct.mutate({ id: productForm._id, data: payload });
-    } else {
-      createProduct.mutate(payload);
-    }
-    setProductForm(INITIAL_PRODUCT);
+  const stats = {
+    products: productsRes?.data?.length || 0,
+    categories: categoriesRes?.data?.length || 0,
+    blogs: blogRes?.data?.length || 0,
+    featured: productsRes?.data?.filter((p) => p.featured).length || 0,
   };
 
-  const startEditProduct = (product: Product) => {
-    setProductForm({
-      _id: product._id,
-      name: product.name,
-      category: typeof product.category === 'string' ? product.category : product.category?._id || '',
-      price: product.price ? String(product.price) : '',
-      image: product.image || '',
-      shortDescription: product.shortDescription || '',
-      description: product.description || '',
-      benefits: (product.benefits || []).join(', '),
-      ingredients: (product.ingredients || []).join(', '),
-      usage: product.usage || '',
-      tags: (product.tags || []).join(', '),
-      featured: !!product.featured,
-      scientificInfo: product.scientificInfo || '',
-    });
-    setActiveTab('products');
-  };
-
-  const handleDeleteProduct = (id: string) => {
-    if (window.confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
-      deleteProduct.mutate(id);
-    }
-  };
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <LoadingSpinner size="lg" text="Loading dashboard..." />
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="rounded-lg border border-slate-200 bg-white p-6">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-bold text-slate-900">Admin Dashboard</h1>
-          <p className="text-slate-600">Manage products, content, and business operations</p>
-        </div>
-
-        {/* Stats Grid */}
-        <div className="mt-6 grid gap-4 sm:grid-cols-2">
-          <div className="rounded-lg bg-gradient-to-br from-emerald-50 to-emerald-100 p-4 border border-emerald-200">
-            <p className="text-xs font-semibold text-emerald-700 uppercase">Products</p>
-            <p className="text-2xl font-bold text-emerald-900">{products.length}</p>
-            <p className="text-xs text-emerald-700">Active listings</p>
-          </div>
-          <div className="rounded-lg bg-gradient-to-br from-purple-50 to-purple-100 p-4 border border-purple-200">
-            <p className="text-xs font-semibold text-purple-700 uppercase">Categories</p>
-            <p className="text-2xl font-bold text-purple-900">{categories.length}</p>
-            <p className="text-xs text-purple-700">Taxonomies</p>
-          </div>
-        </div>
-      </div>
-
+    <div className="min-h-screen bg-slate-50">
       {/* Tab Navigation */}
-      <div className="flex gap-2 border-b border-slate-200">
-        {['overview', 'products'].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab as typeof activeTab)}
-            className={`px-4 py-2.5 font-semibold capitalize transition border-b-2 ${
-              activeTab === tab
-                ? 'border-emerald-600 text-emerald-600'
-                : 'border-transparent text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
+      <div className="sticky top-0 z-20 bg-white border-b border-slate-200 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <nav className="flex gap-1 overflow-x-auto py-2 scrollbar-hide">
+            {TABS.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 whitespace-nowrap rounded-lg px-4 py-2.5 text-sm font-medium transition-all ${
+                  activeTab === tab.id
+                    ? 'bg-emerald-50 text-emerald-700'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                {tab.icon}
+                <span>{tab.label}</span>
+                {tab.id === 'products' && stats.products > 0 && (
+                  <span className="ml-1 rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-700">
+                    {stats.products}
+                  </span>
+                )}
+                {tab.id === 'blog' && stats.blogs > 0 && (
+                  <span className="ml-1 rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-700">
+                    {stats.blogs}
+                  </span>
+                )}
+              </button>
+            ))}
+          </nav>
+        </div>
       </div>
 
-      {/* Tab Content */}
-      <div>
-        {activeTab === 'overview' && (
-          <div className="rounded-lg border border-slate-200 bg-white p-6">
-            <h2 className="text-lg font-semibold text-slate-900 mb-4">Quick Access</h2>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <button
-                onClick={() => setActiveTab('products')}
-                className="rounded-lg bg-emerald-50 p-4 text-left hover:bg-emerald-100 transition border border-emerald-200"
-              >
-                <p className="font-semibold text-emerald-900">📦 Manage Products</p>
-                <p className="text-sm text-emerald-700">{products.length} total products</p>
-              </button>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'products' && (
-          <div className="space-y-6">
-            <div className="rounded-lg bg-white border border-slate-200 p-6">
-              <h2 className="text-lg font-semibold text-slate-900 mb-4">Create or Edit Product</h2>
-              <ProductForm
-                form={productForm}
-                categories={categories}
-                onChange={(updates) => setProductForm({ ...productForm, ...updates })}
-                onSubmit={handleProductSubmit}
-                isSubmitting={createProduct.isPending || updateProduct.isPending}
-                isEditing={!!productForm._id}
-              />
-            </div>
-
-            <div className="rounded-lg bg-white border border-slate-200 p-6">
-              <h2 className="text-lg font-semibold text-slate-900 mb-4">Product Inventory</h2>
-              <ProductList
-                products={products}
-                categories={categoryMap}
-                isLoading={productsLoading}
-                onEdit={startEditProduct}
-                onDelete={handleDeleteProduct}
-                isDeleting={deleteProduct.isPending}
-              />
-            </div>
-          </div>
-        )}
+      {/* Content Area */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {activeTab === 'dashboard' && <Dashboard onNavigate={setActiveTab} stats={stats} />}
+        {activeTab === 'products' && <ProductManager />}
+        {activeTab === 'categories' && <CategoryManager />}
+        {activeTab === 'blog' && <BlogManager />}
+        {activeTab === 'content' && <ContentEditorRedirect />}
       </div>
     </div>
   );
