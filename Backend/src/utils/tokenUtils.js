@@ -35,8 +35,8 @@ export const getRefreshTokenCookieOptions = () => {
   
   return {
     httpOnly: true,           // Prevents XSS attacks - JS can't access this cookie
-    secure: isProduction,     // HTTPS only in production
-    sameSite: isProduction ? 'strict' : 'lax', // CSRF protection
+    secure: true,             // Always require HTTPS (even in dev if testing with ngrok/tunnels)
+    sameSite: 'none',         // Allow cross-origin cookies (needed for Vercel + Render)
     maxAge: REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60 * 1000, // 7 days in ms
     path: '/',                // Cookie available for all routes
   };
@@ -46,12 +46,10 @@ export const getRefreshTokenCookieOptions = () => {
  * Get cookie options for clearing refresh token (logout)
  */
 export const getClearCookieOptions = () => {
-  const isProduction = NODE_ENV === 'production';
-  
   return {
     httpOnly: true,
-    secure: isProduction,
-    sameSite: isProduction ? 'strict' : 'lax',
+    secure: true,             // Match the cookie creation settings
+    sameSite: 'none',         // Match the cookie creation settings
     path: '/',
   };
 };
