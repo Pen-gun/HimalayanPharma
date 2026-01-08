@@ -12,6 +12,8 @@ import Register from './pages/Register';
 const About = lazy(() => import('./pages/About'));
 const Blog = lazy(() => import('./pages/Blog'));
 const BlogDetail = lazy(() => import('./pages/BlogDetail'));
+const News = lazy(() => import('./pages/News'));
+const NewsDetail = lazy(() => import('./pages/NewsDetail'));
 const Careers = lazy(() => import('./pages/Careers'));
 const Commitments = lazy(() => import('./pages/Commitments'));
 const Contact = lazy(() => import('./pages/Contact'));
@@ -73,6 +75,16 @@ const App = () => {
         <Route path="blog/:id" element={
           <Suspense fallback={<PageLoader />}>
             <BlogDetail />
+          </Suspense>
+        } />
+        <Route path="news" element={
+          <Suspense fallback={<PageLoader />}>
+            <News />
+          </Suspense>
+        } />
+        <Route path="news/:id" element={
+          <Suspense fallback={<PageLoader />}>
+            <NewsDetail />
           </Suspense>
         } />
         <Route path="careers" element={

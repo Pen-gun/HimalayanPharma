@@ -10,6 +10,7 @@ const navLinks = [
   { to: '/products', label: 'Products' },
   { to: '/science', label: 'Science' },
   { to: '/commitments', label: 'Commitments' },
+  { to: '/news', label: 'News' },
   { to: '/blog', label: 'Blog' },
   // { to: '/careers', label: 'Careers' },
   { to: '/contact', label: 'Contact' },

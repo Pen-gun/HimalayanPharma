@@ -253,6 +253,20 @@ export interface BlogPost {
   updatedAt: string;
 }
 
+export interface NewsItem {
+  _id: string;
+  title: string;
+  summary: string;
+  content: string;
+  coverImage?: string;
+  tags: string[];
+  isPublished: boolean;
+  author: string;
+  publishedAt?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface PaginatedResponse<T> {
   success: boolean;
   count: number;
@@ -364,6 +378,40 @@ export const api = {
 
     delete: async (id: string) => {
       const { data } = await apiClient.delete<ApiResponse<BlogPost>>(`/blog/${id}`);
+      return data;
+    },
+  },
+
+  // News
+  news: {
+    getAll: async (params?: {
+      search?: string;
+      tag?: string;
+      page?: number;
+      limit?: number;
+      isPublished?: boolean;
+    }) => {
+      const { data } = await apiClient.get<PaginatedResponse<NewsItem>>('/news', { params });
+      return data;
+    },
+
+    getById: async (id: string) => {
+      const { data } = await apiClient.get<ApiResponse<NewsItem>>(`/news/${id}`);
+      return data;
+    },
+
+    create: async (payload: Partial<NewsItem> & { title: string; summary: string; content: string; author: string }) => {
+      const { data } = await apiClient.post<ApiResponse<NewsItem>>('/news', payload);
+      return data;
+    },
+
+    update: async (id: string, payload: Partial<NewsItem> & { title: string; summary: string; content: string; author: string }) => {
+      const { data } = await apiClient.put<ApiResponse<NewsItem>>(`/news/${id}`, payload);
+      return data;
+    },
+
+    delete: async (id: string) => {
+      const { data } = await apiClient.delete<ApiResponse<NewsItem>>(`/news/${id}`);
       return data;
     },
   },
