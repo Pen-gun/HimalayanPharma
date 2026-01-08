@@ -4,6 +4,7 @@ import { useProduct } from '../hooks/useProducts';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import { ShoppingCart } from 'lucide-react';
+import { ProductSkeletonGrid } from '../components/Skeleton.tsx';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -24,8 +25,8 @@ const ProductDetail = () => {
 
   if (isLoading) {
     return (
-      <div className="section-shell space-y-4">
-        <p className="text-slate-600">Loading product...</p>
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <ProductSkeletonGrid count={3} />
       </div>
     );
   }

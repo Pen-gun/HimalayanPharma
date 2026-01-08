@@ -4,6 +4,7 @@ import ProductCard from '../components/ProductCard';
 import SectionHeader from '../components/SectionHeader';
 import { useProducts } from '../hooks/useProducts';
 import { useCategories } from '../hooks/useCategories';
+import { ProductSkeletonGrid } from '../components/Skeleton.tsx';
 
 const Products = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -62,8 +63,8 @@ const Products = () => {
       </div>
 
       {isLoading ? (
-        <div className="text-center py-12">
-          <p className="text-slate-600">Loading products...</p>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <ProductSkeletonGrid count={6} />
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
