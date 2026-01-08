@@ -108,6 +108,53 @@ export const useBlogMutations = () => {
 };
 
 /**
+ * Hook for news CRUD mutations
+ */
+export const useNewsMutations = () => {
+  const queryClient = useQueryClient();
+
+  const createMutation = useMutation({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mutationFn: (data: unknown) => api.news.create(data as any),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-news'] });
+      queryClient.invalidateQueries({ queryKey: ['news'] });
+      notifyToast('success', 'News item created successfully');
+    },
+    onError: (error) => {
+      notifyToast('error', `Failed to create news item: ${formatError(error)}`);
+    },
+  });
+
+  const updateMutation = useMutation({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mutationFn: ({ id, data }: { id: string; data: unknown }) => api.news.update(id, data as any),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-news'] });
+      queryClient.invalidateQueries({ queryKey: ['news'] });
+      notifyToast('success', 'News item updated successfully');
+    },
+    onError: (error) => {
+      notifyToast('error', `Failed to update news item: ${formatError(error)}`);
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => api.news.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-news'] });
+      queryClient.invalidateQueries({ queryKey: ['news'] });
+      notifyToast('success', 'News item deleted successfully');
+    },
+    onError: (error) => {
+      notifyToast('error', `Failed to delete news item: ${formatError(error)}`);
+    },
+  });
+
+  return { createMutation, updateMutation, deleteMutation };
+};
+
+/**
  * Hook for category CRUD mutations
  */
 export const useCategoryMutations = () => {

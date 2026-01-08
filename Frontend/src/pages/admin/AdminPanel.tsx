@@ -19,13 +19,14 @@ import { Link } from 'react-router-dom';
 import { ProductManager } from '../../components/admin/ProductManager';
 import { CategoryManager } from '../../components/admin/CategoryManager';
 import { BlogManager } from '../../components/admin/BlogManager';
+import { NewsManager } from '../../components/admin/NewsManager';
 
 // UI Components
 import { StatsCard, QuickActionCard } from '../../components/admin/ui/StatsCard';
 import { LoadingSpinner } from '../../components/admin/ui/LoadingSpinner';
 
 // Tab types
-type AdminTab = 'dashboard' | 'products' | 'categories' | 'blog' | 'content';
+type AdminTab = 'dashboard' | 'products' | 'categories' | 'news' | 'blog' | 'content';
 
 // Icons
 const DashboardIcon = () => (
@@ -52,6 +53,12 @@ const BlogIcon = () => (
   </svg>
 );
 
+const NewsIcon = () => (
+  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V7a2 2 0 012-2h11l3 3v12a2 2 0 01-2 2zM9 7h3m-3 4h6m-6 4h6" />
+  </svg>
+);
+
 const ContentIcon = () => (
   <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -63,6 +70,7 @@ const TABS: { id: AdminTab; label: string; icon: React.ReactNode }[] = [
   { id: 'dashboard', label: 'Dashboard', icon: <DashboardIcon /> },
   { id: 'products', label: 'Products', icon: <ProductIcon /> },
   { id: 'categories', label: 'Categories', icon: <CategoryIcon /> },
+  { id: 'news', label: 'News', icon: <NewsIcon /> },
   { id: 'blog', label: 'Blog', icon: <BlogIcon /> },
   { id: 'content', label: 'Site Content', icon: <ContentIcon /> },
 ];
@@ -76,6 +84,7 @@ const Dashboard = ({
   stats: {
     products: number;
     categories: number;
+    news: number;
     blogs: number;
     featured: number;
   };
@@ -86,7 +95,7 @@ const Dashboard = ({
       <div className="rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-700 p-8 text-white shadow-lg">
         <h1 className="text-3xl font-bold">Welcome to Admin Dashboard</h1>
         <p className="mt-2 text-emerald-100 max-w-2xl">
-          Manage your products, categories, blog posts, and site content from one central location.
+          Manage your products, categories, news updates, blog posts, and site content from one central location.
           All changes are saved automatically and reflected on your website instantly.
         </p>
       </div>
@@ -116,6 +125,14 @@ const Dashboard = ({
           color="blue"
           onClick={() => onNavigate('blog')}
           icon={<BlogIcon />}
+        />
+        <StatsCard
+          title="News"
+          value={stats.news}
+          subtitle="Company updates"
+          color="purple"
+          onClick={() => onNavigate('news')}
+          icon={<NewsIcon />}
         />
         <StatsCard
           title="Featured"
@@ -150,6 +167,13 @@ const Dashboard = ({
             color="blue"
           />
           <QuickActionCard
+            title="Publish News"
+            description="Post company updates"
+            icon={<NewsIcon />}
+            onClick={() => onNavigate('news')}
+            color="purple"
+          />
+          <QuickActionCard
             title="Edit Site Content"
             description="Update homepage & pages"
             icon={<ContentIcon />}
@@ -177,7 +201,7 @@ const Dashboard = ({
               onClick={() => onNavigate('products')}
               className="text-sm font-medium text-emerald-600 hover:text-emerald-700"
             >
-              Manage →
+              Manage &gt;
             </button>
           </div>
 
@@ -195,7 +219,7 @@ const Dashboard = ({
               onClick={() => onNavigate('categories')}
               className="text-sm font-medium text-purple-600 hover:text-purple-700"
             >
-              Manage →
+              Manage &gt;
             </button>
           </div>
 
@@ -213,7 +237,25 @@ const Dashboard = ({
               onClick={() => onNavigate('blog')}
               className="text-sm font-medium text-blue-600 hover:text-blue-700"
             >
-              Manage →
+              Manage &gt;
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-purple-100 rounded-lg text-purple-600">
+                <NewsIcon />
+              </div>
+              <div>
+                <p className="font-medium text-slate-900">News Management</p>
+                <p className="text-sm text-slate-500">{stats.news} updates published</p>
+              </div>
+            </div>
+            <button
+              onClick={() => onNavigate('news')}
+              className="text-sm font-medium text-purple-600 hover:text-purple-700"
+            >
+              Manage &gt;
             </button>
           </div>
         </div>
@@ -255,7 +297,7 @@ const AdminPanel = () => {
   // Handle navigation from sidebar quick jump
   const handleNavigateEvent = useCallback((e: CustomEvent<{ tab: string }>) => {
     const tab = e.detail.tab as AdminTab;
-    if (['dashboard', 'products', 'categories', 'blog', 'content'].includes(tab)) {
+    if (['dashboard', 'products', 'categories', 'news', 'blog', 'content'].includes(tab)) {
       setActiveTab(tab);
     }
   }, []);
@@ -273,7 +315,7 @@ const AdminPanel = () => {
     setSearchParams({ tab });
   };
 
-  // Fetch all data for stats
+    // Fetch all data for stats
   const { data: productsRes, isLoading: productsLoading } = useQuery({
     queryKey: ['admin-products'],
     queryFn: () => api.products.getAll({ limit: 500 }),
@@ -289,15 +331,21 @@ const AdminPanel = () => {
     queryFn: () => api.blog.getAll({ limit: 500 }),
   });
 
+  const { data: newsRes, isLoading: newsLoading } = useQuery({
+    queryKey: ['admin-news'],
+    queryFn: () => api.news.getAll({ limit: 500 }),
+  });
+
   useEffect(() => {
     document.title = 'Admin Dashboard | Himalayan Pharma Works';
   }, []);
 
-  const isLoading = productsLoading || categoriesLoading || blogLoading;
+  const isLoading = productsLoading || categoriesLoading || blogLoading || newsLoading;
 
   const stats = {
     products: productsRes?.data?.length || 0,
     categories: categoriesRes?.data?.length || 0,
+    news: newsRes?.data?.length || 0,
     blogs: blogRes?.data?.length || 0,
     featured: productsRes?.data?.filter((p) => p.featured).length || 0,
   };
@@ -339,6 +387,11 @@ const AdminPanel = () => {
                     {stats.blogs}
                   </span>
                 )}
+                {tab.id === 'news' && stats.news > 0 && (
+                  <span className="ml-1 rounded-full bg-purple-100 px-2 py-0.5 text-xs font-semibold text-purple-700">
+                    {stats.news}
+                  </span>
+                )}
               </button>
             ))}
           </nav>
@@ -350,6 +403,7 @@ const AdminPanel = () => {
         {activeTab === 'dashboard' && <Dashboard onNavigate={handleTabChange} stats={stats} />}
         {activeTab === 'products' && <ProductManager />}
         {activeTab === 'categories' && <CategoryManager />}
+        {activeTab === 'news' && <NewsManager />}
         {activeTab === 'blog' && <BlogManager />}
         {activeTab === 'content' && <ContentEditorRedirect />}
       </div>
@@ -358,3 +412,4 @@ const AdminPanel = () => {
 };
 
 export default AdminPanel;
+

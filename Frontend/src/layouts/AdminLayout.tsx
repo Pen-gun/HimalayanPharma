@@ -10,6 +10,7 @@ const AdminLayout = () => {
   const quickLinks = [
     { tab: 'dashboard', label: 'Overview', icon: <LayoutDashboard className="h-4 w-4" /> },
     { tab: 'products', label: 'Products', icon: <Package className="h-4 w-4" /> },
+    { tab: 'news', label: 'News', icon: <FileText className="h-4 w-4" /> },
     { tab: 'blog', label: 'Blog', icon: <FileText className="h-4 w-4" /> },
     { tab: 'categories', label: 'Categories', icon: <Tags className="h-4 w-4" /> },
   ];
