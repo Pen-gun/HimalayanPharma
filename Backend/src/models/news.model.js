@@ -7,16 +7,16 @@ const newsSchema = new Schema({
         trim: true,
         maxlength: [200, 'Title cannot exceed 200 characters'],
     },
-    summery: {
+    summary: {
         type: String,
-        required: [true, 'Summery is required'],
-        maxlength: [500, 'Summery cannot exceed 500 characters'],
+        required: [true, 'Summary is required'],
+        maxlength: [500, 'Summary cannot exceed 500 characters'],
     },
     content: {
         type: String,
         required: [true, 'Content is required'],
     },
-    imageUrl: {
+    coverImage: {
         type: String,
         trim: true,
     },
@@ -28,7 +28,16 @@ const newsSchema = new Schema({
         type: Boolean,
         default: false,
     },
+    author: {
+        type: String,
+        required: [true, 'Author is required'],
+        trim: true,
+    },
+    publishedAt: {
+        type: Date,
+        default: null,
+    }
 
 },{ timestamps: true });
 
-export const News = model('News', newsSchema);
+export default model('News', newsSchema);
