@@ -9,6 +9,7 @@ import StatsBar from '../components/StatsBar';
 import { useFeaturedProducts } from '../hooks/useProducts';
 import { useBlogPosts } from '../hooks/useBlog';
 import { useContent } from '../hooks/useContent';
+import { ProductSkeletonGrid } from '../components/Skeleton';
 
 const ABOUT_ITEMS = ['Traceable botanicals', 'Clinically studied', 'Vegan friendly', 'ISO & cGMP'];
 
@@ -68,8 +69,8 @@ const Home = () => {
           subtitle="Curated bestsellers from liver health to stress resilience, crafted with traceable botanicals and rigorous lab validation."
         />
         {productsLoading ? (
-          <div className="text-center py-12">
-            <p className="text-slate-600">Loading products...</p>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <ProductSkeletonGrid count={6} />
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -135,8 +136,8 @@ const Home = () => {
           subtitle="Field notes from our labs and partner farms, plus how to use our products with confidence."
         />
         {blogLoading ? (
-          <div className="text-center py-12">
-            <p className="text-slate-600">Loading articles...</p>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <ProductSkeletonGrid count={3} />
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { Minus, Plus, ShoppingCart, Trash2, X } from 'lucide-react';
 import SectionHeader from '../components/SectionHeader';
+import { ProductSkeletonGrid } from '../components/Skeleton.tsx';
 
 const Cart = () => {
   const { cart, isLoading, removeFromCart, addToCart, clearCart } = useCart();
@@ -13,8 +14,8 @@ const Cart = () => {
 
   if (isLoading) {
     return (
-      <div className="section-shell flex min-h-[60vh] items-center justify-center">
-        <p className="text-slate-600">Loading cart...</p>
+      <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
+        <ProductSkeletonGrid count={3} />
       </div>
     );
   }
