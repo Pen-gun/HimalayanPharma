@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import BlogCard from '../components/BlogCard';
 import SectionHeader from '../components/SectionHeader';
 import { useBlogPosts } from '../hooks/useBlog';
+import { ProductSkeletonGrid } from '../components/Skeleton.tsx';
 
 const Blog = () => {
   const { data: blogData, isLoading } = useBlogPosts();
@@ -21,8 +22,8 @@ const Blog = () => {
         align="center"
       />
       {isLoading ? (
-        <div className="text-center py-12">
-          <p className="text-slate-600">Loading articles...</p>
+        <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
+          <ProductSkeletonGrid count={3} />
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

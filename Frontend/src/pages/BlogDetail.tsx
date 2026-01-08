@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import SectionHeader from '../components/SectionHeader';
 import { useBlogPost } from '../hooks/useBlog';
+import { ProductSkeletonGrid } from '../components/Skeleton';
 
 const BlogDetail = () => {
   const { id } = useParams();
@@ -15,8 +16,8 @@ const BlogDetail = () => {
 
   if (isLoading) {
     return (
-      <div className="section-shell space-y-4">
-        <p className="text-slate-600">Loading article...</p>
+      <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
+        <ProductSkeletonGrid count={3} />
       </div>
     );
   }
