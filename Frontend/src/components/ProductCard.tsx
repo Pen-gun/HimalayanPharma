@@ -26,7 +26,7 @@ const ProductCard = memo(({ product }: Props) => {
         </div>
         <div className="flex items-start justify-between gap-2">
           <h3 className="text-lg font-semibold text-emerald-900">{product.name}</h3>
-          {product.price && <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-800">{product.price}</span>}
+          {product.price && <span className="rounded-full border-emerald-200 bg-emerald-50 w-23 px-2 py-1 text-xs font-semibold text-emerald-800 text-center">Rs {product.price}</span>}
         </div>
         <p className="text-sm text-slate-600">{product.shortDescription}</p>
         {product.tags && (
