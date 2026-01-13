@@ -4,6 +4,24 @@ interface MediaGalleryProps {
   items: MediaItem[];
 }
 
+const getYouTubeEmbedUrl = (url: string) => {
+  if (!url) return null;
+  try {
+    const parsed = new URL(url);
+    if (parsed.hostname === 'youtu.be') {
+      const id = parsed.pathname.replace('/', '');
+      return id ? `https://www.youtube.com/embed/${id}` : null;
+    }
+    if (parsed.hostname.includes('youtube.com')) {
+      const id = parsed.searchParams.get('v');
+      return id ? `https://www.youtube.com/embed/${id}` : null;
+    }
+  } catch {
+    return null;
+  }
+  return null;
+};
+
 const MediaGallery = ({ items }: MediaGalleryProps) => {
   if (!items || items.length === 0) {
     return null;
@@ -34,13 +52,29 @@ const MediaGallery = ({ items }: MediaGalleryProps) => {
               )}
 
               {item.type === 'video' && (
-                <video
-                  controls
-                  className="h-44 w-full rounded-xl bg-slate-900"
-                  poster={item.thumbnailUrl || undefined}
-                >
-                  <source src={item.url} />
-                </video>
+                (() => {
+                  const embedUrl = getYouTubeEmbedUrl(item.url);
+                  if (embedUrl) {
+                    return (
+                      <iframe
+                        className="h-44 w-full rounded-xl bg-slate-900"
+                        src={embedUrl}
+                        title={item.title || 'YouTube video'}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    );
+                  }
+                  return (
+                    <video
+                      controls
+                      className="h-44 w-full rounded-xl bg-slate-900"
+                      poster={item.thumbnailUrl || undefined}
+                    >
+                      <source src={item.url} />
+                    </video>
+                  );
+                })()
               )}
 
               {item.type === 'audio' && (
