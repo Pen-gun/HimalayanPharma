@@ -46,6 +46,18 @@ const ContactLocationSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const MediaItemSchema = new mongoose.Schema(
+  {
+    type: { type: String, required: true, enum: ['image', 'video', 'audio'] },
+    title: { type: String, required: true },
+    description: { type: String, default: '' },
+    url: { type: String, required: true },
+    thumbnailUrl: { type: String, default: '' },
+    provider: { type: String, default: '' },
+  },
+  { _id: false }
+);
+
 const SiteContentSchema = new mongoose.Schema(
   {
     key: { type: String, required: true, unique: true, default: 'default' },
@@ -55,6 +67,7 @@ const SiteContentSchema = new mongoose.Schema(
     commitments: { type: [HighlightSchema], default: [] },
     jobs: { type: [JobSchema], default: [] },
     contactLocations: { type: [ContactLocationSchema], default: [] },
+    mediaItems: { type: [MediaItemSchema], default: [] },
   },
   { timestamps: true }
 );

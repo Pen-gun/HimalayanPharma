@@ -1,12 +1,13 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { api, type SiteContent, type Stat, type Testimonial, type Highlight, type JobListing, type ContactLocation } from '../../lib/api';
+import { api, type SiteContent, type Stat, type Testimonial, type Highlight, type JobListing, type ContactLocation, type MediaItem } from '../../lib/api';
 import { useContentMutation } from '../../hooks/useAdminMutations';
 import { StatsEditor } from '../../components/admin/StatsEditor';
 import { TestimonialEditor } from '../../components/admin/TestimonialEditor';
 import { HighlightEditor } from '../../components/admin/HighlightEditor';
 import { JobEditor } from '../../components/admin/JobEditor';
 import { LocationEditor } from '../../components/admin/LocationEditor';
+import { MediaEditor } from '../../components/admin/MediaEditor';
 
 type FormState = {
   testimonials: Testimonial[];
@@ -15,6 +16,7 @@ type FormState = {
   commitments: Highlight[];
   jobs: JobListing[];
   contactLocations: ContactLocation[];
+  mediaItems: MediaItem[];
 };
 
 const ContentEditor = () => {
@@ -25,6 +27,7 @@ const ContentEditor = () => {
     commitments: [],
     jobs: [],
     contactLocations: [],
+    mediaItems: [],
   });
   const [hasChanges, setHasChanges] = useState(false);
 
@@ -49,6 +52,7 @@ const ContentEditor = () => {
         commitments: content.commitments || [],
         jobs: content.jobs || [],
         contactLocations: content.contactLocations || [],
+        mediaItems: content.mediaItems || [],
       };
       setForm(newForm);
       setHasChanges(false);
@@ -78,7 +82,7 @@ const ContentEditor = () => {
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-3xl font-bold text-slate-900">Content Management</h1>
-            <p className="mt-1 text-slate-600">Edit site-wide content: testimonials, statistics, job listings, and locations</p>
+            <p className="mt-1 text-slate-600">Edit site-wide content: testimonials, statistics, job listings, locations, and media gallery</p>
           </div>
           {hasChanges && (
             <span className="inline-block rounded-full bg-amber-100 px-3 py-1.5 text-xs font-semibold text-amber-800">
@@ -139,6 +143,15 @@ const ContentEditor = () => {
             color="amber"
           />
 
+          {/* Media Gallery Section */}
+          <MediaEditor
+            items={form.mediaItems}
+            onChange={(mediaItems) => {
+              setForm({ ...form, mediaItems });
+              handleFormChange();
+            }}
+          />
+
           {/* Jobs Section */}
           <JobEditor
             jobs={form.jobs}
@@ -186,6 +199,7 @@ const ContentEditor = () => {
                       commitments: content.commitments || [],
                       jobs: content.jobs || [],
                       contactLocations: content.contactLocations || [],
+                      mediaItems: content.mediaItems || [],
                     });
                     setHasChanges(false);
                   }

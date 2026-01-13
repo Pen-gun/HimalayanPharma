@@ -29,6 +29,7 @@ export const upsertContent = async (req, res, next) => {
         commitments: Array.isArray(payload.commitments) ? payload.commitments : [],
         jobs: Array.isArray(payload.jobs) ? payload.jobs : [],
         contactLocations: Array.isArray(payload.contactLocations) ? payload.contactLocations : [],
+        mediaItems: Array.isArray(payload.mediaItems) ? payload.mediaItems : [],
       },
       { new: true, upsert: true, runValidators: true }
     );

@@ -198,6 +198,15 @@ export interface ContactLocation {
   email: string;
 }
 
+export interface MediaItem {
+  type: 'image' | 'video' | 'audio';
+  title: string;
+  description?: string;
+  url: string;
+  thumbnailUrl?: string;
+  provider?: string;
+}
+
 export interface SiteContent {
   _id: string;
   testimonials: Testimonial[];
@@ -206,6 +215,7 @@ export interface SiteContent {
   commitments: Highlight[];
   jobs: JobListing[];
   contactLocations: ContactLocation[];
+  mediaItems: MediaItem[];
   createdAt?: string;
   updatedAt?: string;
 }

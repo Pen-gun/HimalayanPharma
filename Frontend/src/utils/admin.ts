@@ -65,6 +65,14 @@ export const createEmptyTestimonial = () => ({ name: '', title: '', quote: '', a
 export const createEmptyHighlight = () => ({ title: '', description: '' });
 export const createEmptyJob = () => ({ title: '', location: '', type: '', summary: '' });
 export const createEmptyLocation = () => ({ office: '', address: '', phone: '', email: '' });
+export const createEmptyMediaItem = () => ({
+  type: 'image',
+  title: '',
+  description: '',
+  url: '',
+  thumbnailUrl: '',
+  provider: '',
+});
 
 // Batch validators
 export const validateStats = (stats: { label: string; value: string }[]): string | null => {

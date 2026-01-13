@@ -6,6 +6,7 @@ import BlogCard from '../components/BlogCard';
 import TestimonialCard from '../components/TestimonialCard';
 import SectionHeader from '../components/SectionHeader';
 import StatsBar from '../components/StatsBar';
+import MediaGallery from '../components/MediaGallery';
 import { useFeaturedProducts } from '../hooks/useProducts';
 import { useBlogPosts } from '../hooks/useBlog';
 import { useContent } from '../hooks/useContent';
@@ -33,6 +34,7 @@ const Home = () => {
   const content = contentData?.data;
   const contentStats = content?.stats || [];
   const contentTestimonials = content?.testimonials || [];
+  const mediaItems = content?.mediaItems || [];
 
   const renderProductCard = useCallback((product: any) => {
     const category =
@@ -128,6 +130,8 @@ const Home = () => {
           ))}
         </div>
       </section>
+
+      <MediaGallery items={mediaItems} />
 
       <section className="section-shell space-y-8">
         <SectionHeader
