@@ -76,7 +76,7 @@ const ContentEditor = () => {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 scroll-smooth">
       {/* Header */}
       <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="flex items-start justify-between">
@@ -101,74 +101,101 @@ const ContentEditor = () => {
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-6">
+          <nav className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Jump to section</div>
+            <div className="mt-3 flex flex-wrap gap-2 text-sm">
+              <a className="rounded-full bg-emerald-50 px-3 py-1.5 font-semibold text-emerald-800 hover:bg-emerald-100" href="#stats">Stats</a>
+              <a className="rounded-full bg-emerald-50 px-3 py-1.5 font-semibold text-emerald-800 hover:bg-emerald-100" href="#testimonials">Testimonials</a>
+              <a className="rounded-full bg-emerald-50 px-3 py-1.5 font-semibold text-emerald-800 hover:bg-emerald-100" href="#science-highlights">Science highlights</a>
+              <a className="rounded-full bg-emerald-50 px-3 py-1.5 font-semibold text-emerald-800 hover:bg-emerald-100" href="#commitments">Commitments</a>
+              <a className="rounded-full bg-emerald-50 px-3 py-1.5 font-semibold text-emerald-800 hover:bg-emerald-100" href="#media-gallery">Media gallery</a>
+              <a className="rounded-full bg-emerald-50 px-3 py-1.5 font-semibold text-emerald-800 hover:bg-emerald-100" href="#jobs">Jobs</a>
+              <a className="rounded-full bg-emerald-50 px-3 py-1.5 font-semibold text-emerald-800 hover:bg-emerald-100" href="#locations">Locations</a>
+            </div>
+          </nav>
+
           {/* Stats Section */}
-          <StatsEditor
-            stats={form.stats}
-            onChange={(stats) => {
-              setForm({ ...form, stats });
-              handleFormChange();
-            }}
-          />
+          <section id="stats" className="scroll-mt-24">
+            <StatsEditor
+              stats={form.stats}
+              onChange={(stats) => {
+                setForm({ ...form, stats });
+                handleFormChange();
+              }}
+            />
+          </section>
 
           {/* Testimonials Section */}
-          <TestimonialEditor
-            testimonials={form.testimonials}
-            onChange={(testimonials) => {
-              setForm({ ...form, testimonials });
-              handleFormChange();
-            }}
-          />
+          <section id="testimonials" className="scroll-mt-24">
+            <TestimonialEditor
+              testimonials={form.testimonials}
+              onChange={(testimonials) => {
+                setForm({ ...form, testimonials });
+                handleFormChange();
+              }}
+            />
+          </section>
 
           {/* Science Highlights Section */}
-          <HighlightEditor
-            highlights={form.scienceHighlights}
-            onChange={(scienceHighlights) => {
-              setForm({ ...form, scienceHighlights });
-              handleFormChange();
-            }}
-            title="Science Highlights"
-            subtitle="Research and scientific breakthroughs"
-            color="purple"
-          />
+          <section id="science-highlights" className="scroll-mt-24">
+            <HighlightEditor
+              highlights={form.scienceHighlights}
+              onChange={(scienceHighlights) => {
+                setForm({ ...form, scienceHighlights });
+                handleFormChange();
+              }}
+              title="Science Highlights"
+              subtitle="Research and scientific breakthroughs"
+              color="purple"
+            />
+          </section>
 
           {/* Commitments Section */}
-          <HighlightEditor
-            highlights={form.commitments}
-            onChange={(commitments) => {
-              setForm({ ...form, commitments });
-              handleFormChange();
-            }}
-            title="Company Commitments"
-            subtitle="Our values and promises to customers"
-            color="amber"
-          />
+          <section id="commitments" className="scroll-mt-24">
+            <HighlightEditor
+              highlights={form.commitments}
+              onChange={(commitments) => {
+                setForm({ ...form, commitments });
+                handleFormChange();
+              }}
+              title="Company Commitments"
+              subtitle="Our values and promises to customers"
+              color="amber"
+            />
+          </section>
 
           {/* Media Gallery Section */}
-          <MediaEditor
-            items={form.mediaItems}
-            onChange={(mediaItems) => {
-              setForm({ ...form, mediaItems });
-              handleFormChange();
-            }}
-          />
+          <section id="media-gallery" className="scroll-mt-24">
+            <MediaEditor
+              items={form.mediaItems}
+              onChange={(mediaItems) => {
+                setForm({ ...form, mediaItems });
+                handleFormChange();
+              }}
+            />
+          </section>
 
           {/* Jobs Section */}
-          <JobEditor
-            jobs={form.jobs}
-            onChange={(jobs) => {
-              setForm({ ...form, jobs });
-              handleFormChange();
-            }}
-          />
+          <section id="jobs" className="scroll-mt-24">
+            <JobEditor
+              jobs={form.jobs}
+              onChange={(jobs) => {
+                setForm({ ...form, jobs });
+                handleFormChange();
+              }}
+            />
+          </section>
 
           {/* Locations Section */}
-          <LocationEditor
-            locations={form.contactLocations}
-            onChange={(contactLocations) => {
-              setForm({ ...form, contactLocations });
-              handleFormChange();
-            }}
-          />
+          <section id="locations" className="scroll-mt-24">
+            <LocationEditor
+              locations={form.contactLocations}
+              onChange={(contactLocations) => {
+                setForm({ ...form, contactLocations });
+                handleFormChange();
+              }}
+            />
+          </section>
 
           {/* Submit Button */}
           <div className="sticky bottom-6 flex gap-3">
