@@ -59,7 +59,7 @@ const AdminLayout = () => {
       </header>
 
       <div className="mx-auto grid max-w-6xl gap-6 px-4 py-8 lg:grid-cols-[220px_1fr]">
-        <aside className="rounded-2xl border border-emerald-100 bg-white/80 p-4 shadow-sm h-fit">
+        <aside className="sticky top-0 h-screen rounded-2xl border border-emerald-100 bg-white/80 p-4 shadow-sm backdrop-blur">
           <div className="mb-4 text-xs font-semibold uppercase text-slate-500">Navigation</div>
           <nav className="mb-6 grid gap-2 text-sm">
             {navItems.map((item) => (
