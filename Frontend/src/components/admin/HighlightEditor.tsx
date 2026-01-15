@@ -6,30 +6,16 @@ interface HighlightEditorProps {
   onChange: (highlights: Highlight[]) => void;
   title: string;
   subtitle: string;
-  color: 'purple' | 'amber' | 'cyan';
+  color: 'blue';
 }
 
 const colorSchemes = {
-  purple: {
-    border: 'border-purple-200',
-    gradient: 'from-purple-50 to-white',
-    label: 'bg-purple-100 text-purple-700',
-    button: 'bg-purple-100 text-purple-700 hover:bg-purple-200',
-    focus: 'focus:ring-purple-400',
-  },
-  amber: {
-    border: 'border-amber-200',
-    gradient: 'from-amber-50 to-white',
-    label: 'bg-amber-100 text-amber-700',
-    button: 'bg-amber-100 text-amber-700 hover:bg-amber-200',
-    focus: 'focus:ring-amber-400',
-  },
-  cyan: {
-    border: 'border-cyan-200',
-    gradient: 'from-cyan-50 to-white',
-    label: 'bg-cyan-100 text-cyan-700',
-    button: 'bg-cyan-100 text-cyan-700 hover:bg-cyan-200',
-    focus: 'focus:ring-cyan-400',
+  blue: {
+    border: 'border-blue-200',
+    gradient: 'from-blue-50 to-white',
+    label: 'bg-blue-100 text-blue-700',
+    button: 'bg-blue-100 text-blue-700 hover:bg-blue-200',
+    focus: 'focus:ring-blue-400',
   },
 };
 

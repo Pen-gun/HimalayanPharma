@@ -82,9 +82,9 @@ const Dashboard = ({
   return (
     <div className="space-y-8">
       {/* Welcome Section */}
-      <div className="rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-700 p-8 text-white shadow-lg">
+      <div className="rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 p-8 text-white shadow-lg">
         <h1 className="text-3xl font-bold">Welcome to Admin Dashboard</h1>
-        <p className="mt-2 text-emerald-100 max-w-2xl">
+        <p className="mt-2 text-blue-100 max-w-2xl">
           Manage your products, categories, news updates, blog posts, and site content from one central location.
           All changes are saved automatically and reflected on your website instantly.
         </p>
@@ -96,7 +96,7 @@ const Dashboard = ({
           title="Total Products"
           value={stats.products}
           subtitle="Active listings"
-          color="emerald"
+          color="blue"
           onClick={() => onNavigate('products')}
           icon={<ProductIcon />}
         />
@@ -104,7 +104,7 @@ const Dashboard = ({
           title="Categories"
           value={stats.categories}
           subtitle="Product groups"
-          color="purple"
+          color="blue"
           onClick={() => onNavigate('categories')}
           icon={<CategoryIcon />}
         />
@@ -120,7 +120,7 @@ const Dashboard = ({
           title="News"
           value={stats.news}
           subtitle="Company updates"
-          color="purple"
+          color="blue"
           onClick={() => onNavigate('news')}
           icon={<NewsIcon />}
         />
@@ -128,7 +128,7 @@ const Dashboard = ({
           title="Featured"
           value={stats.featured}
           subtitle="Highlighted products"
-          color="amber"
+          color="blue"
           onClick={() => onNavigate('products')}
           icon={
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -147,7 +147,7 @@ const Dashboard = ({
             description="Create a new product listing"
             icon={<ProductIcon />}
             onClick={() => onNavigate('products')}
-            color="emerald"
+            color="blue"
           />
           <QuickActionCard
             title="Write Blog Post"
@@ -161,14 +161,14 @@ const Dashboard = ({
             description="Post company updates"
             icon={<NewsIcon />}
             onClick={() => onNavigate('news')}
-            color="purple"
+            color="blue"
           />
           <QuickActionCard
             title="Edit Site Content"
             description="Update homepage & pages"
             icon={<ContentIcon />}
             onClick={() => onNavigate('content')}
-            color="purple"
+            color="blue"
           />
         </div>
       </div>
@@ -179,7 +179,7 @@ const Dashboard = ({
         <div className="space-y-4">
           <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-emerald-100 rounded-lg text-emerald-600">
+              <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
                 <ProductIcon />
               </div>
               <div>
@@ -189,7 +189,7 @@ const Dashboard = ({
             </div>
             <button
               onClick={() => onNavigate('products')}
-              className="text-sm font-medium text-emerald-600 hover:text-emerald-700"
+              className="text-sm font-medium text-blue-600 hover:text-blue-700"
             >
               Manage &gt;
             </button>
@@ -197,7 +197,7 @@ const Dashboard = ({
 
           <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-purple-100 rounded-lg text-purple-600">
+              <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
                 <CategoryIcon />
               </div>
               <div>
@@ -207,7 +207,7 @@ const Dashboard = ({
             </div>
             <button
               onClick={() => onNavigate('categories')}
-              className="text-sm font-medium text-purple-600 hover:text-purple-700"
+              className="text-sm font-medium text-blue-600 hover:text-blue-700"
             >
               Manage &gt;
             </button>
@@ -233,7 +233,7 @@ const Dashboard = ({
 
           <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-purple-100 rounded-lg text-purple-600">
+              <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
                 <NewsIcon />
               </div>
               <div>
@@ -243,7 +243,7 @@ const Dashboard = ({
             </div>
             <button
               onClick={() => onNavigate('news')}
-              className="text-sm font-medium text-purple-600 hover:text-purple-700"
+              className="text-sm font-medium text-blue-600 hover:text-blue-700"
             >
               Manage &gt;
             </button>
@@ -258,7 +258,7 @@ const Dashboard = ({
 const ContentEditorRedirect = () => {
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-8 text-center">
-      <div className="mx-auto w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4">
+      <div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
         <ContentIcon />
       </div>
       <h2 className="text-xl font-bold text-slate-900 mb-2">Site Content Editor</h2>
@@ -267,7 +267,7 @@ const ContentEditorRedirect = () => {
       </p>
       <Link
         to="/admin/content"
-        className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-6 py-3 font-semibold text-white hover:bg-emerald-700 transition-colors"
+        className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700 transition-colors"
       >
         Open Content Editor
         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -14,7 +14,7 @@ export const ProductList = ({ products, categories, isLoading, onEdit, onDelete,
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-emerald-600 mb-3" />
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-blue-600 mb-3" />
           <p className="text-slate-600">Loading products...</p>
         </div>
       </div>
@@ -43,7 +43,7 @@ export const ProductList = ({ products, categories, isLoading, onEdit, onDelete,
               <h3 className="font-semibold text-slate-900 line-clamp-2">{product.name}</h3>
             </div>
             {product.featured && (
-              <span className="rounded-full bg-amber-100 px-2 py-1 text-[10px] font-bold text-amber-700">★</span>
+              <span className="rounded-full bg-blue-100 px-2 py-1 text-[10px] font-bold text-blue-700">★</span>
             )}
           </div>
 
@@ -52,7 +52,7 @@ export const ProductList = ({ products, categories, isLoading, onEdit, onDelete,
           {product.tags && product.tags.length > 0 && (
             <div className="mb-3 flex flex-wrap gap-1">
               {product.tags.slice(0, 2).map((tag) => (
-                <span key={tag} className="rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">
+                <span key={tag} className="rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-semibold text-blue-700">
                   {tag}
                 </span>
               ))}
@@ -63,7 +63,7 @@ export const ProductList = ({ products, categories, isLoading, onEdit, onDelete,
           )}
 
           <div className="mb-3 flex items-center justify-between">
-            <span className="text-sm font-bold text-emerald-700">
+            <span className="text-sm font-bold text-blue-700">
               {product.price ? `₹${product.price.toLocaleString()}` : 'No price'}
             </span>
             <span className="text-xs text-slate-400">{product._id.slice(-6)}</span>

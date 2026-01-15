@@ -89,7 +89,7 @@ export function DataTable<T>({
                 key={keyExtractor(item)}
                 onClick={() => onRowClick?.(item)}
                 className={`transition-colors ${
-                  onRowClick ? 'cursor-pointer hover:bg-emerald-50/50' : 'hover:bg-slate-50/50'
+                  onRowClick ? 'cursor-pointer hover:bg-blue-50/50' : 'hover:bg-slate-50/50'
                 }`}
               >
                 {columns.map((col) => (
@@ -130,7 +130,7 @@ interface ActionButtonProps {
 
 export const ActionButton = ({ onClick, disabled, children, variant = 'secondary' }: ActionButtonProps) => {
   const variants = {
-    primary: 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100',
+    primary: 'bg-blue-50 text-blue-700 hover:bg-blue-100',
     secondary: 'bg-slate-50 text-slate-700 hover:bg-slate-100',
     danger: 'bg-red-50 text-red-700 hover:bg-red-100',
   };

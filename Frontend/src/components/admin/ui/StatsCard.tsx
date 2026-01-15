@@ -4,7 +4,7 @@
  */
 import type { ReactNode } from 'react';
 
-type ColorScheme = 'emerald' | 'blue' | 'purple' | 'amber' | 'rose' | 'cyan' | 'slate';
+type ColorScheme = 'blue' | 'slate';
 
 interface StatsCardProps {
   title: string;
@@ -20,47 +20,12 @@ interface StatsCardProps {
 }
 
 const colorStyles: Record<ColorScheme, { bg: string; border: string; title: string; value: string; subtitle: string }> = {
-  emerald: {
-    bg: 'bg-gradient-to-br from-emerald-50 to-emerald-100',
-    border: 'border-emerald-200',
-    title: 'text-emerald-700',
-    value: 'text-emerald-900',
-    subtitle: 'text-emerald-600',
-  },
   blue: {
     bg: 'bg-gradient-to-br from-blue-50 to-blue-100',
     border: 'border-blue-200',
     title: 'text-blue-700',
     value: 'text-blue-900',
     subtitle: 'text-blue-600',
-  },
-  purple: {
-    bg: 'bg-gradient-to-br from-purple-50 to-purple-100',
-    border: 'border-purple-200',
-    title: 'text-purple-700',
-    value: 'text-purple-900',
-    subtitle: 'text-purple-600',
-  },
-  amber: {
-    bg: 'bg-gradient-to-br from-amber-50 to-amber-100',
-    border: 'border-amber-200',
-    title: 'text-amber-700',
-    value: 'text-amber-900',
-    subtitle: 'text-amber-600',
-  },
-  rose: {
-    bg: 'bg-gradient-to-br from-rose-50 to-rose-100',
-    border: 'border-rose-200',
-    title: 'text-rose-700',
-    value: 'text-rose-900',
-    subtitle: 'text-rose-600',
-  },
-  cyan: {
-    bg: 'bg-gradient-to-br from-cyan-50 to-cyan-100',
-    border: 'border-cyan-200',
-    title: 'text-cyan-700',
-    value: 'text-cyan-900',
-    subtitle: 'text-cyan-600',
   },
   slate: {
     bg: 'bg-gradient-to-br from-slate-50 to-slate-100',
@@ -76,7 +41,7 @@ export const StatsCard = ({
   value,
   subtitle,
   icon,
-  color = 'emerald',
+  color = 'blue',
   trend,
   onClick,
 }: StatsCardProps) => {
@@ -118,7 +83,7 @@ export const StatsCard = ({
           <span
             className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
               trend.isPositive
-                ? 'bg-green-100 text-green-700'
+                ? 'bg-blue-100 text-blue-700'
                 : 'bg-red-100 text-red-700'
             }`}
           >
@@ -140,7 +105,7 @@ interface QuickActionCardProps {
   color?: ColorScheme;
 }
 
-export const QuickActionCard = ({ title, description, icon, onClick, color = 'emerald' }: QuickActionCardProps) => {
+export const QuickActionCard = ({ title, description, icon, onClick, color = 'blue' }: QuickActionCardProps) => {
   const styles = colorStyles[color];
 
   return (

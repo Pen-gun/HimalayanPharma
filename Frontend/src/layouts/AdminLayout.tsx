@@ -46,25 +46,25 @@ const AdminLayout = () => {
     <div className="min-h-screen bg-slate-50">
       <header className="border-b border-slate-200 bg-white/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-          <div className="flex items-center gap-2 text-emerald-800">
-            <div className="flex h-10 w-10 items-center justify-center rounded-[0_1rem_0_1rem] bg-emerald-600 text-white shadow-lg shadow-emerald-600/30">
+          <div className="flex items-center gap-2 text-blue-800">
+            <div className="flex h-10 w-10 items-center justify-center rounded-[0_1rem_0_1rem] bg-blue-600 text-white shadow-lg shadow-blue-600/30">
               <ShieldCheck className="h-5 w-5" />
             </div>
             <div>
               <p className="text-sm font-semibold uppercase tracking-wide">Admin</p>
-              <p className="text-xs text-emerald-700">Himalayan Pharma Works</p>
+              <p className="text-xs text-blue-700">Himalayan Pharma Works</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <div className="hidden text-right sm:block">
-              <p className="text-sm font-semibold text-emerald-900">{user?.name}</p>
+              <p className="text-sm font-semibold text-blue-900">{user?.name}</p>
               <p className="text-xs text-slate-600">{user?.email}</p>
             </div>
             <button onClick={logout} className="btn-secondary flex items-center gap-2 px-4 py-2">
               <LogOut className="h-4 w-4" />
               Logout
             </button>
-            <Link to="/" className="rounded-full border border-emerald-200 px-3 py-2 text-sm font-semibold text-emerald-800 transition hover:bg-emerald-50">
+            <Link to="/" className="rounded-full border border-blue-200 px-3 py-2 text-sm font-semibold text-blue-800 transition hover:bg-blue-50">
               Back to site
             </Link>
           </div>
@@ -72,7 +72,7 @@ const AdminLayout = () => {
       </header>
 
       <div className="mx-auto grid max-w-6xl gap-6 px-4 py-8 lg:grid-cols-[220px_1fr]">
-        <aside className="sticky top-0 h-screen rounded-2xl border border-emerald-100 bg-white/80 p-4 shadow-sm backdrop-blur">
+        <aside className="sticky top-0 h-screen rounded-2xl border border-blue-100 bg-white/80 p-4 shadow-sm backdrop-blur">
           <div className="mb-4 text-xs font-semibold uppercase text-slate-500">Navigation</div>
           <nav className="mb-6 grid gap-2 text-sm">
             {navItems.map((item) => (
@@ -81,8 +81,8 @@ const AdminLayout = () => {
                 to={item.to}
                 className={`rounded-lg px-3 py-2 font-semibold transition ${
                   location.pathname === item.to
-                    ? 'bg-emerald-100 text-emerald-800'
-                    : 'text-slate-800 hover:bg-emerald-50'
+                    ? 'bg-blue-100 text-blue-800'
+                    : 'text-slate-800 hover:bg-blue-50'
                 }`}
               >
                 {item.label}
@@ -101,8 +101,8 @@ const AdminLayout = () => {
                     onClick={() => handleQuickJump(item.tab)}
                     className={`flex items-center gap-3 rounded-lg px-3 py-2 font-semibold transition text-left ${
                       activeTab === item.tab
-                        ? 'bg-emerald-100 text-emerald-800'
-                        : 'text-slate-800 hover:bg-emerald-50 hover:text-emerald-800'
+                        ? 'bg-blue-100 text-blue-800'
+                        : 'text-slate-800 hover:bg-blue-50 hover:text-blue-800'
                     }`}
                   >
                     {item.icon}
@@ -123,8 +123,8 @@ const AdminLayout = () => {
                     href={section.hash}
                     className={`rounded-lg px-3 py-2 font-semibold transition ${
                       activeHash === section.hash
-                        ? 'bg-emerald-100 text-emerald-800'
-                        : 'text-slate-800 hover:bg-emerald-50 hover:text-emerald-800'
+                        ? 'bg-blue-100 text-blue-800'
+                        : 'text-slate-800 hover:bg-blue-50 hover:text-blue-800'
                     }`}
                   >
                     {section.label}

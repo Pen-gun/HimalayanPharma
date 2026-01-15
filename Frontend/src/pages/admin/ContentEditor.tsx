@@ -85,7 +85,7 @@ const ContentEditor = () => {
             <p className="mt-1 text-slate-600">Edit site-wide content: testimonials, statistics, job listings, locations, and media gallery</p>
           </div>
           {hasChanges && (
-            <span className="inline-block rounded-full bg-amber-100 px-3 py-1.5 text-xs font-semibold text-amber-800">
+            <span className="inline-block rounded-full bg-blue-100 px-3 py-1.5 text-xs font-semibold text-blue-800">
               Unsaved changes
             </span>
           )}
@@ -95,7 +95,7 @@ const ContentEditor = () => {
       {isLoading ? (
         <div className="flex items-center justify-center py-12">
           <div className="space-y-4 text-center">
-            <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-emerald-600" />
+            <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-blue-600" />
             <p className="text-slate-600">Loading content...</p>
           </div>
         </div>
@@ -134,7 +134,7 @@ const ContentEditor = () => {
               }}
               title="Science Highlights"
               subtitle="Research and scientific breakthroughs"
-              color="purple"
+              color="blue"
             />
           </section>
 
@@ -148,7 +148,7 @@ const ContentEditor = () => {
               }}
               title="Company Commitments"
               subtitle="Our values and promises to customers"
-              color="amber"
+              color="blue"
             />
           </section>
 
@@ -189,7 +189,7 @@ const ContentEditor = () => {
           <div className="sticky bottom-6 flex gap-3">
             <button
               type="submit"
-              className="flex-1 rounded-lg bg-emerald-600 px-6 py-3 text-center font-semibold text-white shadow-lg hover:bg-emerald-700 active:scale-95 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 rounded-lg bg-blue-600 px-6 py-3 text-center font-semibold text-white shadow-lg hover:bg-blue-700 active:scale-95 transition disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={updateMutation.isPending || !hasChanges}
             >
               {updateMutation.isPending ? (

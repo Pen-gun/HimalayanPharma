@@ -21,7 +21,7 @@ export const PageHeader = ({ title, description, actions, breadcrumbs }: PageHea
               <li key={index} className="flex items-center gap-2">
                 {index > 0 && <span>/</span>}
                 {crumb.href ? (
-                  <a href={crumb.href} className="hover:text-emerald-600 transition-colors">
+                  <a href={crumb.href} className="hover:text-blue-600 transition-colors">
                     {crumb.label}
                   </a>
                 ) : (
@@ -58,7 +58,7 @@ interface ButtonProps {
 }
 
 const variantStyles = {
-  primary: 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm',
+  primary: 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm',
   secondary: 'bg-white text-slate-700 border border-slate-300 hover:bg-slate-50',
   danger: 'bg-red-600 text-white hover:bg-red-700 shadow-sm',
   ghost: 'text-slate-600 hover:bg-slate-100 hover:text-slate-900',

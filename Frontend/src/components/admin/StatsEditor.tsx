@@ -8,13 +8,13 @@ interface StatsEditorProps {
 
 export const StatsEditor = ({ stats, onChange }: StatsEditorProps) => {
   return (
-    <section className="space-y-4 rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-6">
+    <section className="space-y-4 rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 to-white p-6">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-emerald-900">Statistics</h3>
+          <h3 className="text-lg font-semibold text-blue-900">Statistics</h3>
           <p className="text-sm text-slate-600">Key metrics displayed on homepage</p>
         </div>
-        <span className="inline-block rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+        <span className="inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
           {stats.length} items
         </span>
       </div>
@@ -30,13 +30,13 @@ export const StatsEditor = ({ stats, onChange }: StatsEditorProps) => {
             >
               <div className="flex gap-3">
                 <input
-                  className="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-400 focus:border-transparent outline-none"
+                  className="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none"
                   placeholder="Label (e.g., Years in Business)"
                   value={stat.label}
                   onChange={(e) => onChange(updateArrayItem(stats, idx, { label: e.target.value }))}
                 />
                 <input
-                  className="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-400 focus:border-transparent outline-none"
+                  className="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none"
                   placeholder="Value (e.g., 30+)"
                   value={stat.value}
                   onChange={(e) => onChange(updateArrayItem(stats, idx, { value: e.target.value }))}
@@ -58,7 +58,7 @@ export const StatsEditor = ({ stats, onChange }: StatsEditorProps) => {
 
       <button
         type="button"
-        className="w-full rounded-lg bg-emerald-100 px-4 py-2 text-sm font-semibold text-emerald-700 hover:bg-emerald-200 transition"
+        className="w-full rounded-lg bg-blue-100 px-4 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-200 transition"
         onClick={() => onChange([...stats, createEmptyStat()])}
       >
         + Add Statistic

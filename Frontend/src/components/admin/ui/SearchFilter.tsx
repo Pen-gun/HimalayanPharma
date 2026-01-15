@@ -60,7 +60,7 @@ export const SearchFilter = ({
           value={localSearch}
           onChange={(e) => setLocalSearch(e.target.value)}
           placeholder={placeholder}
-          className="w-full rounded-lg border border-slate-300 bg-white py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-400 transition-all focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none"
+          className="w-full rounded-lg border border-slate-300 bg-white py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-400 transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none"
         />
         {localSearch && (
           <button
@@ -85,7 +85,7 @@ export const SearchFilter = ({
               key={filter.key}
               value={activeFilters[filter.key] || ''}
               onChange={(e) => onFilterChange?.(filter.key, e.target.value)}
-              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 transition-all focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none cursor-pointer"
+              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none cursor-pointer"
             >
               <option value="">{filter.label}</option>
               {filter.options.map((opt) => (
@@ -166,7 +166,7 @@ export const Pagination = ({
                 onClick={() => onPageChange(page)}
                 className={`min-w-[40px] rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                   currentPage === page
-                    ? 'bg-emerald-600 text-white'
+                    ? 'bg-blue-600 text-white'
                     : 'text-slate-600 hover:bg-slate-100'
                 }`}
               >

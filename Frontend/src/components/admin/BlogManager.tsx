@@ -310,12 +310,12 @@ export const BlogManager = () => {
   };
 
   // Category badge colors
-  const categoryColors: Record<string, 'info' | 'success' | 'purple' | 'warning' | 'danger'> = {
+  const categoryColors: Record<string, 'info'> = {
     Science: 'info',
-    Commitments: 'success',
-    'R&D': 'purple',
-    Wellness: 'warning',
-    News: 'danger',
+    Commitments: 'info',
+    'R&D': 'info',
+    Wellness: 'info',
+    News: 'info',
   };
 
   // Table columns
