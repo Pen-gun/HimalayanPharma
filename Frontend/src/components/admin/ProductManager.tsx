@@ -435,7 +435,7 @@ export const ProductManager = () => {
         const catName = typeof product.category === 'string'
           ? categories.find((c) => c._id === catId)?.name
           : product.category?.name;
-        return <Badge variant="purple">{catName || 'Unknown'}</Badge>;
+        return <Badge variant="info">{catName || 'Unknown'}</Badge>;
       },
     },
     {

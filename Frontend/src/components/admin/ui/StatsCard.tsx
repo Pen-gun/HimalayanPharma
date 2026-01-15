@@ -1,6 +1,6 @@
 /**
  * Stats Card Component
- * Beautiful gradient cards for dashboard metrics
+ * Clean metric cards for dashboard summaries
  */
 import type { ReactNode } from 'react';
 
@@ -21,18 +21,18 @@ interface StatsCardProps {
 
 const colorStyles: Record<ColorScheme, { bg: string; border: string; title: string; value: string; subtitle: string }> = {
   blue: {
-    bg: 'bg-gradient-to-br from-blue-50 to-blue-100',
+    bg: 'bg-white',
     border: 'border-blue-200',
     title: 'text-blue-700',
-    value: 'text-blue-900',
-    subtitle: 'text-blue-600',
+    value: 'text-slate-900',
+    subtitle: 'text-slate-500',
   },
   slate: {
-    bg: 'bg-gradient-to-br from-slate-50 to-slate-100',
+    bg: 'bg-white',
     border: 'border-slate-200',
     title: 'text-slate-700',
     value: 'text-slate-900',
-    subtitle: 'text-slate-600',
+    subtitle: 'text-slate-500',
   },
 };
 
@@ -41,7 +41,7 @@ export const StatsCard = ({
   value,
   subtitle,
   icon,
-  color = 'blue',
+  color = 'slate',
   trend,
   onClick,
 }: StatsCardProps) => {
@@ -72,7 +72,7 @@ export const StatsCard = ({
           {subtitle && <p className={`text-sm ${styles.subtitle}`}>{subtitle}</p>}
         </div>
         {icon && (
-          <div className={`rounded-lg p-2.5 ${styles.bg} ${styles.title}`}>
+          <div className={`rounded-lg border border-slate-200 p-2.5 text-slate-500`}>
             {icon}
           </div>
         )}
@@ -105,7 +105,7 @@ interface QuickActionCardProps {
   color?: ColorScheme;
 }
 
-export const QuickActionCard = ({ title, description, icon, onClick, color = 'blue' }: QuickActionCardProps) => {
+export const QuickActionCard = ({ title, description, icon, onClick, color = 'slate' }: QuickActionCardProps) => {
   const styles = colorStyles[color];
 
   return (
@@ -116,10 +116,10 @@ export const QuickActionCard = ({ title, description, icon, onClick, color = 'bl
         e.stopPropagation();
         onClick();
       }}
-      className={`w-full rounded-xl ${styles.bg} border ${styles.border} p-5 text-left transition-all hover:shadow-md hover:scale-[1.02] active:scale-[0.98]`}
+      className={`w-full rounded-xl ${styles.bg} border ${styles.border} p-5 text-left transition-all hover:shadow-md hover:scale-[1.01] active:scale-[0.99]`}
     >
       <div className="flex items-center gap-4">
-        <div className={`rounded-lg p-3 bg-white/50 ${styles.title}`}>
+        <div className={`rounded-lg border border-slate-200 p-3 text-slate-500`}>
           {icon}
         </div>
         <div>

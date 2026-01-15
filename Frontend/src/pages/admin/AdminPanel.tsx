@@ -82,9 +82,9 @@ const Dashboard = ({
   return (
     <div className="space-y-8">
       {/* Welcome Section */}
-      <div className="rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 p-8 text-white shadow-lg">
-        <h1 className="text-3xl font-bold">Welcome to Admin Dashboard</h1>
-        <p className="mt-2 text-blue-100 max-w-2xl">
+      <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+        <h1 className="text-3xl font-bold text-slate-900">Welcome to Admin Dashboard</h1>
+        <p className="mt-2 text-slate-600 max-w-2xl">
           Manage your products, categories, news updates, blog posts, and site content from one central location.
           All changes are saved automatically and reflected on your website instantly.
         </p>
@@ -96,7 +96,6 @@ const Dashboard = ({
           title="Total Products"
           value={stats.products}
           subtitle="Active listings"
-          color="blue"
           onClick={() => onNavigate('products')}
           icon={<ProductIcon />}
         />
@@ -104,7 +103,6 @@ const Dashboard = ({
           title="Categories"
           value={stats.categories}
           subtitle="Product groups"
-          color="blue"
           onClick={() => onNavigate('categories')}
           icon={<CategoryIcon />}
         />
@@ -112,7 +110,6 @@ const Dashboard = ({
           title="Blog Posts"
           value={stats.blogs}
           subtitle="Published articles"
-          color="blue"
           onClick={() => onNavigate('blog')}
           icon={<BlogIcon />}
         />
@@ -120,7 +117,6 @@ const Dashboard = ({
           title="News"
           value={stats.news}
           subtitle="Company updates"
-          color="blue"
           onClick={() => onNavigate('news')}
           icon={<NewsIcon />}
         />
@@ -128,7 +124,6 @@ const Dashboard = ({
           title="Featured"
           value={stats.featured}
           subtitle="Highlighted products"
-          color="blue"
           onClick={() => onNavigate('products')}
           icon={
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -147,28 +142,24 @@ const Dashboard = ({
             description="Create a new product listing"
             icon={<ProductIcon />}
             onClick={() => onNavigate('products')}
-            color="blue"
           />
           <QuickActionCard
             title="Write Blog Post"
             description="Share news and insights"
             icon={<BlogIcon />}
             onClick={() => onNavigate('blog')}
-            color="blue"
           />
           <QuickActionCard
             title="Publish News"
             description="Post company updates"
             icon={<NewsIcon />}
             onClick={() => onNavigate('news')}
-            color="blue"
           />
           <QuickActionCard
             title="Edit Site Content"
             description="Update homepage & pages"
             icon={<ContentIcon />}
             onClick={() => onNavigate('content')}
-            color="blue"
           />
         </div>
       </div>
@@ -179,7 +170,7 @@ const Dashboard = ({
         <div className="space-y-4">
           <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
+              <div className="p-2 bg-blue-50 rounded-lg text-blue-600">
                 <ProductIcon />
               </div>
               <div>
@@ -197,7 +188,7 @@ const Dashboard = ({
 
           <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
+              <div className="p-2 bg-blue-50 rounded-lg text-blue-600">
                 <CategoryIcon />
               </div>
               <div>
@@ -215,7 +206,7 @@ const Dashboard = ({
 
           <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
+              <div className="p-2 bg-blue-50 rounded-lg text-blue-600">
                 <BlogIcon />
               </div>
               <div>
@@ -233,7 +224,7 @@ const Dashboard = ({
 
           <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
+              <div className="p-2 bg-blue-50 rounded-lg text-blue-600">
                 <NewsIcon />
               </div>
               <div>

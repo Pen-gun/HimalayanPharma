@@ -6,15 +6,15 @@ interface HighlightEditorProps {
   onChange: (highlights: Highlight[]) => void;
   title: string;
   subtitle: string;
-  color: 'blue';
+  color: 'slate';
 }
 
 const colorSchemes = {
-  blue: {
-    border: 'border-blue-200',
-    gradient: 'from-blue-50 to-white',
-    label: 'bg-blue-100 text-blue-700',
-    button: 'bg-blue-100 text-blue-700 hover:bg-blue-200',
+  slate: {
+    border: 'border-slate-200',
+    gradient: 'from-white to-white',
+    label: 'bg-blue-50 text-blue-700',
+    button: 'bg-blue-50 text-blue-700 hover:bg-blue-100',
     focus: 'focus:ring-blue-400',
   },
 };
@@ -23,7 +23,7 @@ export const HighlightEditor = ({ highlights, onChange, title, subtitle, color }
   const scheme = colorSchemes[color];
 
   return (
-    <section className={`space-y-4 rounded-2xl border ${scheme.border} bg-gradient-to-br ${scheme.gradient} p-6`}>
+    <section className={`space-y-4 rounded-2xl border ${scheme.border} bg-white p-6`}>
       <div className="flex items-center justify-between">
         <div>
           <h3 className={`text-lg font-semibold ${scheme.label.split(' ')[1]}`}>{title}</h3>

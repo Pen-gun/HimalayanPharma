@@ -8,13 +8,13 @@ interface StatsEditorProps {
 
 export const StatsEditor = ({ stats, onChange }: StatsEditorProps) => {
   return (
-    <section className="space-y-4 rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 to-white p-6">
+    <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-6">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-blue-900">Statistics</h3>
+          <h3 className="text-lg font-semibold text-slate-900">Statistics</h3>
           <p className="text-sm text-slate-600">Key metrics displayed on homepage</p>
         </div>
-        <span className="inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
+        <span className="inline-block rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
           {stats.length} items
         </span>
       </div>
@@ -58,7 +58,7 @@ export const StatsEditor = ({ stats, onChange }: StatsEditorProps) => {
 
       <button
         type="button"
-        className="w-full rounded-lg bg-blue-100 px-4 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-200 transition"
+        className="w-full rounded-lg bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-100 transition"
         onClick={() => onChange([...stats, createEmptyStat()])}
       >
         + Add Statistic

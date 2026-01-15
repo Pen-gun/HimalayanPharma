@@ -14,13 +14,13 @@ const typeLabels: Record<MediaItem['type'], string> = {
 
 export const MediaEditor = ({ items, onChange }: MediaEditorProps) => {
   return (
-    <section className="space-y-4 rounded-2xl border border-teal-200 bg-gradient-to-br from-teal-50 to-white p-6">
+    <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-6">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-teal-900">Media Gallery</h3>
+          <h3 className="text-lg font-semibold text-slate-900">Media Gallery</h3>
           <p className="text-sm text-slate-600">Audio, video, and image items shown on the site</p>
         </div>
-        <span className="inline-block rounded-full bg-teal-100 px-3 py-1 text-xs font-semibold text-teal-700">
+        <span className="inline-block rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
           {items.length} items
         </span>
       </div>
@@ -36,7 +36,7 @@ export const MediaEditor = ({ items, onChange }: MediaEditorProps) => {
             >
               <div className="flex flex-wrap gap-3">
                 <select
-                  className="min-w-[140px] rounded-lg border border-slate-200 px-3 py-2 text-sm focus:ring-2 focus:ring-teal-400 focus:border-transparent outline-none"
+                  className="min-w-[140px] rounded-lg border border-slate-200 px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none"
                   value={item.type}
                   onChange={(e) => onChange(updateArrayItem(items, idx, { type: e.target.value as MediaItem['type'] }))}
                 >
@@ -47,7 +47,7 @@ export const MediaEditor = ({ items, onChange }: MediaEditorProps) => {
                   ))}
                 </select>
                 <input
-                  className="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:ring-2 focus:ring-teal-400 focus:border-transparent outline-none"
+                  className="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none"
                   placeholder="Title"
                   value={item.title}
                   onChange={(e) => onChange(updateArrayItem(items, idx, { title: e.target.value }))}
@@ -55,7 +55,7 @@ export const MediaEditor = ({ items, onChange }: MediaEditorProps) => {
               </div>
 
               <input
-                className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:ring-2 focus:ring-teal-400 focus:border-transparent outline-none"
+                className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none"
                 placeholder="Media URL (image, audio, or video)"
                 value={item.url}
                 onChange={(e) => onChange(updateArrayItem(items, idx, { url: e.target.value }))}
@@ -63,13 +63,13 @@ export const MediaEditor = ({ items, onChange }: MediaEditorProps) => {
 
               <div className="grid gap-3 md:grid-cols-2">
                 <input
-                  className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:ring-2 focus:ring-teal-400 focus:border-transparent outline-none"
+                  className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none"
                   placeholder="Thumbnail URL (optional)"
                   value={item.thumbnailUrl || ''}
                   onChange={(e) => onChange(updateArrayItem(items, idx, { thumbnailUrl: e.target.value }))}
                 />
                 <input
-                  className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:ring-2 focus:ring-teal-400 focus:border-transparent outline-none"
+                  className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none"
                   placeholder="Provider (optional)"
                   value={item.provider || ''}
                   onChange={(e) => onChange(updateArrayItem(items, idx, { provider: e.target.value }))}
@@ -77,7 +77,7 @@ export const MediaEditor = ({ items, onChange }: MediaEditorProps) => {
               </div>
 
               <textarea
-                className="w-full min-h-[70px] rounded-lg border border-slate-200 px-3 py-2 text-sm focus:ring-2 focus:ring-teal-400 focus:border-transparent outline-none resize-vertical"
+                className="w-full min-h-[70px] rounded-lg border border-slate-200 px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none resize-vertical"
                 placeholder="Short description (optional)"
                 value={item.description || ''}
                 onChange={(e) => onChange(updateArrayItem(items, idx, { description: e.target.value }))}
@@ -100,7 +100,7 @@ export const MediaEditor = ({ items, onChange }: MediaEditorProps) => {
 
       <button
         type="button"
-        className="w-full rounded-lg bg-teal-100 px-4 py-2 text-sm font-semibold text-teal-700 hover:bg-teal-200 transition"
+        className="w-full rounded-lg bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-100 transition"
         onClick={() => onChange([...items, createEmptyMediaItem()])}
       >
         + Add Media Item

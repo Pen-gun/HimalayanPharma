@@ -134,7 +134,7 @@ const ContentEditor = () => {
               }}
               title="Science Highlights"
               subtitle="Research and scientific breakthroughs"
-              color="blue"
+              color="slate"
             />
           </section>
 
@@ -148,7 +148,7 @@ const ContentEditor = () => {
               }}
               title="Company Commitments"
               subtitle="Our values and promises to customers"
-              color="blue"
+              color="slate"
             />
           </section>
 
