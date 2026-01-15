@@ -50,7 +50,6 @@ npm run build     # Production build
 
 - [Backend README](Backend/README.md) - API documentation
 - [Frontend README](Frontend/README.md) - Frontend documentation
-- [Postman Collection](Backend/POSTMAN_COLLECTION.json) - API testing
 
 ## 🔐 Environment Variables
 
