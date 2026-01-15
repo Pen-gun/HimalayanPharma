@@ -2,7 +2,7 @@
  * Blog Manager Component
  * Full CRUD for blog posts with rich content editing
  */
-import { useState, useMemo, type FormEvent } from 'react';
+import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { api, type BlogPost } from '../../lib/api';
 import { useBlogMutations } from '../../hooks/useAdminMutations';
@@ -10,7 +10,7 @@ import { notifyToast } from '../../utils/admin';
 
 // UI Components
 import { Modal } from './ui/Modal';
-import { DataTable, ActionButton, type Column } from './ui/DataTable';
+import { DataTable, type Column } from './ui/DataTable';
 import { FormField, FormTextArea, FormSelect } from './ui/FormFields';
 import { SearchFilter, Pagination } from './ui/SearchFilter';
 import { PageHeader, Button } from './ui/PageHeader';
@@ -176,6 +176,7 @@ export const BlogManager = () => {
   const [filters, setFilters] = useState<Record<string, string>>({});
   const [page, setPage] = useState(1);
   const [deleteTarget, setDeleteTarget] = useState<BlogPost | null>(null);
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 
   const ITEMS_PER_PAGE = 10;
 
@@ -231,6 +232,18 @@ export const BlogManager = () => {
     setFilters((prev) => ({ ...prev, [key]: value }));
     setPage(1);
   };
+
+  useEffect(() => {
+    if (!openMenuId) return;
+    const handleOutsideClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('[data-action-menu]')) {
+        setOpenMenuId(null);
+      }
+    };
+    document.addEventListener('click', handleOutsideClick);
+    return () => document.removeEventListener('click', handleOutsideClick);
+  }, [openMenuId]);
 
   const openCreateModal = () => {
     setForm(INITIAL_FORM);
@@ -420,12 +433,45 @@ export const BlogManager = () => {
         emptyTitle="No blog posts found"
         emptyDescription={search ? 'Try adjusting your search or filters' : 'Create your first blog post to share news and insights'}
         actions={(post) => (
-          <>
-            <ActionButton onClick={() => openEditModal(post)}>Edit</ActionButton>
-            <ActionButton variant="danger" onClick={() => setDeleteTarget(post)}>
-              Delete
-            </ActionButton>
-          </>
+          <div className="relative" data-action-menu>
+            <button
+              type="button"
+              onClick={() => setOpenMenuId((prev) => (prev === post._id ? null : post._id))}
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition hover:bg-slate-100"
+              aria-haspopup="menu"
+              aria-expanded={openMenuId === post._id}
+            >
+              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <circle cx="12" cy="5" r="2" />
+                <circle cx="12" cy="12" r="2" />
+                <circle cx="12" cy="19" r="2" />
+              </svg>
+            </button>
+            {openMenuId === post._id && (
+              <div className="absolute right-0 z-10 mt-2 w-36 rounded-lg border border-slate-200 bg-white py-1 shadow-lg">
+                <button
+                  type="button"
+                  onClick={() => {
+                    openEditModal(post);
+                    setOpenMenuId(null);
+                  }}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-50"
+                >
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDeleteTarget(post);
+                    setOpenMenuId(null);
+                  }}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50"
+                >
+                  Delete
+                </button>
+              </div>
+            )}
+          </div>
         )}
       />
 

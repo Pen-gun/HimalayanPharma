@@ -2,7 +2,7 @@
  * Category Manager Component
  * Full CRUD for product categories with inline editing
  */
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { api, type Category } from '../../lib/api';
 import { useCategoryMutations } from '../../hooks/useAdminMutations';
@@ -10,7 +10,7 @@ import { notifyToast } from '../../utils/admin';
 
 // UI Components
 import { Modal } from './ui/Modal';
-import { DataTable, ActionButton, type Column } from './ui/DataTable';
+import { DataTable, type Column } from './ui/DataTable';
 import { FormField, FormTextArea } from './ui/FormFields';
 import { SearchFilter } from './ui/SearchFilter';
 import { PageHeader, Button } from './ui/PageHeader';
@@ -93,6 +93,7 @@ export const CategoryManager = () => {
   const [form, setForm] = useState<CategoryFormState>(INITIAL_FORM);
   const [search, setSearch] = useState('');
   const [deleteTarget, setDeleteTarget] = useState<Category | null>(null);
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 
   // Queries
   const { data: categoriesRes, isFetching } = useQuery({
@@ -129,6 +130,18 @@ export const CategoryManager = () => {
           c.description?.toLowerCase().includes(search.toLowerCase())
       )
     : categories;
+
+  useEffect(() => {
+    if (!openMenuId) return;
+    const handleOutsideClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('[data-action-menu]')) {
+        setOpenMenuId(null);
+      }
+    };
+    document.addEventListener('click', handleOutsideClick);
+    return () => document.removeEventListener('click', handleOutsideClick);
+  }, [openMenuId]);
 
   // Form handlers
   const openCreateModal = () => {
@@ -271,16 +284,46 @@ export const CategoryManager = () => {
         emptyTitle="No categories found"
         emptyDescription={search ? 'Try a different search term' : 'Create your first category to organize products'}
         actions={(category) => (
-          <>
-            <ActionButton onClick={() => openEditModal(category)}>Edit</ActionButton>
-            <ActionButton
-              variant="danger"
-              onClick={() => setDeleteTarget(category)}
-              disabled={(productCounts[category._id] || 0) > 0}
+          <div className="relative" data-action-menu>
+            <button
+              type="button"
+              onClick={() => setOpenMenuId((prev) => (prev === category._id ? null : category._id))}
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition hover:bg-slate-100"
+              aria-haspopup="menu"
+              aria-expanded={openMenuId === category._id}
             >
-              Delete
-            </ActionButton>
-          </>
+              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <circle cx="12" cy="5" r="2" />
+                <circle cx="12" cy="12" r="2" />
+                <circle cx="12" cy="19" r="2" />
+              </svg>
+            </button>
+            {openMenuId === category._id && (
+              <div className="absolute right-0 z-10 mt-2 w-36 rounded-lg border border-slate-200 bg-white py-1 shadow-lg">
+                <button
+                  type="button"
+                  onClick={() => {
+                    openEditModal(category);
+                    setOpenMenuId(null);
+                  }}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-50"
+                >
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDeleteTarget(category);
+                    setOpenMenuId(null);
+                  }}
+                  disabled={(productCounts[category._id] || 0) > 0}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Delete
+                </button>
+              </div>
+            )}
+          </div>
         )}
       />
 
