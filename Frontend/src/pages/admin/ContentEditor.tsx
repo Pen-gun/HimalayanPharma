@@ -101,18 +101,6 @@ const ContentEditor = () => {
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-6">
-          <nav className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-            <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Jump to section</div>
-            <div className="mt-3 flex flex-wrap gap-2 text-sm">
-              <a className="rounded-full bg-emerald-50 px-3 py-1.5 font-semibold text-emerald-800 hover:bg-emerald-100" href="#stats">Stats</a>
-              <a className="rounded-full bg-emerald-50 px-3 py-1.5 font-semibold text-emerald-800 hover:bg-emerald-100" href="#testimonials">Testimonials</a>
-              <a className="rounded-full bg-emerald-50 px-3 py-1.5 font-semibold text-emerald-800 hover:bg-emerald-100" href="#science-highlights">Science highlights</a>
-              <a className="rounded-full bg-emerald-50 px-3 py-1.5 font-semibold text-emerald-800 hover:bg-emerald-100" href="#commitments">Commitments</a>
-              <a className="rounded-full bg-emerald-50 px-3 py-1.5 font-semibold text-emerald-800 hover:bg-emerald-100" href="#media-gallery">Media gallery</a>
-              <a className="rounded-full bg-emerald-50 px-3 py-1.5 font-semibold text-emerald-800 hover:bg-emerald-100" href="#jobs">Jobs</a>
-              <a className="rounded-full bg-emerald-50 px-3 py-1.5 font-semibold text-emerald-800 hover:bg-emerald-100" href="#locations">Locations</a>
-            </div>
-          </nav>
 
           {/* Stats Section */}
           <section id="stats" className="scroll-mt-24">

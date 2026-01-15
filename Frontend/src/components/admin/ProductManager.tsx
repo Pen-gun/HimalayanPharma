@@ -2,7 +2,7 @@
  * Product Manager Component
  * Complete product CRUD with search, filter, table view, and modal form
  */
-import { useState, useMemo, type FormEvent } from 'react';
+import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { api, type Product, type Category } from '../../lib/api';
 import { useProductMutations } from '../../hooks/useAdminMutations';
@@ -10,7 +10,7 @@ import { notifyToast } from '../../utils/admin';
 
 // UI Components
 import { Modal } from './ui/Modal';
-import { DataTable, ActionButton, type Column } from './ui/DataTable';
+import { DataTable, type Column } from './ui/DataTable';
 import { FormField, FormTextArea, FormSelect, FormCheckbox } from './ui/FormFields';
 import { SearchFilter, Pagination } from './ui/SearchFilter';
 import { PageHeader, Button } from './ui/PageHeader';
@@ -83,129 +83,149 @@ const ProductFormModal = ({
       size="xl"
     >
       <form onSubmit={onSubmit} className="space-y-6">
-        {/* Basic Info */}
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <FormField
-            label="Product Name"
-            value={form.name}
-            onChange={(e) => onChange({ name: e.target.value })}
-            placeholder="Enter product name"
-            required
-          />
-          <FormSelect
-            label="Category"
-            value={form.category}
-            onChange={(e) => onChange({ category: e.target.value })}
-            options={categoryOptions}
-            placeholder="Select category"
-            required
-          />
-          <FormField
-            label="Price (₹)"
-            type="number"
-            value={form.price}
-            onChange={(e) => onChange({ price: e.target.value })}
-            placeholder="0"
-            min="0"
-            step="0.01"
-          />
-        </div>
-
-        {/* Image URL */}
-        <FormField
-          label="Image URL"
-          value={form.image}
-          onChange={(e) => onChange({ image: e.target.value })}
-          placeholder="https://example.com/image.jpg"
-          helpText="Enter a valid image URL"
-        />
-
-        {/* Preview if image exists */}
-        {form.image && (
-          <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-lg">
-            <img
-              src={form.image}
-              alt="Preview"
-              className="h-16 w-16 rounded-lg object-cover border border-slate-200"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = 'https://via.placeholder.com/64?text=Invalid';
-              }}
-            />
-            <span className="text-sm text-slate-600">Image preview</span>
+        <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
+          <div className="mb-4">
+            <h3 className="text-sm font-semibold text-slate-900">Basics</h3>
+            <p className="text-xs text-slate-500">Core details used across listings.</p>
           </div>
-        )}
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <FormField
+              label="Product Name"
+              value={form.name}
+              onChange={(e) => onChange({ name: e.target.value })}
+              placeholder="Enter product name"
+              required
+            />
+            <FormSelect
+              label="Category"
+              value={form.category}
+              onChange={(e) => onChange({ category: e.target.value })}
+              options={categoryOptions}
+              placeholder="Select category"
+              required
+            />
+            <FormField
+              label="Price (Rs)"
+              type="number"
+              value={form.price}
+              onChange={(e) => onChange({ price: e.target.value })}
+              placeholder="0"
+              min="0"
+              step="0.01"
+            />
+          </div>
+        </div>
 
-        {/* Descriptions */}
-        <FormField
-          label="Short Description"
-          value={form.shortDescription}
-          onChange={(e) => onChange({ shortDescription: e.target.value })}
-          placeholder="Brief product overview (shown in cards)"
-          helpText="Max 200 characters recommended"
-        />
+        <div className="rounded-xl border border-slate-200 bg-white p-4">
+          <div className="mb-4">
+            <h3 className="text-sm font-semibold text-slate-900">Media</h3>
+            <p className="text-xs text-slate-500">Add an image for product cards.</p>
+          </div>
+          <FormField
+            label="Image URL"
+            value={form.image}
+            onChange={(e) => onChange({ image: e.target.value })}
+            placeholder="https://example.com/image.jpg"
+            helpText="Enter a valid image URL"
+          />
 
-        <FormTextArea
-          label="Full Description"
-          value={form.description}
-          onChange={(e) => onChange({ description: e.target.value })}
-          placeholder="Detailed product description..."
-          rows={4}
-        />
+          {form.image && (
+            <div className="mt-3 flex items-center gap-4 rounded-lg border border-slate-200 bg-slate-50 p-3">
+              <img
+                src={form.image}
+                alt="Preview"
+                className="h-16 w-16 rounded-lg object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = 'https://via.placeholder.com/64?text=Invalid';
+                }}
+              />
+              <span className="text-sm text-slate-600">Image preview</span>
+            </div>
+          )}
+        </div>
 
-        {/* Lists */}
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="rounded-xl border border-slate-200 bg-white p-4">
+          <div className="mb-4">
+            <h3 className="text-sm font-semibold text-slate-900">Descriptions</h3>
+            <p className="text-xs text-slate-500">Short and full product descriptions.</p>
+          </div>
+          <FormField
+            label="Short Description"
+            value={form.shortDescription}
+            onChange={(e) => onChange({ shortDescription: e.target.value })}
+            placeholder="Brief product overview (shown in cards)"
+            helpText="Max 200 characters recommended"
+          />
           <FormTextArea
-            label="Benefits"
-            value={form.benefits}
-            onChange={(e) => onChange({ benefits: e.target.value })}
-            placeholder="Benefit 1&#10;Benefit 2&#10;Benefit 3"
-            helpText="One per line or comma-separated"
+            label="Full Description"
+            value={form.description}
+            onChange={(e) => onChange({ description: e.target.value })}
+            placeholder="Detailed product description..."
+            rows={4}
+          />
+        </div>
+
+        <div className="rounded-xl border border-slate-200 bg-white p-4">
+          <div className="mb-4">
+            <h3 className="text-sm font-semibold text-slate-900">Attributes</h3>
+            <p className="text-xs text-slate-500">Benefits, ingredients, and tags.</p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-3">
+            <FormTextArea
+              label="Benefits"
+              value={form.benefits}
+              onChange={(e) => onChange({ benefits: e.target.value })}
+              placeholder="Benefit 1&#10;Benefit 2&#10;Benefit 3"
+              helpText="One per line or comma-separated"
+              rows={3}
+            />
+            <FormTextArea
+              label="Ingredients"
+              value={form.ingredients}
+              onChange={(e) => onChange({ ingredients: e.target.value })}
+              placeholder="Ingredient 1&#10;Ingredient 2"
+              helpText="One per line or comma-separated"
+              rows={3}
+            />
+            <FormTextArea
+              label="Tags"
+              value={form.tags}
+              onChange={(e) => onChange({ tags: e.target.value })}
+              placeholder="tag1, tag2, tag3"
+              helpText="Comma-separated tags"
+              rows={3}
+            />
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-slate-200 bg-white p-4">
+          <div className="mb-4">
+            <h3 className="text-sm font-semibold text-slate-900">Usage & Research</h3>
+            <p className="text-xs text-slate-500">How to use and scientific references.</p>
+          </div>
+          <FormTextArea
+            label="Usage Instructions"
+            value={form.usage}
+            onChange={(e) => onChange({ usage: e.target.value })}
+            placeholder="How to use this product..."
             rows={3}
           />
           <FormTextArea
-            label="Ingredients"
-            value={form.ingredients}
-            onChange={(e) => onChange({ ingredients: e.target.value })}
-            placeholder="Ingredient 1&#10;Ingredient 2"
-            helpText="One per line or comma-separated"
-            rows={3}
-          />
-          <FormTextArea
-            label="Tags"
-            value={form.tags}
-            onChange={(e) => onChange({ tags: e.target.value })}
-            placeholder="tag1, tag2, tag3"
-            helpText="Comma-separated tags"
+            label="Scientific Information"
+            value={form.scientificInfo}
+            onChange={(e) => onChange({ scientificInfo: e.target.value })}
+            placeholder="Research, studies, scientific details..."
+            helpText="Optional - Add any scientific backing or research"
             rows={3}
           />
         </div>
 
-        {/* Usage & Scientific Info */}
-        <FormTextArea
-          label="Usage Instructions"
-          value={form.usage}
-          onChange={(e) => onChange({ usage: e.target.value })}
-          placeholder="How to use this product..."
-          rows={3}
-        />
-
-        <FormTextArea
-          label="Scientific Information"
-          value={form.scientificInfo}
-          onChange={(e) => onChange({ scientificInfo: e.target.value })}
-          placeholder="Research, studies, scientific details..."
-          helpText="Optional - Add any scientific backing or research"
-          rows={3}
-        />
-
-        {/* Featured Toggle */}
         <FormCheckbox
           label="Featured Product"
           checked={form.featured}
           onChange={(e) => onChange({ featured: e.target.checked })}
           description="Show this product in the featured section on homepage"
         />
-
         {/* Actions */}
         <div className="flex justify-end gap-3 border-t border-slate-200 pt-4">
           <Button variant="secondary" onClick={onClose}>
@@ -229,6 +249,7 @@ export const ProductManager = () => {
   const [filters, setFilters] = useState<Record<string, string>>({});
   const [page, setPage] = useState(1);
   const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 
   const ITEMS_PER_PAGE = 10;
 
@@ -299,6 +320,18 @@ export const ProductManager = () => {
     setFilters((prev) => ({ ...prev, [key]: value }));
     setPage(1);
   };
+
+  useEffect(() => {
+    if (!openMenuId) return;
+    const handleOutsideClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('[data-action-menu]')) {
+        setOpenMenuId(null);
+      }
+    };
+    document.addEventListener('click', handleOutsideClick);
+    return () => document.removeEventListener('click', handleOutsideClick);
+  }, [openMenuId]);
 
   // Form handlers
   const openCreateModal = () => {
@@ -411,7 +444,7 @@ export const ProductManager = () => {
       align: 'right',
       render: (product) => (
         <span className="font-medium text-slate-900">
-          {product.price ? `₹${product.price.toLocaleString()}` : '-'}
+          {product.price ? `Rs. ${product.price.toLocaleString()}` : '-'}
         </span>
       ),
     },
@@ -499,12 +532,45 @@ export const ProductManager = () => {
         emptyTitle="No products found"
         emptyDescription={search ? 'Try adjusting your search or filters' : 'Create your first product to get started'}
         actions={(product) => (
-          <>
-            <ActionButton onClick={() => openEditModal(product)}>Edit</ActionButton>
-            <ActionButton variant="danger" onClick={() => setDeleteTarget(product)}>
-              Delete
-            </ActionButton>
-          </>
+          <div className="relative" data-action-menu>
+            <button
+              type="button"
+              onClick={() => setOpenMenuId((prev) => (prev === product._id ? null : product._id))}
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition hover:bg-slate-100"
+              aria-haspopup="menu"
+              aria-expanded={openMenuId === product._id}
+            >
+              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <circle cx="12" cy="5" r="2" />
+                <circle cx="12" cy="12" r="2" />
+                <circle cx="12" cy="19" r="2" />
+              </svg>
+            </button>
+            {openMenuId === product._id && (
+              <div className="absolute right-0 z-10 mt-2 w-36 rounded-lg border border-slate-200 bg-white py-1 shadow-lg">
+                <button
+                  type="button"
+                  onClick={() => {
+                    openEditModal(product);
+                    setOpenMenuId(null);
+                  }}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-50"
+                >
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDeleteTarget(product);
+                    setOpenMenuId(null);
+                  }}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50"
+                >
+                  Delete
+                </button>
+              </div>
+            )}
+          </div>
         )}
       />
 

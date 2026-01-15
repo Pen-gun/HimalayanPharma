@@ -1,18 +1,29 @@
 import { Outlet, Link, useLocation, useSearchParams } from 'react-router-dom';
-import { LogOut, ShieldCheck, Package, FileText, Tags, LayoutDashboard } from 'lucide-react';
+import { LogOut, ShieldCheck, Package, FileText, Tags, LayoutDashboard, PencilRuler } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const AdminLayout = () => {
   const { user, logout } = useAuth();
   const location = useLocation();
-  const [, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const quickLinks = [
-    { tab: 'dashboard', label: 'Overview', icon: <LayoutDashboard className="h-4 w-4" /> },
+  const adminTabs = [
+    { tab: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="h-4 w-4" /> },
     { tab: 'products', label: 'Products', icon: <Package className="h-4 w-4" /> },
+    { tab: 'categories', label: 'Categories', icon: <Tags className="h-4 w-4" /> },
     { tab: 'news', label: 'News', icon: <FileText className="h-4 w-4" /> },
     { tab: 'blog', label: 'Blog', icon: <FileText className="h-4 w-4" /> },
-    { tab: 'categories', label: 'Categories', icon: <Tags className="h-4 w-4" /> },
+    { tab: 'content', label: 'Site Content', icon: <PencilRuler className="h-4 w-4" /> },
+  ];
+
+  const contentSections = [
+    { hash: '#stats', label: 'Stats' },
+    { hash: '#testimonials', label: 'Testimonials' },
+    { hash: '#science-highlights', label: 'Science highlights' },
+    { hash: '#commitments', label: 'Commitments' },
+    { hash: '#media-gallery', label: 'Media gallery' },
+    { hash: '#jobs', label: 'Jobs' },
+    { hash: '#locations', label: 'Locations' },
   ];
 
   const navItems = [
@@ -21,6 +32,8 @@ const AdminLayout = () => {
   ];
 
   const isContentPage = location.pathname === '/admin/content';
+  const activeTab = searchParams.get('tab') || 'dashboard';
+  const activeHash = location.hash || '';
 
   const handleQuickJump = (tab: string) => {
     // Dispatch custom event that AdminPanel listens for
@@ -79,18 +92,43 @@ const AdminLayout = () => {
 
           {!isContentPage && (
             <>
-              <div className="mb-3 text-xs font-semibold uppercase text-slate-500">Quick jump</div>
+              <div className="mb-3 text-xs font-semibold uppercase text-slate-500">Sections</div>
               <nav className="grid gap-2 text-sm">
-                {quickLinks.map((item) => (
+                {adminTabs.map((item) => (
                   <button
                     key={item.tab}
                     type="button"
                     onClick={() => handleQuickJump(item.tab)}
-                    className="flex items-center gap-3 rounded-lg px-3 py-2 font-semibold text-slate-800 transition hover:bg-emerald-50 hover:text-emerald-800 text-left"
+                    className={`flex items-center gap-3 rounded-lg px-3 py-2 font-semibold transition text-left ${
+                      activeTab === item.tab
+                        ? 'bg-emerald-100 text-emerald-800'
+                        : 'text-slate-800 hover:bg-emerald-50 hover:text-emerald-800'
+                    }`}
                   >
                     {item.icon}
                     {item.label}
                   </button>
+                ))}
+              </nav>
+            </>
+          )}
+
+          {isContentPage && (
+            <>
+              <div className="mb-3 text-xs font-semibold uppercase text-slate-500">Jump to section</div>
+              <nav className="grid gap-2 text-sm">
+                {contentSections.map((section) => (
+                  <a
+                    key={section.hash}
+                    href={section.hash}
+                    className={`rounded-lg px-3 py-2 font-semibold transition ${
+                      activeHash === section.hash
+                        ? 'bg-emerald-100 text-emerald-800'
+                        : 'text-slate-800 hover:bg-emerald-50 hover:text-emerald-800'
+                    }`}
+                  >
+                    {section.label}
+                  </a>
                 ))}
               </nav>
             </>

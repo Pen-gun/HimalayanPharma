@@ -65,16 +65,6 @@ const ContentIcon = () => (
   </svg>
 );
 
-// Navigation tabs configuration
-const TABS: { id: AdminTab; label: string; icon: React.ReactNode }[] = [
-  { id: 'dashboard', label: 'Dashboard', icon: <DashboardIcon /> },
-  { id: 'products', label: 'Products', icon: <ProductIcon /> },
-  { id: 'categories', label: 'Categories', icon: <CategoryIcon /> },
-  { id: 'news', label: 'News', icon: <NewsIcon /> },
-  { id: 'blog', label: 'Blog', icon: <BlogIcon /> },
-  { id: 'content', label: 'Site Content', icon: <ContentIcon /> },
-];
-
 // Dashboard Component
 const Dashboard = ({
   onNavigate,
@@ -360,44 +350,6 @@ const AdminPanel = () => {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* Tab Navigation */}
-      <div className="sticky top-0 z-20 bg-white border-b border-slate-200 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav className="flex gap-1 overflow-x-auto py-2 scrollbar-hide">
-            {TABS.map((tab) => (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => handleTabChange(tab.id)}
-                className={`flex items-center gap-2 whitespace-nowrap rounded-lg px-4 py-2.5 text-sm font-medium transition-all ${
-                  activeTab === tab.id
-                    ? 'bg-emerald-50 text-emerald-700'
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                }`}
-              >
-                {tab.icon}
-                <span>{tab.label}</span>
-                {tab.id === 'products' && stats.products > 0 && (
-                  <span className="ml-1 rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-700">
-                    {stats.products}
-                  </span>
-                )}
-                {tab.id === 'blog' && stats.blogs > 0 && (
-                  <span className="ml-1 rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-700">
-                    {stats.blogs}
-                  </span>
-                )}
-                {tab.id === 'news' && stats.news > 0 && (
-                  <span className="ml-1 rounded-full bg-purple-100 px-2 py-0.5 text-xs font-semibold text-purple-700">
-                    {stats.news}
-                  </span>
-                )}
-              </button>
-            ))}
-          </nav>
-        </div>
-      </div>
-
       {/* Content Area */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {activeTab === 'dashboard' && <Dashboard onNavigate={handleTabChange} stats={stats} />}

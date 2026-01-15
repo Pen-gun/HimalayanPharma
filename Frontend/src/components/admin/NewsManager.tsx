@@ -2,7 +2,7 @@
  * News Manager Component
  * Full CRUD for company news items
  */
-import { useState, useMemo, type FormEvent } from 'react';
+import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { api, type NewsItem } from '../../lib/api';
 import { useNewsMutations } from '../../hooks/useAdminMutations';
@@ -10,7 +10,7 @@ import { notifyToast } from '../../utils/admin';
 
 // UI Components
 import { Modal } from './ui/Modal';
-import { DataTable, ActionButton, type Column } from './ui/DataTable';
+import { DataTable, type Column } from './ui/DataTable';
 import { FormField, FormTextArea, FormCheckbox } from './ui/FormFields';
 import { SearchFilter, Pagination } from './ui/SearchFilter';
 import { PageHeader, Button } from './ui/PageHeader';
@@ -175,6 +175,7 @@ export const NewsManager = () => {
   const [filters, setFilters] = useState<Record<string, string>>({});
   const [page, setPage] = useState(1);
   const [deleteTarget, setDeleteTarget] = useState<NewsItem | null>(null);
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 
   const ITEMS_PER_PAGE = 10;
 
@@ -225,6 +226,18 @@ export const NewsManager = () => {
     setFilters((prev) => ({ ...prev, [key]: value }));
     setPage(1);
   };
+
+  useEffect(() => {
+    if (!openMenuId) return;
+    const handleOutsideClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('[data-action-menu]')) {
+        setOpenMenuId(null);
+      }
+    };
+    document.addEventListener('click', handleOutsideClick);
+    return () => document.removeEventListener('click', handleOutsideClick);
+  }, [openMenuId]);
 
   const openCreateModal = () => {
     setForm(INITIAL_FORM);
@@ -407,12 +420,45 @@ export const NewsManager = () => {
         emptyTitle="No news items found"
         emptyDescription={search ? 'Try adjusting your search or filters' : 'Create your first company update'}
         actions={(item) => (
-          <>
-            <ActionButton onClick={() => openEditModal(item)}>Edit</ActionButton>
-            <ActionButton variant="danger" onClick={() => setDeleteTarget(item)}>
-              Delete
-            </ActionButton>
-          </>
+          <div className="relative" data-action-menu>
+            <button
+              type="button"
+              onClick={() => setOpenMenuId((prev) => (prev === item._id ? null : item._id))}
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition hover:bg-slate-100"
+              aria-haspopup="menu"
+              aria-expanded={openMenuId === item._id}
+            >
+              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <circle cx="12" cy="5" r="2" />
+                <circle cx="12" cy="12" r="2" />
+                <circle cx="12" cy="19" r="2" />
+              </svg>
+            </button>
+            {openMenuId === item._id && (
+              <div className="absolute right-0 z-10 mt-2 w-36 rounded-lg border border-slate-200 bg-white py-1 shadow-lg">
+                <button
+                  type="button"
+                  onClick={() => {
+                    openEditModal(item);
+                    setOpenMenuId(null);
+                  }}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-50"
+                >
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDeleteTarget(item);
+                    setOpenMenuId(null);
+                  }}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50"
+                >
+                  Delete
+                </button>
+              </div>
+            )}
+          </div>
         )}
       />
 
