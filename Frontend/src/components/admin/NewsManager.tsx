@@ -419,7 +419,10 @@ export const NewsManager = () => {
         isLoading={isFetching}
         emptyTitle="No news items found"
         emptyDescription={search ? 'Try adjusting your search or filters' : 'Create your first company update'}
-        actions={(item) => (
+        actions={(item, index) => {
+          const openUp = index >= paginatedItems.length - 2 && index > 0;
+          const menuPosition = openUp ? 'bottom-full mb-2' : 'top-full mt-2';
+          return (
           <div className="relative" data-action-menu>
             <button
               type="button"
@@ -435,7 +438,7 @@ export const NewsManager = () => {
               </svg>
             </button>
             {openMenuId === item._id && (
-              <div className="absolute right-0 z-10 mt-2 w-36 rounded-lg border border-slate-200 bg-white py-1 shadow-lg">
+              <div className={`absolute right-0 z-20 w-36 rounded-lg border border-slate-200 bg-white py-1 shadow-lg ${menuPosition}`}>
                 <button
                   type="button"
                   onClick={() => {
@@ -459,7 +462,8 @@ export const NewsManager = () => {
               </div>
             )}
           </div>
-        )}
+        );
+        }}
       />
 
       {totalPages > 1 && (

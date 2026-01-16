@@ -531,7 +531,10 @@ export const ProductManager = () => {
         isLoading={isFetching}
         emptyTitle="No products found"
         emptyDescription={search ? 'Try adjusting your search or filters' : 'Create your first product to get started'}
-        actions={(product) => (
+        actions={(product, index) => {
+          const openUp = index >= paginatedProducts.length - 2;
+          const menuPosition = openUp ? 'bottom-full mb-2' : 'top-full mt-2';
+          return (
           <div className="relative" data-action-menu>
             <button
               type="button"
@@ -547,7 +550,7 @@ export const ProductManager = () => {
               </svg>
             </button>
             {openMenuId === product._id && (
-              <div className="absolute right-0 z-10 mt-2 w-36 rounded-lg border border-slate-200 bg-white py-1 shadow-lg">
+              <div className={`absolute right-0 z-20 w-36 rounded-lg border border-slate-200 bg-white py-1 shadow-lg ${menuPosition}`}>
                 <button
                   type="button"
                   onClick={() => {
@@ -571,7 +574,8 @@ export const ProductManager = () => {
               </div>
             )}
           </div>
-        )}
+        );
+        }}
       />
 
       {/* Pagination */}

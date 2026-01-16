@@ -22,7 +22,7 @@ interface DataTableProps<T> {
   emptyTitle?: string;
   emptyDescription?: string;
   onRowClick?: (item: T) => void;
-  actions?: (item: T) => ReactNode;
+  actions?: (item: T, index: number) => ReactNode;
   stickyHeader?: boolean;
 }
 
@@ -60,7 +60,7 @@ export function DataTable<T>({
   }
 
   return (
-    <div className="overflow-hidden rounded-lg border border-slate-200 bg-white">
+    <div className="rounded-lg border border-slate-200 bg-white">
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead className={`bg-slate-50 ${stickyHeader ? 'sticky top-0 z-10' : ''}`}>
@@ -107,7 +107,7 @@ export function DataTable<T>({
                 {actions && (
                   <td className="px-4 py-3 text-right">
                     <div className="flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
-                      {actions(item)}
+                      {actions(item, index)}
                     </div>
                   </td>
                 )}

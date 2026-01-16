@@ -432,7 +432,10 @@ export const BlogManager = () => {
         isLoading={isFetching}
         emptyTitle="No blog posts found"
         emptyDescription={search ? 'Try adjusting your search or filters' : 'Create your first blog post to share news and insights'}
-        actions={(post) => (
+        actions={(post, index) => {
+          const openUp = index >= paginatedPosts.length - 2;
+          const menuPosition = openUp ? 'bottom-full mb-2' : 'top-full mt-2';
+          return (
           <div className="relative" data-action-menu>
             <button
               type="button"
@@ -448,7 +451,7 @@ export const BlogManager = () => {
               </svg>
             </button>
             {openMenuId === post._id && (
-              <div className="absolute right-0 z-10 mt-2 w-36 rounded-lg border border-slate-200 bg-white py-1 shadow-lg">
+              <div className={`absolute right-0 z-20 w-36 rounded-lg border border-slate-200 bg-white py-1 shadow-lg ${menuPosition}`}>
                 <button
                   type="button"
                   onClick={() => {
@@ -472,7 +475,8 @@ export const BlogManager = () => {
               </div>
             )}
           </div>
-        )}
+        );
+        }}
       />
 
       {/* Pagination */}
