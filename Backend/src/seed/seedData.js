@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import connectToDB from '../config/db.js';
 import SiteContent from '../models/SiteContent.js';
-import { DEFAULT_HOME_CONTENT } from './siteContentDefaults.js';
+import { DEFAULT_SITE_CONTENT } from './siteContentDefaults.js';
 
 const envFile = process.env.NODE_ENV === 'production' ? '.env' : '.env.local';
 dotenv.config({ path: `./${envFile}` });
@@ -32,16 +32,20 @@ const mergeIfMissing = (target, source) => {
 const seedSiteContent = async () => {
   const existing = await SiteContent.findOne({ key: 'default' });
 
-  const payload = {
-    key: 'default',
-    home: DEFAULT_HOME_CONTENT,
-  };
+  const payload = DEFAULT_SITE_CONTENT;
 
   if (existing && !shouldForce) {
     const merged = {
       ...existing.toObject(),
       ...payload,
       home: mergeIfMissing(existing.home || {}, payload.home),
+      testimonials: mergeIfMissing(existing.testimonials || [], payload.testimonials),
+      stats: mergeIfMissing(existing.stats || [], payload.stats),
+      scienceHighlights: mergeIfMissing(existing.scienceHighlights || [], payload.scienceHighlights),
+      commitments: mergeIfMissing(existing.commitments || [], payload.commitments),
+      jobs: mergeIfMissing(existing.jobs || [], payload.jobs),
+      contactLocations: mergeIfMissing(existing.contactLocations || [], payload.contactLocations),
+      mediaItems: mergeIfMissing(existing.mediaItems || [], payload.mediaItems),
     };
     await SiteContent.updateOne({ key: 'default' }, { $set: merged });
     console.log('SiteContent updated with missing defaults.');

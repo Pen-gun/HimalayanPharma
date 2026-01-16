@@ -46,3 +46,108 @@ export const DEFAULT_HOME_CONTENT = {
     limit: 3,
   },
 };
+
+export const DEFAULT_SITE_CONTENT = {
+  key: 'default',
+  home: DEFAULT_HOME_CONTENT,
+  testimonials: [
+    {
+      name: 'Asha Thapa',
+      title: 'Holistic Nutritionist',
+      quote: 'Clear sourcing and consistent quality make these formulas easy to recommend.',
+      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80',
+    },
+    {
+      name: 'Kiran Joshi',
+      title: 'Yoga Coach',
+      quote: 'The daily balance line fits perfectly into my clients wellness routines.',
+      avatar: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=200&q=80',
+    },
+    {
+      name: 'Dr. Meera Rao',
+      title: 'Integrative Physician',
+      quote: 'Lab validation and transparency are the reasons I trust these products.',
+      avatar: 'https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?auto=format&fit=crop&w=200&q=80',
+    },
+  ],
+  stats: [
+    { label: 'Years of Ayurvedic R&D', value: '35+' },
+    { label: 'Clinically Studied Formulas', value: '24' },
+    { label: 'Partner Farms', value: '120+' },
+    { label: 'Global Markets', value: '90' },
+  ],
+  scienceHighlights: [
+    {
+      title: 'Clinical Collaborations',
+      description: 'Multi-center studies across metabolic, immune, and liver health.',
+    },
+    {
+      title: 'Standardized Extracts',
+      description: 'Marker-compound fingerprinting for every batch.',
+    },
+    {
+      title: 'Sustainable Chemistry',
+      description: 'Green extraction methods with reduced solvent use.',
+    },
+  ],
+  commitments: [
+    {
+      title: 'Regenerative Sourcing',
+      description: 'Direct partnerships with Himalayan growers and fair trade practices.',
+    },
+    {
+      title: 'Quality by Design',
+      description: 'cGMP facilities and transparent batch documentation.',
+    },
+    {
+      title: 'Low-Impact Packaging',
+      description: 'Recyclable materials and reduced-plastic formats.',
+    },
+  ],
+  jobs: [
+    {
+      title: 'Senior Scientist, Phytochemistry',
+      location: 'Bengaluru, India',
+      type: 'Full-time',
+      summary: 'Lead chromatography method development and stability studies.',
+    },
+    {
+      title: 'Brand Manager, Global Markets',
+      location: 'Singapore',
+      type: 'Full-time',
+      summary: 'Drive launches and clinical storytelling for flagship lines.',
+    },
+  ],
+  contactLocations: [
+    {
+      office: 'Global HQ',
+      address: 'Evergreen Biotech Park, Bengaluru, India',
+      phone: '+91 80 1234 5678',
+      email: 'hello@himalayanpharma.works',
+    },
+    {
+      office: 'North America',
+      address: 'Suite 18, Greenway Innovation Hub, Seattle, USA',
+      phone: '+1 206 555 1144',
+      email: 'care@himalayanpharma.works',
+    },
+  ],
+  mediaItems: [
+    {
+      type: 'image',
+      title: 'Himalayan Botanicals',
+      description: 'Harvest season in the Himalayan belt.',
+      url: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80',
+      thumbnailUrl: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80',
+      provider: 'Unsplash',
+    },
+    {
+      type: 'image',
+      title: 'Lab Validation',
+      description: 'Quality testing in our partner labs.',
+      url: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80',
+      thumbnailUrl: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=400&q=80',
+      provider: 'Unsplash',
+    },
+  ],
+};
