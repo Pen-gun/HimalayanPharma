@@ -207,6 +207,52 @@ export interface MediaItem {
   provider?: string;
 }
 
+export interface HomeHeroContent {
+  heading: string;
+  subheading: string;
+  primaryText: string;
+  primaryLink: string;
+  secondaryText: string;
+  secondaryLink: string;
+}
+
+export interface HomeSectionCopy {
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+}
+
+export interface HomeFeaturedContent extends HomeSectionCopy {
+  ctaText: string;
+  ctaLink: string;
+  limit: number;
+}
+
+export interface HomeAboutContent extends HomeSectionCopy {
+  bullets: string[];
+  highlights: string[];
+  ctaText: string;
+  ctaLink: string;
+}
+
+export interface HomeStoriesContent extends HomeSectionCopy {
+  loadingText: string;
+}
+
+export interface HomeJournalContent extends HomeSectionCopy {
+  ctaText: string;
+  ctaLink: string;
+  limit: number;
+}
+
+export interface HomeContent {
+  hero: HomeHeroContent;
+  featured: HomeFeaturedContent;
+  about: HomeAboutContent;
+  stories: HomeStoriesContent;
+  journal: HomeJournalContent;
+}
+
 export interface SiteContent {
   _id: string;
   testimonials: Testimonial[];
@@ -216,6 +262,7 @@ export interface SiteContent {
   jobs: JobListing[];
   contactLocations: ContactLocation[];
   mediaItems: MediaItem[];
+  home?: HomeContent;
   createdAt?: string;
   updatedAt?: string;
 }

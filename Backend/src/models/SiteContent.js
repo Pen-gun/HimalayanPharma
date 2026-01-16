@@ -58,6 +58,102 @@ const MediaItemSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const HomeHeroSchema = new mongoose.Schema(
+  {
+    heading: { type: String, default: 'Wellness Rooted in Nature - Science-Backed Ayurveda' },
+    subheading: {
+      type: String,
+      default:
+        'Herbal, clinically validated formulations inspired by the Himalayas. Trusted by physicians, loved by families.',
+    },
+    primaryText: { type: String, default: 'Explore Products' },
+    primaryLink: { type: String, default: '/products' },
+    secondaryText: { type: String, default: 'Our Story' },
+    secondaryLink: { type: String, default: '/about' },
+  },
+  { _id: false }
+);
+
+const HomeFeaturedSchema = new mongoose.Schema(
+  {
+    eyebrow: { type: String, default: 'Featured' },
+    title: { type: String, default: 'Flagship formulations for everyday balance' },
+    subtitle: {
+      type: String,
+      default:
+        'Curated bestsellers from liver health to stress resilience, crafted with traceable botanicals and rigorous lab validation.',
+    },
+    ctaText: { type: String, default: 'View all products' },
+    ctaLink: { type: String, default: '/products' },
+    limit: { type: Number, default: 6 },
+  },
+  { _id: false }
+);
+
+const HomeAboutSchema = new mongoose.Schema(
+  {
+    eyebrow: { type: String, default: 'About' },
+    title: { type: String, default: 'Himalayan expertise, global standards' },
+    subtitle: {
+      type: String,
+      default:
+        'Our formulations are built on Ayurveda, validated in modern labs, and produced in cGMP facilities with end-to-end traceability.',
+    },
+    bullets: {
+      type: [String],
+      default: [
+        'Multi-center clinical collaborations across hepatology, metabolic, and immune health.',
+        'Chromatography fingerprinting and stability testing for every batch.',
+        'Regenerative sourcing with partner farms across the Himalayan belt.',
+      ],
+    },
+    highlights: { type: [String], default: ['Traceable botanicals', 'Clinically studied', 'Vegan friendly', 'ISO & cGMP'] },
+    ctaText: { type: String, default: 'Learn more' },
+    ctaLink: { type: String, default: '/about' },
+  },
+  { _id: false }
+);
+
+const HomeStoriesSchema = new mongoose.Schema(
+  {
+    eyebrow: { type: String, default: 'Stories' },
+    title: { type: String, default: 'From the community' },
+    subtitle: {
+      type: String,
+      default: 'Trusted by clinicians, athletes, parents, and pet lovers who want clean, effective herbal support.',
+    },
+    loadingText: { type: String, default: 'Loading stories...' },
+  },
+  { _id: false }
+);
+
+const HomeJournalSchema = new mongoose.Schema(
+  {
+    eyebrow: { type: String, default: 'Journal' },
+    title: { type: String, default: 'Science, sustainability, and wellness insights' },
+    subtitle: {
+      type: String,
+      default:
+        'Field notes from our labs and partner farms, plus how to use our products with confidence.',
+    },
+    ctaText: { type: String, default: 'View all articles' },
+    ctaLink: { type: String, default: '/blog' },
+    limit: { type: Number, default: 3 },
+  },
+  { _id: false }
+);
+
+const HomeContentSchema = new mongoose.Schema(
+  {
+    hero: { type: HomeHeroSchema, default: () => ({}) },
+    featured: { type: HomeFeaturedSchema, default: () => ({}) },
+    about: { type: HomeAboutSchema, default: () => ({}) },
+    stories: { type: HomeStoriesSchema, default: () => ({}) },
+    journal: { type: HomeJournalSchema, default: () => ({}) },
+  },
+  { _id: false }
+);
+
 const SiteContentSchema = new mongoose.Schema(
   {
     key: { type: String, required: true, unique: true, default: 'default' },
@@ -68,6 +164,7 @@ const SiteContentSchema = new mongoose.Schema(
     jobs: { type: [JobSchema], default: [] },
     contactLocations: { type: [ContactLocationSchema], default: [] },
     mediaItems: { type: [MediaItemSchema], default: [] },
+    home: { type: HomeContentSchema, default: () => ({}) },
   },
   { timestamps: true }
 );

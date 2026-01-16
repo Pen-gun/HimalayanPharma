@@ -17,6 +17,7 @@ const AdminLayout = () => {
   ];
 
   const contentSections = [
+    { hash: '#home', label: 'Homepage' },
     { hash: '#stats', label: 'Stats' },
     { hash: '#testimonials', label: 'Testimonials' },
     { hash: '#science-highlights', label: 'Science highlights' },

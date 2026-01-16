@@ -1,6 +1,16 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { api, type SiteContent, type Stat, type Testimonial, type Highlight, type JobListing, type ContactLocation, type MediaItem } from '../../lib/api';
+import {
+  api,
+  type SiteContent,
+  type Stat,
+  type Testimonial,
+  type Highlight,
+  type JobListing,
+  type ContactLocation,
+  type MediaItem,
+  type HomeContent,
+} from '../../lib/api';
 import { useContentMutation } from '../../hooks/useAdminMutations';
 import { StatsEditor } from '../../components/admin/StatsEditor';
 import { TestimonialEditor } from '../../components/admin/TestimonialEditor';
@@ -8,8 +18,11 @@ import { HighlightEditor } from '../../components/admin/HighlightEditor';
 import { JobEditor } from '../../components/admin/JobEditor';
 import { LocationEditor } from '../../components/admin/LocationEditor';
 import { MediaEditor } from '../../components/admin/MediaEditor';
+import { HomeContentEditor } from '../../components/admin/HomeContentEditor';
+import { DEFAULT_HOME_CONTENT } from '../../data/contentDefaults';
 
 type FormState = {
+  home: HomeContent;
   testimonials: Testimonial[];
   stats: Stat[];
   scienceHighlights: Highlight[];
@@ -21,6 +34,7 @@ type FormState = {
 
 const ContentEditor = () => {
   const [form, setForm] = useState<FormState>({
+    home: DEFAULT_HOME_CONTENT,
     testimonials: [],
     stats: [],
     scienceHighlights: [],
@@ -46,6 +60,7 @@ const ContentEditor = () => {
   useEffect(() => {
     if (content) {
       const newForm: FormState = {
+        home: content.home || DEFAULT_HOME_CONTENT,
         testimonials: content.testimonials || [],
         stats: content.stats || [],
         scienceHighlights: content.scienceHighlights || [],
@@ -101,6 +116,17 @@ const ContentEditor = () => {
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-6">
+
+          {/* Home Section */}
+          <section id="home" className="scroll-mt-24">
+            <HomeContentEditor
+              home={form.home}
+              onChange={(home) => {
+                setForm({ ...form, home });
+                handleFormChange();
+              }}
+            />
+          </section>
 
           {/* Stats Section */}
           <section id="stats" className="scroll-mt-24">
@@ -208,6 +234,7 @@ const ContentEditor = () => {
                 onClick={() => {
                   if (content) {
                     setForm({
+                      home: content.home || DEFAULT_HOME_CONTENT,
                       testimonials: content.testimonials || [],
                       stats: content.stats || [],
                       scienceHighlights: content.scienceHighlights || [],
