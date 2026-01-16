@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { Search, X } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import SectionHeader from '../components/SectionHeader';
 import { useProducts } from '../hooks/useProducts';
@@ -10,15 +11,25 @@ const Products = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedCategory = searchParams.get('category') || '';
   const [activeCategory, setActiveCategory] = useState(selectedCategory);
+  const [searchInput, setSearchInput] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   
   const { data: categoriesData } = useCategories();
   const { data: productsData, isLoading } = useProducts({
     category: activeCategory || undefined,
+    search: debouncedSearch || undefined,
   });
 
   useEffect(() => {
     setActiveCategory(selectedCategory);
   }, [selectedCategory]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchInput.trim());
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchInput]);
 
   useEffect(() => {
     document.title = 'Products | Himalayan Pharma Works';
@@ -45,6 +56,31 @@ const Products = () => {
         subtitle="Explore Ayurvedic, herbal, and science-backed products crafted for everyday vitality."
         align="center"
       />
+
+      <div className="flex justify-center">
+        <div className="relative w-full max-w-xl">
+          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-emerald-600">
+            <Search className="h-5 w-5" />
+          </div>
+          <input
+            type="text"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder="Search products by name, benefit, or ingredient..."
+            className="w-full rounded-full border border-emerald-100 bg-white py-3 pl-12 pr-12 text-sm text-slate-800 shadow-sm transition focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-100"
+          />
+          {searchInput && (
+            <button
+              type="button"
+              onClick={() => setSearchInput('')}
+              className="absolute inset-y-0 right-0 flex items-center pr-4 text-emerald-600 hover:text-emerald-800"
+              aria-label="Clear search"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          )}
+        </div>
+      </div>
 
       <div className="flex flex-wrap justify-center gap-3">
         {categories.map((category) => (
