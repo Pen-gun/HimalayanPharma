@@ -21,8 +21,6 @@ const Navbar = () => {
   const { isAuthenticated, user, logout } = useAuth();
   const { itemCount } = useCart();
 
-  const adminLinks = user?.role === 'admin' ? [{ to: '/admin', label: 'Admin' }] : [];
-
   const linkClasses = ({ isActive }: { isActive: boolean }) =>
     `text-sm font-semibold tracking-tight transition hover:text-emerald-700 ${
       isActive ? 'text-emerald-700' : 'text-slate-800'
@@ -42,7 +40,7 @@ const Navbar = () => {
         </Link>
 
         <nav className="hidden items-center gap-6 lg:flex">
-          {[...navLinks, ...adminLinks].map((link) => (
+          {navLinks.map((link) => (
             <NavLink key={link.to} to={link.to} className={linkClasses} onClick={() => setOpen(false)}>
               {link.label}
             </NavLink>
@@ -63,10 +61,17 @@ const Navbar = () => {
 
           {isAuthenticated ? (
             <>
-              <div className="flex items-center gap-2 rounded-full border border-emerald-100 px-3 py-2">
-                <User className="h-4 w-4 text-emerald-700" />
-                <span className="text-sm font-medium text-emerald-900">{user?.name}</span>
-              </div>
+              {user?.role === 'admin' ? (
+                <Link to="/admin" className="flex items-center gap-2 rounded-full border border-emerald-100 px-3 py-2">
+                  <User className="h-4 w-4 text-emerald-700" />
+                  <span className="text-sm font-medium text-emerald-900">{user?.name}</span>
+                </Link>
+              ) : (
+                <div className="flex items-center gap-2 rounded-full border border-emerald-100 px-3 py-2">
+                  <User className="h-4 w-4 text-emerald-700" />
+                  <span className="text-sm font-medium text-emerald-900">{user?.name}</span>
+                </div>
+              )}
               <button onClick={logout} className="btn-secondary flex items-center gap-2">
                 <LogOut className="h-4 w-4" />
                 Logout
@@ -97,7 +102,7 @@ const Navbar = () => {
       {open && (
         <div className="lg:hidden">
           <nav className="section-shell grid gap-3 pb-6">
-            {[...navLinks, ...adminLinks].map((link) => (
+            {navLinks.map((link) => (
               <NavLink
                 key={link.to}
                 to={link.to}
@@ -118,9 +123,15 @@ const Navbar = () => {
               </Link>
               {isAuthenticated ? (
                 <>
-                  <div className="rounded-lg border border-emerald-100 px-4 py-2 text-center">
-                    <span className="text-sm font-medium text-emerald-900">{user?.name}</span>
-                  </div>
+                  {user?.role === 'admin' ? (
+                    <Link to="/admin" className="rounded-lg border border-emerald-100 px-4 py-2 text-center">
+                      <span className="text-sm font-medium text-emerald-900">{user?.name}</span>
+                    </Link>
+                  ) : (
+                    <div className="rounded-lg border border-emerald-100 px-4 py-2 text-center">
+                      <span className="text-sm font-medium text-emerald-900">{user?.name}</span>
+                    </div>
+                  )}
                   <button onClick={logout} className="btn-secondary w-full flex items-center justify-center gap-2">
                     <LogOut className="h-4 w-4" />
                     Logout
