@@ -3,6 +3,7 @@
  * Friendly placeholder for empty lists
  */
 import type { ReactNode } from 'react';
+import { Plus } from 'lucide-react';
 
 interface EmptyStateProps {
   title: string;
@@ -25,9 +26,7 @@ export const EmptyState = ({ title, description, icon, action }: EmptyStateProps
           onClick={action.onClick}
           className="mt-6 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-blue-700 active:scale-95"
         >
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
+          <Plus className="h-4 w-4" />
           {action.label}
         </button>
       )}

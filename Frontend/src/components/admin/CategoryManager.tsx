@@ -4,6 +4,7 @@
  */
 import { useEffect, useState, type FormEvent } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { MoreVertical, Plus } from 'lucide-react';
 import { api, type Category } from '../../lib/api';
 import { useCategoryMutations } from '../../hooks/useAdminMutations';
 import { notifyToast } from '../../utils/admin';
@@ -255,14 +256,7 @@ export const CategoryManager = () => {
         title="Categories"
         description={`${categories.length} categories organizing your products`}
         actions={
-          <Button
-            onClick={openCreateModal}
-            icon={
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-            }
-          >
+          <Button onClick={openCreateModal} icon={<Plus className="h-4 w-4" />}>
             Add Category
           </Button>
         }
@@ -295,11 +289,7 @@ export const CategoryManager = () => {
               aria-haspopup="menu"
               aria-expanded={openMenuId === category._id}
             >
-              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <circle cx="12" cy="5" r="2" />
-                <circle cx="12" cy="12" r="2" />
-                <circle cx="12" cy="19" r="2" />
-              </svg>
+              <MoreVertical className="h-4 w-4" aria-hidden="true" />
             </button>
             {openMenuId === category._id && (
               <div className={`absolute right-0 z-20 w-36 rounded-lg border border-slate-200 bg-white py-1 shadow-lg ${menuPosition}`}>

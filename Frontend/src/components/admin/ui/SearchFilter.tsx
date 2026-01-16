@@ -3,6 +3,7 @@
  * Reusable search bar with filter dropdowns
  */
 import { useState, useEffect } from 'react';
+import { ChevronLeft, ChevronRight, Search, X } from 'lucide-react';
 
 interface SearchFilterProps {
   searchValue: string;
@@ -51,9 +52,7 @@ export const SearchFilter = ({
       {/* Search Input */}
       <div className="relative flex-1 max-w-md">
         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-          <svg className="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
+          <Search className="h-5 w-5 text-slate-400" />
         </div>
         <input
           type="text"
@@ -70,9 +69,7 @@ export const SearchFilter = ({
             }}
             className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600"
           >
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <X className="h-4 w-4" />
           </button>
         )}
       </div>
@@ -150,9 +147,7 @@ export const Pagination = ({
           disabled={currentPage === 1}
           className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
+          <ChevronLeft className="h-5 w-5" />
         </button>
 
         {visiblePages.map((page, index) => {
@@ -181,9 +176,7 @@ export const Pagination = ({
           disabled={currentPage === totalPages}
           className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
+          <ChevronRight className="h-5 w-5" />
         </button>
       </div>
     </div>

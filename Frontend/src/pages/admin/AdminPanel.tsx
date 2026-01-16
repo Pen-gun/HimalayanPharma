@@ -11,9 +11,9 @@
  */
 import { useEffect, useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
+import { ArrowRight, FileText, Newspaper, Package, PencilRuler, Star, Tags } from 'lucide-react';
 import { api } from '../../lib/api';
-import { Link } from 'react-router-dom';
 
 // Manager Components
 import { ProductManager } from '../../components/admin/ProductManager';
@@ -27,37 +27,6 @@ import { LoadingSpinner } from '../../components/admin/ui/LoadingSpinner';
 
 // Tab types
 type AdminTab = 'dashboard' | 'products' | 'categories' | 'news' | 'blog' | 'content';
-
-// Icons
-const ProductIcon = () => (
-  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-  </svg>
-);
-
-const CategoryIcon = () => (
-  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-  </svg>
-);
-
-const BlogIcon = () => (
-  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-  </svg>
-);
-
-const NewsIcon = () => (
-  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V7a2 2 0 012-2h11l3 3v12a2 2 0 01-2 2zM9 7h3m-3 4h6m-6 4h6" />
-  </svg>
-);
-
-const ContentIcon = () => (
-  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-  </svg>
-);
 
 // Dashboard Component
 const Dashboard = ({
@@ -91,39 +60,35 @@ const Dashboard = ({
           value={stats.products}
           subtitle="Active listings"
           onClick={() => onNavigate('products')}
-          icon={<ProductIcon />}
+          icon={<Package className="h-5 w-5" />}
         />
         <StatsCard
           title="Categories"
           value={stats.categories}
           subtitle="Product groups"
           onClick={() => onNavigate('categories')}
-          icon={<CategoryIcon />}
+          icon={<Tags className="h-5 w-5" />}
         />
         <StatsCard
           title="Blog Posts"
           value={stats.blogs}
           subtitle="Published articles"
           onClick={() => onNavigate('blog')}
-          icon={<BlogIcon />}
+          icon={<FileText className="h-5 w-5" />}
         />
         <StatsCard
           title="News"
           value={stats.news}
           subtitle="Company updates"
           onClick={() => onNavigate('news')}
-          icon={<NewsIcon />}
+          icon={<Newspaper className="h-5 w-5" />}
         />
         <StatsCard
           title="Featured"
           value={stats.featured}
           subtitle="Highlighted products"
           onClick={() => onNavigate('products')}
-          icon={
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-            </svg>
-          }
+          icon={<Star className="h-5 w-5" />}
         />
       </div>
 
@@ -134,25 +99,25 @@ const Dashboard = ({
           <QuickActionCard
             title="Add New Product"
             description="Create a new product listing"
-            icon={<ProductIcon />}
+            icon={<Package className="h-5 w-5" />}
             onClick={() => onNavigate('products')}
           />
           <QuickActionCard
             title="Write Blog Post"
             description="Share news and insights"
-            icon={<BlogIcon />}
+            icon={<FileText className="h-5 w-5" />}
             onClick={() => onNavigate('blog')}
           />
           <QuickActionCard
             title="Publish News"
             description="Post company updates"
-            icon={<NewsIcon />}
+            icon={<Newspaper className="h-5 w-5" />}
             onClick={() => onNavigate('news')}
           />
           <QuickActionCard
             title="Edit Site Content"
             description="Update homepage & pages"
-            icon={<ContentIcon />}
+            icon={<PencilRuler className="h-5 w-5" />}
             onClick={() => onNavigate('content')}
           />
         </div>
@@ -165,7 +130,7 @@ const Dashboard = ({
           <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-blue-50 rounded-lg text-blue-600">
-                <ProductIcon />
+                <Package className="h-5 w-5" />
               </div>
               <div>
                 <p className="font-medium text-slate-900">Products Management</p>
@@ -183,7 +148,7 @@ const Dashboard = ({
           <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-blue-50 rounded-lg text-blue-600">
-                <CategoryIcon />
+                <Tags className="h-5 w-5" />
               </div>
               <div>
                 <p className="font-medium text-slate-900">Categories Management</p>
@@ -201,7 +166,7 @@ const Dashboard = ({
           <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-blue-50 rounded-lg text-blue-600">
-                <BlogIcon />
+                <FileText className="h-5 w-5" />
               </div>
               <div>
                 <p className="font-medium text-slate-900">Blog Management</p>
@@ -219,7 +184,7 @@ const Dashboard = ({
           <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-blue-50 rounded-lg text-blue-600">
-                <NewsIcon />
+                <Newspaper className="h-5 w-5" />
               </div>
               <div>
                 <p className="font-medium text-slate-900">News Management</p>
@@ -242,24 +207,22 @@ const Dashboard = ({
 // Content Editor Redirect Component
 const ContentEditorRedirect = () => {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-8 text-center">
-      <div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-        <ContentIcon />
+      <div className="rounded-xl border border-slate-200 bg-white p-8 text-center">
+        <div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+        <PencilRuler className="h-5 w-5" />
+        </div>
+        <h2 className="text-xl font-bold text-slate-900 mb-2">Site Content Editor</h2>
+        <p className="text-slate-600 mb-6 max-w-md mx-auto">
+          Edit your site's dynamic content including testimonials, statistics, highlights, job listings, and contact information.
+        </p>
+        <Link
+          to="/admin/content/home"
+          className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700 transition-colors"
+        >
+          Open Content Editor
+          <ArrowRight className="h-4 w-4" />
+        </Link>
       </div>
-      <h2 className="text-xl font-bold text-slate-900 mb-2">Site Content Editor</h2>
-      <p className="text-slate-600 mb-6 max-w-md mx-auto">
-        Edit your site's dynamic content including testimonials, statistics, highlights, job listings, and contact information.
-      </p>
-      <Link
-        to="/admin/content/home"
-        className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700 transition-colors"
-      >
-        Open Content Editor
-        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-        </svg>
-      </Link>
-    </div>
   );
 };
 
