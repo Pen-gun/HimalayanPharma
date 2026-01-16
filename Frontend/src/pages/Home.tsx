@@ -39,6 +39,23 @@ const Home = () => {
   const mediaItems = content?.mediaItems || [];
   const home = content?.home;
 
+  const renderProductCard = useCallback((product: Product) => {
+    const category =
+      typeof product.category === 'string'
+        ? { _id: 'unknown', name: product.category }
+        : product.category;
+    return (
+      <ProductCard
+        key={product._id}
+        product={{
+          ...product,
+          category,
+          price: product.price,
+        }}
+      />
+    );
+  }, []);
+
   if (!home) {
     return (
       <div className="section-shell py-16">
@@ -57,23 +74,6 @@ const Home = () => {
     Number.isFinite(featuredLimitCandidate) && featuredLimitCandidate > 0 ? featuredLimitCandidate : 6;
   const journalLimit =
     Number.isFinite(journalLimitCandidateFromHome) && journalLimitCandidateFromHome > 0 ? journalLimitCandidateFromHome : 3;
-
-  const renderProductCard = useCallback((product: Product) => {
-    const category =
-      typeof product.category === 'string'
-        ? { _id: 'unknown', name: product.category }
-        : product.category;
-    return (
-      <ProductCard
-        key={product._id}
-        product={{
-          ...product,
-          category,
-          price: product.price,
-        }}
-      />
-    );
-  }, []);
 
   return (
     <div className="space-y-16">
