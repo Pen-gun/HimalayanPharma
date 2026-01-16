@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
 import AdminRoute from './components/AdminRoute';
 import { ToastContainer } from './components/admin/ToastContainer';
@@ -26,7 +26,14 @@ const Disclaimer = lazy(() => import('./pages/Disclaimer'));
 const Cart = lazy(() => import('./pages/Cart'));
 const AdminLayout = lazy(() => import('./layouts/AdminLayout'));
 const AdminPanel = lazy(() => import('./pages/admin/AdminPanel'));
-const ContentEditor = lazy(() => import('./pages/admin/ContentEditor'));
+const HomeContentPage = lazy(() => import('./pages/admin/content/HomeContentPage'));
+const StatsContentPage = lazy(() => import('./pages/admin/content/StatsContentPage'));
+const TestimonialsContentPage = lazy(() => import('./pages/admin/content/TestimonialsContentPage'));
+const ScienceHighlightsContentPage = lazy(() => import('./pages/admin/content/ScienceHighlightsContentPage'));
+const CommitmentsContentPage = lazy(() => import('./pages/admin/content/CommitmentsContentPage'));
+const MediaGalleryContentPage = lazy(() => import('./pages/admin/content/MediaGalleryContentPage'));
+const JobsContentPage = lazy(() => import('./pages/admin/content/JobsContentPage'));
+const LocationsContentPage = lazy(() => import('./pages/admin/content/LocationsContentPage'));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -142,8 +149,70 @@ const App = () => {
         <Route
           path="content"
           element={
+            <Navigate to="/admin/content/home" replace />
+          }
+        />
+        <Route
+          path="content/home"
+          element={
             <Suspense fallback={<PageLoader />}>
-              <ContentEditor />
+              <HomeContentPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="content/stats"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <StatsContentPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="content/testimonials"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <TestimonialsContentPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="content/science-highlights"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <ScienceHighlightsContentPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="content/commitments"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <CommitmentsContentPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="content/media-gallery"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <MediaGalleryContentPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="content/jobs"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <JobsContentPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="content/locations"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <LocationsContentPage />
             </Suspense>
           }
         />

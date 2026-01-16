@@ -105,8 +105,14 @@ export const getContent = async (req, res, next) => {
     const content = await SiteContent.findOne({ key: 'default' });
 
     if (!content) {
-      const created = await SiteContent.create({ key: 'default' });
+      const created = await SiteContent.create({ key: 'default', home: DEFAULT_HOME_CONTENT });
       return res.status(200).json({ success: true, data: created });
+    }
+
+    const normalizedHome = buildHomePayload(content.home, DEFAULT_HOME_CONTENT);
+    if (JSON.stringify(content.home) !== JSON.stringify(normalizedHome)) {
+      content.home = normalizedHome;
+      await content.save();
     }
 
     return res.status(200).json({ success: true, data: content });

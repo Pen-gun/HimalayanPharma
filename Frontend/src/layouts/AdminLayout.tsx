@@ -17,24 +17,23 @@ const AdminLayout = () => {
   ];
 
   const contentSections = [
-    { hash: '#home', label: 'Homepage' },
-    { hash: '#stats', label: 'Stats' },
-    { hash: '#testimonials', label: 'Testimonials' },
-    { hash: '#science-highlights', label: 'Science highlights' },
-    { hash: '#commitments', label: 'Commitments' },
-    { hash: '#media-gallery', label: 'Media gallery' },
-    { hash: '#jobs', label: 'Jobs' },
-    { hash: '#locations', label: 'Locations' },
+    { to: '/admin/content/home', label: 'Homepage' },
+    { to: '/admin/content/stats', label: 'Stats' },
+    { to: '/admin/content/testimonials', label: 'Testimonials' },
+    { to: '/admin/content/science-highlights', label: 'Science highlights' },
+    { to: '/admin/content/commitments', label: 'Commitments' },
+    { to: '/admin/content/media-gallery', label: 'Media gallery' },
+    { to: '/admin/content/jobs', label: 'Jobs' },
+    { to: '/admin/content/locations', label: 'Locations' },
   ];
 
   const navItems = [
     { to: '/admin', label: 'Dashboard' },
-    { to: '/admin/content', label: 'Content' },
+    { to: '/admin/content/home', label: 'Content' },
   ];
 
-  const isContentPage = location.pathname === '/admin/content';
+  const isContentPage = location.pathname.startsWith('/admin/content');
   const activeTab = searchParams.get('tab') || 'dashboard';
-  const activeHash = location.hash || '';
 
   const handleQuickJump = (tab: string) => {
     // Dispatch custom event that AdminPanel listens for
@@ -81,9 +80,13 @@ const AdminLayout = () => {
                 key={item.to}
                 to={item.to}
                 className={`rounded-lg px-3 py-2 font-semibold transition ${
-                  location.pathname === item.to
-                    ? 'bg-blue-100 text-blue-800'
-                    : 'text-slate-800 hover:bg-blue-50'
+                  item.to === '/admin/content/home'
+                    ? location.pathname.startsWith('/admin/content')
+                      ? 'bg-blue-100 text-blue-800'
+                      : 'text-slate-800 hover:bg-blue-50'
+                    : location.pathname === item.to
+                      ? 'bg-blue-100 text-blue-800'
+                      : 'text-slate-800 hover:bg-blue-50'
                 }`}
               >
                 {item.label}
@@ -119,17 +122,17 @@ const AdminLayout = () => {
               <div className="mb-3 text-xs font-semibold uppercase text-slate-500">Jump to section</div>
               <nav className="grid gap-2 text-sm">
                 {contentSections.map((section) => (
-                  <a
-                    key={section.hash}
-                    href={section.hash}
+                  <Link
+                    key={section.to}
+                    to={section.to}
                     className={`rounded-lg px-3 py-2 font-semibold transition ${
-                      activeHash === section.hash
+                      location.pathname === section.to
                         ? 'bg-blue-100 text-blue-800'
                         : 'text-slate-800 hover:bg-blue-50 hover:text-blue-800'
                     }`}
                   >
                     {section.label}
-                  </a>
+                  </Link>
                 ))}
               </nav>
             </>

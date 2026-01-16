@@ -19,7 +19,6 @@ import { JobEditor } from '../../components/admin/JobEditor';
 import { LocationEditor } from '../../components/admin/LocationEditor';
 import { MediaEditor } from '../../components/admin/MediaEditor';
 import { HomeContentEditor } from '../../components/admin/HomeContentEditor';
-import { DEFAULT_HOME_CONTENT } from '../../data/contentDefaults';
 
 type FormState = {
   home: HomeContent;
@@ -33,8 +32,49 @@ type FormState = {
 };
 
 const ContentEditor = () => {
+  const emptyHomeContent: HomeContent = {
+    hero: {
+      heading: '',
+      subheading: '',
+      primaryText: '',
+      primaryLink: '',
+      secondaryText: '',
+      secondaryLink: '',
+    },
+    featured: {
+      eyebrow: '',
+      title: '',
+      subtitle: '',
+      ctaText: '',
+      ctaLink: '',
+      limit: 0,
+    },
+    about: {
+      eyebrow: '',
+      title: '',
+      subtitle: '',
+      bullets: [],
+      highlights: [],
+      ctaText: '',
+      ctaLink: '',
+    },
+    stories: {
+      eyebrow: '',
+      title: '',
+      subtitle: '',
+      loadingText: '',
+    },
+    journal: {
+      eyebrow: '',
+      title: '',
+      subtitle: '',
+      ctaText: '',
+      ctaLink: '',
+      limit: 0,
+    },
+  };
   const [form, setForm] = useState<FormState>({
-    home: DEFAULT_HOME_CONTENT,
+    home: emptyHomeContent,
     testimonials: [],
     stats: [],
     scienceHighlights: [],
@@ -60,7 +100,7 @@ const ContentEditor = () => {
   useEffect(() => {
     if (content) {
       const newForm: FormState = {
-        home: content.home || DEFAULT_HOME_CONTENT,
+        home: content.home || emptyHomeContent,
         testimonials: content.testimonials || [],
         stats: content.stats || [],
         scienceHighlights: content.scienceHighlights || [],
@@ -234,7 +274,7 @@ const ContentEditor = () => {
                 onClick={() => {
                   if (content) {
                     setForm({
-                      home: content.home || DEFAULT_HOME_CONTENT,
+                      home: content.home || emptyHomeContent,
                       testimonials: content.testimonials || [],
                       stats: content.stats || [],
                       scienceHighlights: content.scienceHighlights || [],

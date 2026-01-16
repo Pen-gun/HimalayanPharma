@@ -257,7 +257,7 @@ const ContentEditorRedirect = () => {
         Edit your site's dynamic content including testimonials, statistics, highlights, job listings, and contact information.
       </p>
       <Link
-        to="/admin/content"
+        to="/admin/content/home"
         className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700 transition-colors"
       >
         Open Content Editor

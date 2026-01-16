@@ -12,7 +12,6 @@ import { useBlogPosts } from '../hooks/useBlog';
 import { useContent } from '../hooks/useContent';
 import { ProductSkeletonGrid } from '../components/Skeleton';
 import type { Product } from '../lib/api';
-import { DEFAULT_HOME_CONTENT } from '../data/contentDefaults';
 
 const Home = () => {
   const { data: featuredData, isLoading: productsLoading } = useFeaturedProducts();
@@ -20,9 +19,7 @@ const Home = () => {
   const content = contentData?.data;
   const journalLimitCandidate = content?.home?.journal?.limit;
   const journalLimitFromContent =
-    Number.isFinite(journalLimitCandidate) && journalLimitCandidate > 0
-      ? journalLimitCandidate
-      : DEFAULT_HOME_CONTENT.journal.limit;
+    Number.isFinite(journalLimitCandidate) && journalLimitCandidate > 0 ? journalLimitCandidate : 3;
   const { data: blogData, isLoading: blogLoading } = useBlogPosts({ limit: journalLimitFromContent });
 
   useEffect(() => {
@@ -42,21 +39,24 @@ const Home = () => {
   const mediaItems = content?.mediaItems || [];
   const home = content?.home;
 
-  const hero = { ...DEFAULT_HOME_CONTENT.hero, ...home?.hero };
-  const featured = { ...DEFAULT_HOME_CONTENT.featured, ...home?.featured };
-  const about = { ...DEFAULT_HOME_CONTENT.about, ...home?.about };
-  const stories = { ...DEFAULT_HOME_CONTENT.stories, ...home?.stories };
-  const journal = { ...DEFAULT_HOME_CONTENT.journal, ...home?.journal };
-  const aboutBullets =
-    Array.isArray(about.bullets) && about.bullets.length > 0
-      ? about.bullets
-      : DEFAULT_HOME_CONTENT.about.bullets;
-  const aboutHighlights =
-    Array.isArray(about.highlights) && about.highlights.length > 0
-      ? about.highlights
-      : DEFAULT_HOME_CONTENT.about.highlights;
-  const featuredLimit = Number.isFinite(featured.limit) && featured.limit > 0 ? featured.limit : DEFAULT_HOME_CONTENT.featured.limit;
-  const journalLimit = Number.isFinite(journal.limit) && journal.limit > 0 ? journal.limit : DEFAULT_HOME_CONTENT.journal.limit;
+  if (!home) {
+    return (
+      <div className="section-shell py-16">
+        <p className="text-slate-600">Loading content...</p>
+      </div>
+    );
+  }
+
+  const { hero, featured, about, stories, journal } = home;
+  const aboutBullets = Array.isArray(about.bullets) ? about.bullets : [];
+  const aboutHighlights = Array.isArray(about.highlights) ? about.highlights : [];
+
+  const featuredLimitCandidate = featured.limit;
+  const journalLimitCandidateFromHome = journal.limit;
+  const featuredLimit =
+    Number.isFinite(featuredLimitCandidate) && featuredLimitCandidate > 0 ? featuredLimitCandidate : 6;
+  const journalLimit =
+    Number.isFinite(journalLimitCandidateFromHome) && journalLimitCandidateFromHome > 0 ? journalLimitCandidateFromHome : 3;
 
   const renderProductCard = useCallback((product: Product) => {
     const category =
