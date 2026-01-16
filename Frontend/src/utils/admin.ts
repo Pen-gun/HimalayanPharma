@@ -66,7 +66,7 @@ export const createEmptyHighlight = () => ({ title: '', description: '' });
 export const createEmptyJob = () => ({ title: '', location: '', type: '', summary: '' });
 export const createEmptyLocation = () => ({ office: '', address: '', phone: '', email: '' });
 export const createEmptyMediaItem = () => ({
-  type: 'image',
+  type: 'image' as const,
   title: '',
   description: '',
   url: '',

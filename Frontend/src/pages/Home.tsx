@@ -19,7 +19,9 @@ const Home = () => {
   const content = contentData?.data;
   const journalLimitCandidate = content?.home?.journal?.limit;
   const journalLimitFromContent =
-    Number.isFinite(journalLimitCandidate) && journalLimitCandidate > 0 ? journalLimitCandidate : 3;
+    typeof journalLimitCandidate === 'number' && Number.isFinite(journalLimitCandidate) && journalLimitCandidate > 0
+      ? journalLimitCandidate
+      : 3;
   const { data: blogData, isLoading: blogLoading } = useBlogPosts({ limit: journalLimitFromContent });
 
   useEffect(() => {
