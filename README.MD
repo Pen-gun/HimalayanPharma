@@ -1,59 +1,67 @@
 # Himalayan Pharma Works
 
-Full-stack e-commerce platform for Ayurvedic wellness products.
+Full-stack e-commerce platform for Ayurvedic wellness products with an admin panel, content management, and a REST API.
 
-## 🏗️ Project Structure
+## Overview
+
+- Frontend: React + TypeScript + Vite + Tailwind
+- Backend: Node.js + Express + MongoDB (Mongoose)
+- Auth: JWT with refresh flow
+- Admin: Products, categories, blog, news, and site content management
+
+## Repository Structure
 
 ```
 HimalayanPharma/
-├── Backend/          # Node.js + Express REST API
-│   ├── src/
-│   │   ├── controllers/
-│   │   ├── models/
-│   │   ├── routes/
-│   │   ├── middleware/
-│   │   ├── config/
-│   │   └── seed/
-│   ├── PRODUCTION_CHECKLIST.md
-│   └── package.json
-│
-└── Frontend/         # React + TypeScript + Vite
-    ├── src/
-    │   ├── components/
-    │   ├── pages/
-    │   ├── hooks/
-    │   ├── layouts/
-    │   └── lib/
-    └── package.json
+  Backend/
+    src/
+      controllers/
+      models/
+      routes/
+      middleware/
+      config/
+      seed/
+    package.json
+    README.md
+  Frontend/
+    src/
+      components/
+      pages/
+      hooks/
+      layouts/
+      lib/
+    package.json
+    README.md
 ```
 
-## 🚀 Quick Start
+## Requirements
 
-### Backend Setup
+- Node.js 18+
+- MongoDB (local or Atlas)
+
+## Quick Start
+
+### Backend
+
 ```bash
 cd Backend
 npm install
-npm run seed      # Seed database
-npm run dev       # Development mode
-npm start         # Production mode
+npm run seed      # Seed site content defaults (safe merge)
+npm run dev       # Dev server
 ```
 
-### Frontend Setup
+### Frontend
+
 ```bash
 cd Frontend
 npm install
-npm run dev       # Development mode
-npm run build     # Production build
+npm run dev
 ```
 
-## 📚 Documentation
-
-- [Backend README](Backend/README.md) - API documentation
-- [Frontend README](Frontend/README.md) - Frontend documentation
-
-## 🔐 Environment Variables
+## Environment Variables
 
 ### Backend (.env.local)
+
 ```env
 PORT=3000
 NODE_ENV=development
@@ -63,25 +71,47 @@ FRONTEND_URL=http://localhost:5173
 ```
 
 ### Frontend (.env.local)
+
 ```env
 VITE_API_URL=http://localhost:3000/api/v1
 ```
 
-## 🛠️ Tech Stack
+## Seeding
+
+The seed script populates the `SiteContent` document with defaults. It merges missing fields without overwriting existing data.
+
+```bash
+cd Backend
+npm run seed
+```
+
+To overwrite existing site content:
+
+```bash
+cd Backend
+npm run seed -- --force
+```
+
+## Scripts
 
 ### Backend
-- Node.js + Express 4
-- MongoDB + Mongoose
-- JWT Authentication
-- Helmet, Rate Limiting, Compression
-- Express Validator
+
+- `npm run dev` - start server with nodemon
+- `npm start` - start server
+- `npm run seed` - seed site content
 
 ### Frontend
-- React 18 + TypeScript
-- Vite
-- React Router
-- Tailwind CSS
 
-## 📝 License
+- `npm run dev` - start Vite dev server
+- `npm run build` - production build
 
-MIT
+## Deployment Notes
+
+- Configure `MONGODB_URL`, `JWT_SECRET`, and `FRONTEND_URL` for production.
+- Ensure the frontend `VITE_API_URL` points to your deployed backend.
+- Run `npm run seed` once after first deploy to populate site content.
+
+## Documentation
+
+- `Backend/README.md` for API details
+- `Frontend/README.md` for UI and dev notes
