@@ -12,6 +12,8 @@ import { useBlogPosts } from '../hooks/useBlog';
 import { useContent } from '../hooks/useContent';
 import { ProductSkeletonGrid } from '../components/Skeleton';
 
+import type { Product } from '../lib/api';
+
 const ABOUT_ITEMS = ['Traceable botanicals', 'Clinically studied', 'Vegan friendly', 'ISO & cGMP'];
 
 const Home = () => {
@@ -36,7 +38,7 @@ const Home = () => {
   const contentTestimonials = content?.testimonials || [];
   const mediaItems = content?.mediaItems || [];
 
-  const renderProductCard = useCallback((product: any) => {
+  const renderProductCard = useCallback((product: Product) => {
     const category =
       typeof product.category === 'string'
         ? { _id: 'unknown', name: product.category }
